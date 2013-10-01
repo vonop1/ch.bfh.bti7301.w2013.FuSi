@@ -7,28 +7,28 @@ package Util;
  * Time: 14:14
  */
 public class CPosition {
-    private float fX;
-    private float fY;
+    private double dX;
+    private double dY;
 
-    public CPosition(float X, float Y)
+    public CPosition(double X, double Y)
     {
-        this.fX = X;
-        this.fY = Y;
+        this.dX = X;
+        this.dY = Y;
     }
 
-    public float getX() {
-        return fX;
+    public double getX() {
+        return dX;
     }
 
     public void setX(float fX) {
-        this.fX = fX;
+        this.dX = fX;
     }
 
-    public float getY() {
-        return fY;
+    public double getY() {
+        return dY;
     }
 
     public void setY(float fY) {
-        this.fY = fY;
+        this.dY = fY;
     }
 }
