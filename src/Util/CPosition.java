@@ -74,4 +74,15 @@ public class CPosition implements Comparable<CPosition> {
 
         return true;
     }
+
+    public boolean isNearBy(CPosition other) {
+
+        if( Math.abs(other.getX() - this.getX()) < 1.5) {
+            if( Math.abs(other.getY() - this.getY()) < 1.5) {
+                return true;
+            }
+        }
+        return false;
+
+    }
 }

@@ -6,8 +6,10 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
+import Util.CDijkstra;
 import Util.CGraph;
 import Util.CPosition;
+import Util.CVertex;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NodeType;
 import org.w3c.dom.*;
 
@@ -126,7 +128,14 @@ public class CWorld {
                     this.oGraph.addEdge(position, walker.getTarget(), false);
                 }
             }
+
+            CDijkstra dijkstra = new CDijkstra(this.oGraph);
+
+            CVertex position = this.oGraph.getVertexByPosition(walker.getPosition());
+            CVertex target = this.oGraph.getVertexByPosition(walker.getTarget());
+            walker.setDesiredPath(dijkstra.getPath(position, target));
         }
+
 
     }
 
@@ -135,9 +144,12 @@ public class CWorld {
      * calculates the next simulation step
      */
     public void stepSimulation() {
-           // create graph over all objects
-
-
-
+        // let the people move their bodies ^^
+        for(CWalker walker : this.aoWalkers) {
+            if( walker.walkAStep() == true ) {
+                // Walker has reached target, remove the guy
+                // TODO
+            }
+        }
     }
 }

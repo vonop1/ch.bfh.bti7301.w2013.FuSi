@@ -165,7 +165,7 @@ public class SimulationPanel extends JPanel {
 
             // sleep 5 miliseconds
             try	{
-                java.lang.Thread.sleep(5);
+                java.lang.Thread.sleep(100);
             } catch (InterruptedException e) {
 
             }

@@ -42,6 +42,17 @@ public class CGraph {
         return edges;
     }
 
+    public CVertex getVertexByPosition(CPosition pos) {
+
+        for(CVertex v : this.vertexes) {
+            if(v.getPos().compareTo(pos) == 0)  {   // we have found an already existing source
+                return v;
+            }
+        }
+
+        return null;
+    }
+
     public void addEdge(CPosition source, CPosition destination, boolean isObstacleEdge) {
         CVertex vertexSource = null;
         CVertex vertexDestination = null;
@@ -75,10 +86,12 @@ public class CGraph {
 
         if(vertexSource == null) {
             vertexSource = new CVertex(source);
+            this.vertexes.add(vertexSource);
         }
 
         if(vertexDestination == null) {
             vertexDestination = new CVertex(destination);
+            this.vertexes.add(vertexDestination);
         }
 
         CEdge newEdge = new CEdge(vertexSource, vertexDestination, null, isObstacleEdge);

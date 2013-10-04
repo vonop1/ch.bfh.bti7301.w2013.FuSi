@@ -1,6 +1,10 @@
 package Source;
 
 import Util.CPosition;
+import Util.CVertex;
+
+import java.util.LinkedList;
+import java.util.Vector;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,10 +15,15 @@ import Util.CPosition;
 public class CWalker {
    private CPosition oPos;
    private CPosition oTarget;
+   private CPosition oStart;
    private Integer iSize = 5;
+   private Double stepSize = 2.0;
 
-   public CWalker(CPosition pos, CPosition target) {
-       this.oPos = pos;
+   private LinkedList<CVertex> desiredPath = new LinkedList<CVertex>();
+
+   public CWalker(CPosition start, CPosition target) {
+       this.oStart = start;
+       this.oPos = start;
        this.oTarget = target;
    }
 
@@ -28,7 +37,46 @@ public class CWalker {
        return oTarget;
    }
 
+    public CPosition getStart()
+    {
+        return oStart;
+    }
+
    public Integer getSize() {
        return iSize;
    }
+
+    public void setDesiredPath(LinkedList<CVertex> vertexes) {
+        this.desiredPath = vertexes;
+        this.desiredPath.removeFirst(); // remove his own position
+    }
+
+    public LinkedList<CVertex> getDesiredPath() {
+        return this.desiredPath;
+    }
+
+    public boolean walkAStep() {
+
+        if(this.desiredPath.size() > 0)
+        {
+            CVertex nextCheckPoint = this.desiredPath.getFirst();
+
+            Double delta = (nextCheckPoint.getPos().getX() - this.oPos.getX()) / (nextCheckPoint.getPos().getY() - this.oPos.getY());
+            if(delta == 1 ) { delta = 0.9999; }
+
+            Double y = Math.sqrt(Math.pow(stepSize, 2) /  (1 + delta));
+            Double x = y * delta;
+
+            CPosition newpos = new CPosition(oPos.getX() + x, oPos.getY() + y);
+
+            if(newpos.isNearBy(nextCheckPoint.getPos())) {
+                // Yes, we reached a checkpoint, remove it from our list
+                this.desiredPath.removeFirst();
+            }
+
+            this.oPos = newpos;
+        }
+
+        return this.desiredPath.size() == 0;
+    }
 }
