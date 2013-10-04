@@ -1,7 +1,7 @@
 package GUI;
 
 import Source.CObstacle;
-import Source.CObstacleRectangle;
+import Source.CObstacleFactory;
 import Source.CWalker;
 import Source.CWorld;
 import Util.CPosition;
@@ -23,7 +23,7 @@ public class SimulationPanel extends JPanel {
      */
     protected boolean isRunning = false;
 
-    protected CWorld oWorld = new CWorld();
+    protected CWorld oWorld = null;
 
     public SimulationPanel() {
         super();
@@ -44,8 +44,10 @@ public class SimulationPanel extends JPanel {
 
         this.oWorld = new CWorld();
 
-        this.oWorld.addWalker(new CWalker(new CPosition(50, 50)));
-        this.oWorld.addObstacle(new CObstacleRectangle(150,150, 250, 250));
+        this.oWorld.addWalker(CObstacleFactory.createWalter(50,50));
+
+        this.oWorld.addObstacle(CObstacleFactory.createRectangle(150, 150, 250, 250));
+        this.oWorld.addObstacle(CObstacleFactory.createTriangle(300, 300, 350, 300, 300, 350));
 
         this.isRunning = true;
 
@@ -62,8 +64,8 @@ public class SimulationPanel extends JPanel {
 
         g.setColor(Color.WHITE);
 
-        if(!this.isRunning) {
-            g.drawString("Passenger Simulation standby", 200, 50);
+        if(oWorld == null) {
+            g.drawString("Passenger Simulation - please load a world", 200, 50);
         }
         else {
            for(CObstacle obstacle : oWorld.getObstacles()) {
@@ -99,7 +101,7 @@ public class SimulationPanel extends JPanel {
 
                 int size = 5;
                 g.setColor(Color.ORANGE);
-                g.fillOval(((int)position.getX()) - size, ((int)position.getY()) - size, size * 2, size * 2);
+                g.fillOval(((int) position.getX()) - size, ((int) position.getY()) - size, size * 2, size * 2);
 
                 //g.fillOval();
             }
