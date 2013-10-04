@@ -13,7 +13,7 @@ import java.util.Vector;
 public class CObstacle {
 
     double dDistToEdgeC = 10.0;
-    private Vector<CPosition> aoPosition;
+    protected Vector<CPosition> aoPosition;
 
     /**
      * get edges of the obstacle

@@ -1,6 +1,10 @@
 package GUI;
 
+import Source.CObstacle;
+import Source.CObstacleRectangle;
+import Source.CWalker;
 import Source.CWorld;
+import Util.CPosition;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +41,8 @@ public class SimulationPanel extends JPanel {
     public void createRandomWorld() {
         this.oWorld = new CWorld();
 
-
+        this.oWorld.addWalker(new CWalker(new CPosition(5, 5)));
+        this.oWorld.addObstacle(new CObstacleRectangle(50,50, 100, 100));
 
     }
 
