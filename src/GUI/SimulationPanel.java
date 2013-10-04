@@ -78,14 +78,30 @@ public class SimulationPanel extends JPanel {
                    i += 1;
                }
 
-               g.drawPolygon(xCoordinates, yCoordinates, positions.size());
+               g.fillPolygon(xCoordinates, yCoordinates, positions.size());
+
+               Vector<CPosition> positions2 = obstacle.getWaypoints();
+               int[] xCoordinates2 = new int[positions.size()];
+               int[] yCoordinates2 = new int[positions.size()];
+
+               int j = 0;
+               for(CPosition position : positions2) {
+                   xCoordinates2[j] = (int)position.getX();
+                   yCoordinates2[j] = (int)position.getY();
+                   j += 1;
+               }
+
+               g.drawPolygon(xCoordinates2, yCoordinates2, positions2.size());
            }
 
             for(CWalker walker : oWorld.getWalkers()) {
                 CPosition position = walker.getPosition();
 
                 int size = 5;
-                g.drawOval(((int)position.getX()) - size, ((int)position.getY()) - size, ((int)position.getX()) + size, ((int)position.getY()) + size);
+                g.setColor(Color.ORANGE);
+                g.fillOval(((int)position.getX()) - size, ((int)position.getY()) - size, size * 2, size * 2);
+
+                //g.fillOval();
             }
         }
     }
