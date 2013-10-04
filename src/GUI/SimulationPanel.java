@@ -1,5 +1,11 @@
 package GUI;
 
+import Source.CObstacle;
+import Source.CObstacleRectangle;
+import Source.CWalker;
+import Source.CWorld;
+import Util.CPosition;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,6 +22,8 @@ public class SimulationPanel extends JPanel {
      */
     protected boolean isRunning = false;
 
+    protected CWorld oWorld = new CWorld();
+
     public SimulationPanel() {
         super();
 
@@ -24,6 +32,18 @@ public class SimulationPanel extends JPanel {
 
         // set the Panel size to the Window size
         this.setBounds(0,0,Application.INSTANCE.getWidth(), Application.INSTANCE.getHeight());
+    }
+
+
+    /**
+     * creates a random world
+     */
+    public void createRandomWorld() {
+        this.oWorld = new CWorld();
+
+        this.oWorld.addWalker(new CWalker(new CPosition(5, 5)));
+        this.oWorld.addObstacle(new CObstacleRectangle(50,50, 100, 100));
+
     }
 
     /**
@@ -37,11 +57,13 @@ public class SimulationPanel extends JPanel {
 
         g.setColor(Color.WHITE);
 
-        if(this.isRunning) {
-            g.drawString("Passenger Simulation is running!", 200, 50);
+        if(!this.isRunning) {
+            g.drawString("Passenger Simulation standby", 200, 50);
         }
         else {
-            g.drawString("Passenger Simulation standby", 200, 50);
+
+
+
         }
     }
 
