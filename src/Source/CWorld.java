@@ -1,8 +1,14 @@
 package Source;
 
-import org.xml.sax.XMLReader;
-
+import java.io.File;
 import java.util.Vector;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+
+import Util.CPosition;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NodeType;
+import org.w3c.dom.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,7 +24,7 @@ public class CWorld {
 
     public CWorld ()
     {
-
+        aoObstacles = loadConfig();
     }
 
     public Vector<CWalker> getWalkers() {
@@ -40,8 +46,50 @@ public class CWorld {
     private Vector<CObstacle> loadConfig ()
     {
         Vector<CObstacle> aoObstacles = new Vector<CObstacle>();
+        try
+        {
+            File oConfigFile = new File ("C:/develop/git/ch.bfh.bti7301.w2013.FuSi/XML/Config.xml");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document oConfigDoc = dBuilder.parse(oConfigFile);
+
+            NodeList aoObj = oConfigDoc.getElementsByTagName("obj");
+
+            for (int i = 0; i < aoObj.getLength(); i++)
+            {
+               Node oObj = aoObj.item(i);
+               Vector<CPosition> aoPosition = new Vector<CPosition>();
+
+               if (oObj.hasChildNodes())
+               {
+                   NodeList aoPoint = oObj.getChildNodes();
+                   for (int j = 0; j < aoPoint.getLength(); j++)
+                   {
+                       Node oPoint = aoPoint.item(j);
+
+                       if (oPoint.getNodeType() == Node.ELEMENT_NODE)
+                       {
+                           NamedNodeMap oPointAttributes = oPoint.getAttributes();
+
+                           double dX = Integer.parseInt(oPointAttributes.getNamedItem("x").getNodeValue());
+                           double dY = Integer.parseInt(oPointAttributes.getNamedItem("y").getNodeValue());
+                           aoPosition.add(new CPosition(dX, dY));
+                       }
 
 
+                   }
+
+                   aoObstacles.add(new CObstacle(aoPosition));
+               }
+
+            }
+
+
+        }
+        catch (Exception e)
+        {
+
+        }
         return aoObstacles;
     }
 

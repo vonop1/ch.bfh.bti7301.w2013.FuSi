@@ -11,48 +11,82 @@ import static org.junit.matchers.JUnitMatchers.everyItem;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 
 import java.util.Arrays;
+import java.util.Vector;
 
+import Source.CObstacle;
+import Util.CPosition;
 import org.hamcrest.core.CombinableMatcher;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CWorldTest {
-    @Test
-    public void testAssertArrayEquals() {
-        byte[] expected = "trial".getBytes();
-        byte[] actual = "trial".getBytes();
-        org.junit.Assert.assertArrayEquals("failure - byte arrays not same", expected, actual);
-    }
 
     @Test
-    public void testAssertEquals() {
-        org.junit.Assert.assertEquals("failure - strings not same", 5l, 5l);
+    public void testWaypointRectangle()
+    {
+        double dDeltaC = 0.01;
+
+        Vector<CPosition> aoPos = new Vector<CPosition>();
+        //generate Rectangle
+        aoPos.add(new CPosition(10,50));
+        aoPos.add(new CPosition(110,50));
+        aoPos.add(new CPosition(110,100));
+        aoPos.add(new CPosition(10,100));
+        CObstacle oTestObj = new CObstacle(aoPos);
+
+        Vector<CPosition> aoWaypoint = oTestObj.getWaypoints();
+
+        org.junit.Assert.assertEquals(   1.05, aoWaypoint.elementAt(0).getX(), dDeltaC);
+        org.junit.Assert.assertEquals(  45.52, aoWaypoint.elementAt(0).getY(), dDeltaC);
+
+        org.junit.Assert.assertEquals( 118.95, aoWaypoint.elementAt(1).getX(), dDeltaC);
+        org.junit.Assert.assertEquals(  45.52, aoWaypoint.elementAt(1).getY(), dDeltaC);
+
+        org.junit.Assert.assertEquals( 118.95, aoWaypoint.elementAt(2).getX(), dDeltaC);
+        org.junit.Assert.assertEquals( 104.48, aoWaypoint.elementAt(2).getY(), dDeltaC);
+
+        org.junit.Assert.assertEquals(   1.05, aoWaypoint.elementAt(3).getX(), dDeltaC);
+        org.junit.Assert.assertEquals( 104.48, aoWaypoint.elementAt(3).getY(), dDeltaC);
     }
 
-    @Test
-    public void testAssertFalse() {
-        org.junit.Assert.assertFalse("failure - should be false", false);
-    }
-
-    @Test
-    public void testAssertNotNull() {
-        org.junit.Assert.assertNotNull("should not be null", new Object());
-    }
-
-    @Test
-    public void testAssertNotSame() {
-        org.junit.Assert.assertNotSame("should not be same Object", new Object(), new Object());
-    }
-
-    @Test
-    public void testAssertNull() {
-        org.junit.Assert.assertNull("should be null", null);
-    }
-
-    @Test
-    public void testAssertSame() {
-        Integer aNumber = Integer.valueOf(768);
-        org.junit.Assert.assertSame("should be same", aNumber, aNumber);
-    }
+//    @Test
+//    public void testAssertArrayEquals() {
+//        byte[] expected = "trial".getBytes();
+//        byte[] actual = "trial".getBytes();
+//        org.junit.Assert.assertArrayEquals("failure - byte arrays not same", expected, actual);
+//    }
+//
+//    @Test
+//    public void testAssertEquals() {
+//        org.junit.Assert.assertEquals("failure - strings not same", 5l, 5l);
+//    }
+//
+//    @Test
+//    public void testAssertFalse() {
+//        org.junit.Assert.assertFalse("failure - should be false", false);
+//    }
+//
+//    @Test
+//    public void testAssertNotNull() {
+//        org.junit.Assert.assertNotNull("should not be null", new Object());
+//    }
+//
+//    @Test
+//    public void testAssertNotSame() {
+//        org.junit.Assert.assertNotSame("should not be same Object", new Object(), new Object());
+//    }
+//
+//    @Test
+//    public void testAssertNull() {
+//        org.junit.Assert.assertNull("should be null", null);
+//    }
+//
+//    @Test
+//    public void testAssertSame() {
+//        Integer aNumber = Integer.valueOf(768);
+//        org.junit.Assert.assertSame("should be same", aNumber, aNumber);
+//    }
 
     // JUnit Matchers assertThat
     @Test
