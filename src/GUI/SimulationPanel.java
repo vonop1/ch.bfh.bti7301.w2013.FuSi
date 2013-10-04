@@ -102,11 +102,9 @@ public class SimulationPanel extends JPanel {
             for(CWalker walker : oWorld.getWalkers()) {
                 CPosition position = walker.getPosition();
 
-                int size = 5;
                 g.setColor(Color.ORANGE);
-                g.fillOval(((int) position.getX()) - size, ((int) position.getY()) - size, size * 2, size * 2);
+                g.fillOval(((int) position.getX()) - walker.getSize(), ((int) position.getY()) - walker.getSize(), walker.getSize() * 2, walker.getSize() * 2);
 
-                //g.fillOval();
             }
         }
     }

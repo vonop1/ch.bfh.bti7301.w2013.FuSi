@@ -10,6 +10,7 @@ import Util.CPosition;
  */
 public class CWalker {
    private CPosition oPos;
+   private Integer iSize = 5;
 
    public CWalker(CPosition pos) {
        this.oPos = pos;
@@ -18,5 +19,9 @@ public class CWalker {
    public CPosition getPosition()
    {
        return oPos;
+   }
+
+   public Integer getSize() {
+       return iSize;
    }
 }
