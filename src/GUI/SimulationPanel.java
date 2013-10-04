@@ -26,6 +26,7 @@ public class SimulationPanel extends JPanel {
      * Holds the informaticon if the simulation is running
      */
     protected boolean isRunning = false;
+    protected boolean showGraph = true;
 
     protected CWorld oWorld = null;
 
@@ -107,13 +108,15 @@ public class SimulationPanel extends JPanel {
 //               g.drawPolygon(xCoordinates2, yCoordinates2, positions2.size());
            }
 
+             if(this.showGraph) {
+                 g.setColor(Color.GREEN);
+                 for(CEdge edge : this.oWorld.getGraph().getEdges()) {
+                     g.drawLine(edge.getSource().getPos().getX().intValue(), edge.getSource().getPos().getY().intValue(), edge.getDestination().getPos().getX().intValue(), edge.getDestination().getPos().getY().intValue());
+                     this.drawArrowLine((Graphics2D)g, edge.getSource().getPos().getX().intValue(), edge.getSource().getPos().getY().intValue(), edge.getDestination().getPos().getX().intValue(), edge.getDestination().getPos().getY().intValue());
 
-            g.setColor(Color.GREEN);
-            for(CEdge edge : this.oWorld.getGraph().getEdges()) {
-                g.drawLine(edge.getSource().getPos().getX().intValue(), edge.getSource().getPos().getY().intValue(), edge.getDestination().getPos().getX().intValue(), edge.getDestination().getPos().getY().intValue());
-                this.drawArrowLine((Graphics2D)g, edge.getSource().getPos().getX().intValue(), edge.getSource().getPos().getY().intValue(), edge.getDestination().getPos().getX().intValue(), edge.getDestination().getPos().getY().intValue());
+                 }
+             }
 
-            }
 
             for(CWalker walker : oWorld.getWalkers()) {
                 CPosition position = walker.getPosition();
@@ -180,5 +183,9 @@ public class SimulationPanel extends JPanel {
 
     public void toggleRunningState() {
         this.isRunning = !this.isRunning;
+    }
+
+    public void toggleShowGraph() {
+        this.showGraph = !this.showGraph;
     }
 }

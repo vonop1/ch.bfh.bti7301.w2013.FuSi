@@ -47,6 +47,9 @@ public class CWalker {
    }
 
     public void setDesiredPath(LinkedList<CVertex> vertexes) {
+        if(vertexes == null) {
+            this.desiredPath = new LinkedList<CVertex>();
+        }
         this.desiredPath = vertexes;
         this.desiredPath.removeFirst(); // remove his own position
     }
@@ -69,7 +72,7 @@ public class CWalker {
 
             CPosition newpos = new CPosition(oPos.getX() + x, oPos.getY() + y);
 
-            if(newpos.isNearBy(nextCheckPoint.getPos())) {
+            if(newpos.isNearBy(nextCheckPoint.getPos(), stepSize)) {
                 // Yes, we reached a checkpoint, remove it from our list
                 this.desiredPath.removeFirst();
             }

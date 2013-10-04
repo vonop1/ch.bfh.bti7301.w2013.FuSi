@@ -1,6 +1,7 @@
 package Source;
 
 import Util.CPosition;
+import Util.CVertex;
 
 import java.util.Vector;
 
@@ -10,8 +11,9 @@ import java.util.Vector;
  * Date: 27.09.13
  * Time: 14:37
  */
-public class CObstacle {
+public class CObstacle implements Comparable<CObstacle> {
 
+    Integer iId;
     double dDistToEdgeC = 10.0;
     protected Vector<CPosition> aoPosition;
 
@@ -26,9 +28,13 @@ public class CObstacle {
 
     public CObstacle (Vector<CPosition> aoPosition)
     {
+        this.iId = CVertex.incrementId();
         this.aoPosition = aoPosition;
     }
 
+    public Integer getId() {
+        return this.iId;
+    }
     /**
      * Calculate the Waypoints for a the obstacle
      * @return vector with Points for travers the obstacle
@@ -128,4 +134,8 @@ public class CObstacle {
     }
 
 
+    @Override
+    public int compareTo(CObstacle o) {
+        return this.iId.compareTo(o.getId());
+    }
 }

@@ -105,6 +105,7 @@ public class CWorld {
     public void buildGraph() {
         this.oGraph = new CGraph();
 
+        // add basic lines
         for(CObstacle obstacle : this.aoObstacles) {
             int j = 0;
             Vector<CPosition> wayPoints = obstacle.getWaypoints();
@@ -115,7 +116,29 @@ public class CWorld {
                 else {
                     j = i + 1;
                 }
-                this.oGraph.addEdge(wayPoints.elementAt(i), wayPoints.elementAt(j), true);
+
+                if( i > (int)(wayPoints.size() / 2)){
+                    this.oGraph.addEdge(wayPoints.elementAt(j), wayPoints.elementAt(i), true);
+                }
+                else
+                {
+                    this.oGraph.addEdge(wayPoints.elementAt(i), wayPoints.elementAt(j), true);
+                }
+            }
+        }
+
+        // connect obstacles with others
+        for(CObstacle obstacle : this.aoObstacles) {
+            Vector<CPosition> wayPoints = obstacle.getWaypoints();
+            for(CPosition position : wayPoints) {
+                for(CObstacle innerObstacle : this.aoObstacles) {
+                    if(obstacle.compareTo(innerObstacle) != 0) { // if it is not the same obstacle
+
+                         for(CPosition innerPosition : innerObstacle.getWaypoints()) {
+                            this.oGraph.addEdge(position, innerPosition, false);
+                         }
+                    }
+                }
             }
         }
 

@@ -119,6 +119,11 @@ public class Application extends JFrame implements WindowListener, KeyListener {
 		if ( e.getKeyCode() == KeyEvent.VK_P) {
 			simulationPanel.toggleRunningState();
 		}
+
+        // P-Key pauses, resumes simulation
+        if ( e.getKeyCode() == KeyEvent.VK_G) {
+            simulationPanel.toggleShowGraph();
+        }
 		
 		// F2-Key starts the simulation
 		if ( e.getKeyCode() == KeyEvent.VK_F2) {

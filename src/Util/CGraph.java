@@ -97,10 +97,13 @@ public class CGraph {
         CEdge newEdge = new CEdge(vertexSource, vertexDestination, null, isObstacleEdge);
 
         // Check if the edge crosses an existing objectedge
-        for(CEdge e : this.edges) {
-            if(e.isObstacleEdge()) {
-                if( e.calcIntersectionWith(newEdge) != null) {
-                    return;
+        // obstacle edges will be added everytime
+        if(!isObstacleEdge) {
+            for(CEdge e : this.edges) {
+                if(e.isObstacleEdge()) {
+                    if( e.calcIntersectionWith(newEdge) != null) {
+                        return;
+                    }
                 }
             }
         }
