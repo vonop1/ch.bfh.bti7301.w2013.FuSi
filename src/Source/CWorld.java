@@ -1,6 +1,5 @@
 package Source;
 
-import Util.CGraph;
 import org.xml.sax.XMLReader;
 
 import java.util.Vector;
@@ -12,8 +11,9 @@ import java.util.Vector;
  * Time: 14:30
  */
 public class CWorld {
+    private Vector<CWalker> aoWalkers;
 
-    private CGraph oGraph;
+    //private CGraph oGraph;
     private Vector<CObstacle> aoObstacles;
 
     public CWorld ()

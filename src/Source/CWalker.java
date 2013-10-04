@@ -10,4 +10,9 @@ import Util.CPosition;
  */
 public class CWalker {
    private CPosition oPos;
+
+   public CPosition getPosition()
+   {
+       return oPos;
+   }
 }
