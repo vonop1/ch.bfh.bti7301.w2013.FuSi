@@ -46,9 +46,9 @@ public class SimulationPanel extends JPanel {
 
         this.oWorld.addWalker(CObstacleFactory.createWalter(50,50));
 
-        this.oWorld.addObstacle(CObstacleFactory.createRectangle(150, 150, 250, 250));
-        this.oWorld.addObstacle(CObstacleFactory.createTriangle(300, 300, 350, 300, 300, 350));
-        this.oWorld.addObstacle(CObstacleFactory.createFuenfeck(50, 300, 40, 400, 80, 410, 120, 400, 120, 300));
+//        this.oWorld.addObstacle(CObstacleFactory.createRectangle(150, 150, 250, 250));
+//        this.oWorld.addObstacle(CObstacleFactory.createTriangle(300, 300, 350, 300, 300, 350));
+//        this.oWorld.addObstacle(CObstacleFactory.createFuenfeck(50, 300, 40, 400, 80, 410, 120, 400, 120, 300));
 
         this.isRunning = true;
 
