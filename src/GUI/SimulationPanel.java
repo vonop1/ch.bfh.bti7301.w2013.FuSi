@@ -39,7 +39,7 @@ public class SimulationPanel extends JPanel {
     /**
      * creates a random world
      */
-    public void setupRandomWorld() {
+    public void setupDummyWorld() {
         this.isRunning = false;
 
         this.oWorld = new CWorld();
@@ -48,6 +48,7 @@ public class SimulationPanel extends JPanel {
 
         this.oWorld.addObstacle(CObstacleFactory.createRectangle(150, 150, 250, 250));
         this.oWorld.addObstacle(CObstacleFactory.createTriangle(300, 300, 350, 300, 300, 350));
+        this.oWorld.addObstacle(CObstacleFactory.createFuenfeck(50, 300, 40, 400, 80, 410, 120, 400, 120, 300));
 
         this.isRunning = true;
 
@@ -65,7 +66,7 @@ public class SimulationPanel extends JPanel {
         g.setColor(Color.WHITE);
 
         if(oWorld == null) {
-            g.drawString("Passenger Simulation - please load a world", 200, 50);
+            g.drawString("Passenger Simulation - please load a world or Press F2 for Dummyworld", 200, 50);
         }
         else {
            for(CObstacle obstacle : oWorld.getObstacles()) {
@@ -80,6 +81,7 @@ public class SimulationPanel extends JPanel {
                    i += 1;
                }
 
+               g.setColor(Color.WHITE);
                g.fillPolygon(xCoordinates, yCoordinates, positions.size());
 
                Vector<CPosition> positions2 = obstacle.getWaypoints();
@@ -93,6 +95,7 @@ public class SimulationPanel extends JPanel {
                    j += 1;
                }
 
+               g.setColor(Color.GREEN);
                g.drawPolygon(xCoordinates2, yCoordinates2, positions2.size());
            }
 

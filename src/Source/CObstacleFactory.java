@@ -35,6 +35,19 @@ public class CObstacleFactory {
         return new CObstacle(positions);
     }
 
+    public static CObstacle createFuenfeck(int ax, int ay, int bx, int by, int cx, int cy, int dx, int dy, int ex, int ey) {
+
+        Vector<CPosition> positions = new Vector<CPosition>();
+
+        positions.add(new CPosition(ax, ay));
+        positions.add(new CPosition(bx, by));
+        positions.add(new CPosition(cx, cy));
+        positions.add(new CPosition(dx, dy));
+        positions.add(new CPosition(ex, ey));
+
+        return new CObstacle(positions);
+    }
+
     public static CWalker createWalter(int x, int y) {
         return new CWalker(new CPosition(x, y));
     }

@@ -1,14 +1,10 @@
 package GUI;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.lang.InterruptedException;
 import java.lang.String;
 import java.lang.System;
 
@@ -126,7 +122,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
 		
 		// F2-Key starts the simulation
 		if ( e.getKeyCode() == KeyEvent.VK_F2) {
-            simulationPanel.setupRandomWorld();
+            simulationPanel.setupDummyWorld();
 		}
 	}
 	
