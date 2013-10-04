@@ -8,6 +8,7 @@ import Util.CPosition;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Vector;
 
 /**
  * Copyright 2013 blastbeat syndicate gmbh
@@ -38,11 +39,15 @@ public class SimulationPanel extends JPanel {
     /**
      * creates a random world
      */
-    public void createRandomWorld() {
+    public void setupRandomWorld() {
+        this.isRunning = false;
+
         this.oWorld = new CWorld();
 
-        this.oWorld.addWalker(new CWalker(new CPosition(5, 5)));
-        this.oWorld.addObstacle(new CObstacleRectangle(50,50, 100, 100));
+        this.oWorld.addWalker(new CWalker(new CPosition(50, 50)));
+        this.oWorld.addObstacle(new CObstacleRectangle(150,150, 250, 250));
+
+        this.isRunning = true;
 
     }
 
@@ -61,9 +66,27 @@ public class SimulationPanel extends JPanel {
             g.drawString("Passenger Simulation standby", 200, 50);
         }
         else {
+           for(CObstacle obstacle : oWorld.getObstacles()) {
+               Vector<CPosition> positions = obstacle.getPositions();
+               int[] xCoordinates = new int[positions.size()];
+               int[] yCoordinates = new int[positions.size()];
 
+               int i = 0;
+               for(CPosition position : positions) {
+                   xCoordinates[i] = (int)position.getX();
+                   yCoordinates[i] = (int)position.getY();
+                   i += 1;
+               }
 
+               g.drawPolygon(xCoordinates, yCoordinates, positions.size());
+           }
 
+            for(CWalker walker : oWorld.getWalkers()) {
+                CPosition position = walker.getPosition();
+
+                int size = 5;
+                g.drawOval(((int)position.getX()) - size, ((int)position.getY()) - size, ((int)position.getX()) + size, ((int)position.getY()) + size);
+            }
         }
     }
 
@@ -84,8 +107,8 @@ public class SimulationPanel extends JPanel {
 
             // when the simulation is running....
             if(this.isRunning ) {
+                  this.oWorld.stepSimulation();
 
-                // do the Tick stuff here
             }
         } while (true);
     }

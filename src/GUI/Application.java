@@ -126,8 +126,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
 		
 		// F2-Key starts the simulation
 		if ( e.getKeyCode() == KeyEvent.VK_F2) {
-
-			simulationPanel.toggleRunningState();
+            simulationPanel.setupRandomWorld();
 		}
 	}
 	

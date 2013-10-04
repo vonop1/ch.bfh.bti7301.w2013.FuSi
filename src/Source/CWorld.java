@@ -44,4 +44,11 @@ public class CWorld {
 
         return aoObstacles;
     }
+
+    /**
+     * calculates the next simulation step
+     */
+    public void stepSimulation() {
+
+    }
 }
