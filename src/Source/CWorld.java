@@ -1,5 +1,10 @@
 package Source;
 
+import Util.CGraph;
+import org.xml.sax.XMLReader;
+
+import java.util.Vector;
+
 /**
  * Created with IntelliJ IDEA.
  * User: bohnp1
@@ -8,4 +13,19 @@ package Source;
  */
 public class CWorld {
 
+    private CGraph oGraph;
+    private Vector<CObstacle> aoObstacles;
+
+    public CWorld ()
+    {
+
+    }
+
+    private Vector<CObstacle> loadConfig ()
+    {
+        Vector<CObstacle> aoObstacles = new Vector<CObstacle>();
+
+
+        return aoObstacles;
+    }
 }

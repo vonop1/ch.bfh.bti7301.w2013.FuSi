@@ -12,8 +12,14 @@ import java.util.Vector;
  */
 public class CObstacle {
 
-    double dDistToEdgeC = 2.0;
+    double dDistToEdgeC = 10.0;
     private Vector<CPosition> aoPosition;
+
+
+    public CObstacle (Vector<CPosition> aoPosition)
+    {
+        this.aoPosition = aoPosition;
+    }
 
     /**
      * Calculate the Waypoints for a the obstacle
