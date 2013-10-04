@@ -78,10 +78,10 @@ public class CObstacle {
         {
             // First Quadrant
             double dLengthDiagonal = Math.sqrt(Math.pow(dXDiff, 2.0) + Math.pow(dYDiff, 2.0));
-            double dAngle = Math.tan(dYDiff/dXDiff);
+            double dAngle = Math.atan(dYDiff/dXDiff);
 
-            double dXWaypoint = (Math.asin(dAngle) * (dLengthDiagonal + dDistToEdgeC)) + dXAverage;
-            double dYWaypoint = (Math.acos(dAngle) * (dLengthDiagonal + dDistToEdgeC)) + dYAverage;
+            double dXWaypoint = (Math.cos(dAngle) * (dLengthDiagonal + dDistToEdgeC)) + dXAverage;
+            double dYWaypoint = (Math.sin(dAngle) * (dLengthDiagonal + dDistToEdgeC)) + dYAverage;
 
             return new CPosition(dXWaypoint, dYWaypoint);
         }
@@ -91,10 +91,10 @@ public class CObstacle {
             double dXDiffAbs = Math.abs(dXDiff);
 
             double dLengthDiagonal = Math.sqrt(Math.pow(dXDiffAbs, 2.0) + Math.pow(dYDiff, 2.0));
-            double dAngle = Math.tan(dYDiff/dXDiffAbs);
+            double dAngle = Math.atan(dYDiff/dXDiffAbs);
 
-            double dXWaypoint = dXAverage - (Math.asin(dAngle) * (dLengthDiagonal + dDistToEdgeC));
-            double dYWaypoint = dYAverage + (Math.acos(dAngle) * (dLengthDiagonal + dDistToEdgeC));
+            double dXWaypoint = dXAverage - (Math.cos(dAngle) * (dLengthDiagonal + dDistToEdgeC));
+            double dYWaypoint = dYAverage + (Math.sin(dAngle) * (dLengthDiagonal + dDistToEdgeC));
 
             return new CPosition(dXWaypoint, dYWaypoint);
         }
@@ -105,10 +105,10 @@ public class CObstacle {
             double dYDiffAbs = Math.abs(dYDiff);
 
             double dLengthDiagonal = Math.sqrt(Math.pow(dXDiffAbs, 2.0) + Math.pow(dYDiffAbs, 2.0));
-            double dAngle = Math.tan(dYDiffAbs/dXDiffAbs);
+            double dAngle = Math.atan(dYDiffAbs/dXDiffAbs);
 
-            double dXWaypoint = dXAverage - (Math.asin(dAngle) * (dLengthDiagonal + dDistToEdgeC));
-            double dYWaypoint = dYAverage - (Math.acos(dAngle) * (dLengthDiagonal + dDistToEdgeC));
+            double dXWaypoint = dXAverage - (Math.cos(dAngle) * (dLengthDiagonal + dDistToEdgeC));
+            double dYWaypoint = dYAverage - (Math.sin(dAngle) * (dLengthDiagonal + dDistToEdgeC));
 
             return new CPosition(dXWaypoint, dYWaypoint);
         }
@@ -118,10 +118,10 @@ public class CObstacle {
             double dYDiffAbs = Math.abs(dYDiff);
 
             double dLengthDiagonal = Math.sqrt(Math.pow(dXDiff, 2.0) + Math.pow(dYDiffAbs, 2.0));
-            double dAngle = Math.tan(dYDiffAbs/dXDiff);
+            double dAngle = Math.atan(dYDiffAbs/dXDiff);
 
-            double dXWaypoint = dXAverage + (Math.asin(dAngle) * (dLengthDiagonal + dDistToEdgeC));
-            double dYWaypoint = dYAverage - (Math.acos(dAngle) * (dLengthDiagonal + dDistToEdgeC));
+            double dXWaypoint = dXAverage + (Math.cos(dAngle) * (dLengthDiagonal + dDistToEdgeC));
+            double dYWaypoint = dYAverage - (Math.sin(dAngle) * (dLengthDiagonal + dDistToEdgeC));
 
             return new CPosition(dXWaypoint, dYWaypoint);
         }
