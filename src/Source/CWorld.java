@@ -6,6 +6,7 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
+import Util.CGraph;
 import Util.CPosition;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NodeType;
 import org.w3c.dom.*;
@@ -24,7 +25,7 @@ public class CWorld {
 
     public CWorld ()
     {
-        aoObstacles = loadConfig();
+
     }
 
     public Vector<CWalker> getWalkers() {
@@ -43,12 +44,12 @@ public class CWorld {
         this.aoObstacles.add(obstacle);
     }
 
-    private Vector<CObstacle> loadConfig ()
+    public Vector<CObstacle> loadConfig ()
     {
-        Vector<CObstacle> aoObstacles = new Vector<CObstacle>();
+        this.aoObstacles = new Vector<CObstacle>();
         try
         {
-            File oConfigFile = new File ("C:/develop/git/ch.bfh.bti7301.w2013.FuSi/XML/Config.xml");
+            File oConfigFile = new File ("C:/java/ch.bfh.bti7301.w2013.FuSi/XML/Config.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document oConfigDoc = dBuilder.parse(oConfigFile);
@@ -79,7 +80,7 @@ public class CWorld {
 
                    }
 
-                   aoObstacles.add(new CObstacle(aoPosition));
+                   this.aoObstacles.add(new CObstacle(aoPosition));
                }
 
             }
@@ -90,13 +91,53 @@ public class CWorld {
         {
 
         }
-        return aoObstacles;
+        return this.aoObstacles;
     }
+
+    private CGraph oGraph = null;
+
+    public CGraph getGraph() {
+        return oGraph;
+    }
+
+    public void buildGraph() {
+        this.oGraph = new CGraph();
+
+        for(CObstacle obstacle : this.aoObstacles) {
+            int j = 0;
+            Vector<CPosition> wayPoints = obstacle.getWaypoints();
+            for(int i = 0; i < wayPoints.size(); i++) {
+                if(i+1 >= wayPoints.size()) {
+                    j = 0;
+                }
+                else {
+                    j = i + 1;
+                }
+                this.oGraph.addEdge(wayPoints.elementAt(i), wayPoints.elementAt(j), true);
+            }
+        }
+
+        for(CWalker walker : this.aoWalkers) {
+            this.oGraph.addEdge(walker.getPosition(), walker.getTarget(), false);
+
+            for(CObstacle obstacle : this.aoObstacles) {
+                for(CPosition position : obstacle.getWaypoints()) {
+                    this.oGraph.addEdge(walker.getPosition(), position, false);
+                    this.oGraph.addEdge(position, walker.getTarget(), false);
+                }
+            }
+        }
+
+    }
+
 
     /**
      * calculates the next simulation step
      */
     public void stepSimulation() {
+           // create graph over all objects
+
+
 
     }
 }
