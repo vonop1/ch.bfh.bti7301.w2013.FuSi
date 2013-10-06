@@ -1,12 +1,10 @@
 package GUI;
 
 import Source.CObstacle;
-import Source.CObstacleFactory;
 import Source.CWalker;
 import Source.CWorld;
 import Util.CEdge;
 import Util.CPosition;
-import Util.CVertex;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,11 +47,7 @@ public class SimulationPanel extends JPanel {
 
         this.oWorld = new CWorld();
 
-        this.oWorld.addWalker(CObstacleFactory.createWalker(20, 20, 520, 300));
-
-//        this.oWorld.addObstacle(CObstacleFactory.createRectangle(150, 150, 250, 250));
-//        this.oWorld.addObstacle(CObstacleFactory.createTriangle(300, 300, 350, 300, 300, 350));
-//        this.oWorld.addObstacle(CObstacleFactory.createFuenfeck(50, 300, 40, 400, 80, 410, 120, 400, 120, 300));
+        this.oWorld.addWalker(new CWalker(new CPosition(20, 20), new CPosition(520, 300)));
 
         this.oWorld.loadConfig();
 
