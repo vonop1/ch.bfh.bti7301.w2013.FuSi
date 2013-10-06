@@ -98,6 +98,7 @@ public class CEdge {
 //        }
 
         // new version from http://stackoverflow.com/questions/385305/efficient-maths-algorithm-to-calculate-intersections
+        // also interesting would be this: https://code.google.com/p/straightedge/
         Double x12 = this.oSource.getPos().getX() - this.oDestination.getPos().getX();
         Double x34 = other.getSource().getPos().getX() - other.getDestination().getPos().getX();
         Double y12 = this.oSource.getPos().getY() - this.oDestination.getPos().getY();
