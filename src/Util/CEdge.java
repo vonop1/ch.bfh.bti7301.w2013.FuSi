@@ -97,6 +97,7 @@ public class CEdge {
 //            return returnValue;
 //        }
 
+        // new version from http://stackoverflow.com/questions/385305/efficient-maths-algorithm-to-calculate-intersections
         Double x12 = this.oSource.getPos().getX() - this.oDestination.getPos().getX();
         Double x34 = other.getSource().getPos().getX() - other.getDestination().getPos().getX();
         Double y12 = this.oSource.getPos().getY() - this.oDestination.getPos().getY();
@@ -106,15 +107,16 @@ public class CEdge {
 
         if (Math.abs(c) < 0.01)
         {
-            // No intersection
+            // No intersection , lines are parallel in this case
             return null;
         }
         else
         {
             // Intersection
             Double a = this.oSource.getPos().getX() * this.oDestination.getPos().getY() - this.oSource.getPos().getY() * this.oDestination.getPos().getX();
-            Double b = other.getSource().getPos().getX() * other.getDestination().getPos().getY() - other.getSource().getPos().getY() * other.getDestination().getPos().getX();;
+            Double b = other.getSource().getPos().getX() * other.getDestination().getPos().getY() - other.getSource().getPos().getY() * other.getDestination().getPos().getX();
 
+            // this could be split to get an value r, which makes it possible to remove the isPointInRectancleBetween() Function
             Double x = (a * x34 - b * x12) / c;
             Double y = (a * y34 - b * y12) / c;
 
