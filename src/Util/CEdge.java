@@ -124,7 +124,9 @@ public class CEdge {
             CPosition returnValue = new CPosition(x, y);
 
             if(oSource.isPointInRectancleBetween(oDestination, returnValue, 1.0)) {
-                return returnValue;
+                if(other.getSource().isPointInRectancleBetween(other.oDestination, returnValue, 1.0)) {
+                    return returnValue;
+                }
             }
         }
         return  null;

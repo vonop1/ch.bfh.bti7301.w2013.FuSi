@@ -48,6 +48,7 @@ public class SimulationPanel extends JPanel {
         this.oWorld = new CWorld();
 
         this.oWorld.addWalker(new CWalker(new CPosition(20, 20), new CPosition(520, 300)));
+        this.oWorld.addWalker(new CWalker(new CPosition(20, 300), new CPosition(520, 20)));
 
         this.oWorld.loadConfig();
 
@@ -120,6 +121,12 @@ public class SimulationPanel extends JPanel {
                      g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
                      this.drawArrowLine(g2d, edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
                  }
+
+//                 g2d.setColor(Color.RED);
+//                 for(CEdge edge : this.oWorld.getGraph().getTrashEdges()) {
+//                     g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
+//                     this.drawArrowLine((Graphics2D)g, edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
+//                 }
              }
 
 

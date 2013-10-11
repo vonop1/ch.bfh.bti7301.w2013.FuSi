@@ -15,6 +15,7 @@ public class CGraph {
 
     private final List<CVertex> vertexes;
     private final List<CEdge> edges;
+    private final List<CEdge> trashEdges;
 
     public static int incrementId() {
         CGraph.lastId += 1;
@@ -27,6 +28,7 @@ public class CGraph {
     public CGraph() {
         this.vertexes = new LinkedList<CVertex>();
         this.edges = new LinkedList<CEdge>();
+        this.trashEdges = new LinkedList<CEdge>();
     }
 
     /**
@@ -37,6 +39,7 @@ public class CGraph {
     public CGraph(List<CVertex> vertexes, List<CEdge> edges) {
         this.vertexes = vertexes;
         this.edges = edges;
+        this.trashEdges = new LinkedList<CEdge>();
     }
 
     public List<CVertex> getVertexes() {
@@ -45,6 +48,10 @@ public class CGraph {
 
     public List<CEdge> getEdges() {
         return edges;
+    }
+
+    public List<CEdge> getTrashEdges() {
+        return trashEdges;
     }
 
     public CVertex getVertexByPosition(CPosition pos) {
@@ -107,6 +114,7 @@ public class CGraph {
             for(CEdge e : this.edges) {
                 if(e.isObstacleEdge()) {
                     if( e.calcIntersectionWith(newEdge) != null) {
+                        this.trashEdges.add(newEdge);
                         return;
                     }
                 }
