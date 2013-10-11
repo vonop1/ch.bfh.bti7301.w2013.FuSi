@@ -58,18 +58,32 @@ public class SimulationPanel extends JPanel {
     }
 
     /**
-     * paintComponent is called, wenn the window get's drawed by the application
+     * paintComponent is called, every time the window gets drawed by the application
      *
      * @param g contains the reference to the Java2D graphics object
      */
     public void paintComponent(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.fillRect(getX(), getY(), getWidth(), getHeight());
+        super.paintComponent(g);
+        doDrawing(g);
+    }
 
-        g.setColor(Color.WHITE);
+    /**
+     * doDrawing does the actual drawing
+     * @param g contains the reference to the Java2D graphics object
+     */
+    private void doDrawing(Graphics g) {
+
+        Graphics2D g2d = (Graphics2D) g;
+
+        //Customize the main world
+        g2d.setBackground(Color.BLACK);
+        g2d.fillRect(getX(), getY(), getWidth(), getHeight());
+
+        //Customize the obstacles
+        g2d.setColor(Color.WHITE);
 
         if(oWorld == null) {
-            g.drawString("Passenger Simulation - please load a world or Press F2 for Dummyworld", 200, 50);
+            g2d.drawString("Passenger Simulation - please load a world or Press F2 for Dummyworld", 200, 50);
         }
         else {
            for(CObstacle obstacle : oWorld.getObstacles()) {
@@ -84,9 +98,8 @@ public class SimulationPanel extends JPanel {
                    i += 1;
                }
 
-               g.setColor(Color.WHITE);
-               g.fillPolygon(xCoordinates, yCoordinates, positions.size());
-
+               g2d.fillPolygon(xCoordinates, yCoordinates, positions.size());
+           }
 //               Vector<CPosition> positions2 = obstacle.getWaypoints();
 //               int[] xCoordinates2 = new int[positions.size()];
 //               int[] yCoordinates2 = new int[positions.size()];
@@ -100,14 +113,12 @@ public class SimulationPanel extends JPanel {
 //
 //               g.setColor(Color.GREEN);
 //               g.drawPolygon(xCoordinates2, yCoordinates2, positions2.size());
-           }
 
              if(this.showGraph) {
-                 g.setColor(Color.GREEN);
+                 g2d.setColor(Color.GREEN);
                  for(CEdge edge : this.oWorld.getGraph().getEdges()) {
-                     g.drawLine(edge.getSource().getPos().getX().intValue(), edge.getSource().getPos().getY().intValue(), edge.getDestination().getPos().getX().intValue(), edge.getDestination().getPos().getY().intValue());
+                     g2d.drawLine(edge.getSource().getPos().getX().intValue(), edge.getSource().getPos().getY().intValue(), edge.getDestination().getPos().getX().intValue(), edge.getDestination().getPos().getY().intValue());
                      this.drawArrowLine((Graphics2D)g, edge.getSource().getPos().getX().intValue(), edge.getSource().getPos().getY().intValue(), edge.getDestination().getPos().getX().intValue(), edge.getDestination().getPos().getY().intValue());
-
                  }
              }
 
@@ -115,8 +126,8 @@ public class SimulationPanel extends JPanel {
             for(CWalker walker : oWorld.getWalkers()) {
                 CPosition position = walker.getPosition();
 
-                g.setColor(Color.ORANGE);
-                g.fillOval(position.getX().intValue() - walker.getSize(), position.getY().intValue() - walker.getSize(), walker.getSize() * 2, walker.getSize() * 2);
+                g2d.setColor(Color.ORANGE);
+                g2d.fillOval(position.getX().intValue() - walker.getSize(), position.getY().intValue() - walker.getSize(), walker.getSize() * 2, walker.getSize() * 2);
 
                 // draw the target as x, because the X marks the point =)
                 int upperleftX = walker.getTarget().getX().intValue() - walker.getSize();
