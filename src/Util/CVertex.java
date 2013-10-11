@@ -6,35 +6,18 @@ package Util;
  * Date: 04.10.13
  * Time: 08:34
  */
-public class CVertex implements Comparable<CVertex> {
-    protected static int lastId = 0;
-    private Integer iId;
-    private CPosition oPos;
-
-
-    public CVertex (CPosition pos)
+public class CVertex extends CPosition {
+    public CVertex(int X, int Y)
     {
-
-        this.iId = CVertex.incrementId();
-        this.oPos = pos;
+        super(X, Y);
     }
 
-    public Integer getId ()
+    public CVertex(Double X, Double Y)
     {
-        return iId;
+        super(X, Y);
     }
 
-    public CPosition getPos() {
-        return oPos;
-    }
-
-    public static int incrementId() {
-        CVertex.lastId += 1;
-        return CVertex.lastId;
-    }
-
-    @Override
-    public int compareTo(CVertex o) {
-        return o.getId().compareTo(this.iId);
+    public CVertex(CPosition copy) {
+        super(copy.getX(), copy.getY());
     }
 }

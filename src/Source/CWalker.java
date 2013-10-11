@@ -64,7 +64,7 @@ public class CWalker {
         {
             CVertex nextCheckPoint = this.desiredPath.getFirst();
 
-            Double delta = (nextCheckPoint.getPos().getX() - this.oPos.getX()) / (nextCheckPoint.getPos().getY() - this.oPos.getY());
+            Double delta = (nextCheckPoint.getX() - this.oPos.getX()) / (nextCheckPoint.getY() - this.oPos.getY());
             if(delta == 1 ) { delta = 0.9999; }
 
             Double y = Math.sqrt(Math.pow(stepSize, 2) /  (1 + delta));
@@ -72,7 +72,7 @@ public class CWalker {
 
             CPosition newpos = new CPosition(oPos.getX() + x, oPos.getY() + y);
 
-            if(newpos.isNearBy(nextCheckPoint.getPos(), stepSize)) {
+            if(newpos.isNearBy(nextCheckPoint, stepSize)) {
                 // Yes, we reached a checkpoint, remove it from our list
                 this.desiredPath.removeFirst();
             }

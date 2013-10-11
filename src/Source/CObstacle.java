@@ -1,5 +1,6 @@
 package Source;
 
+import Util.CGraph;
 import Util.CPosition;
 import Util.CVertex;
 
@@ -28,7 +29,7 @@ public class CObstacle implements Comparable<CObstacle> {
 
     public CObstacle (Vector<CPosition> aoPosition)
     {
-        this.iId = CVertex.incrementId();
+        this.iId = CGraph.incrementId();
         this.aoPosition = aoPosition;
     }
 

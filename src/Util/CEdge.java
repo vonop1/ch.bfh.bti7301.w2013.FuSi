@@ -21,22 +21,22 @@ public class CEdge {
 
     public CEdge (CVertex oSource, CVertex oDestination, Integer iWeight, boolean isObstacleEdge)
     {
-        this.iId = CVertex.incrementId();
+        this.iId = CGraph.incrementId();
         this.oSource = oSource;
         this.oDestination = oDestination;
 
         // we calculate the line representation in the form a*x + b*y + c = 0
         // a, b and c are constant values
 
-        Double dx = oDestination.getPos().getX() - oSource.getPos().getX();
-        Double dy = oDestination.getPos().getY() - oDestination.getPos().getY();
+        //Double dx = oDestination.getX() - oSource.getX();
+        //Double dy = oDestination.getY() - oDestination.getY();
 
-        this.edgeConstantA = +dy;
-        this.edgeConstantB = -dx;
-        this.edgeConstantC = -(edgeConstantA*oDestination.getPos().getX() + edgeConstantB*oDestination.getPos().getY());
+        //this.edgeConstantA = +dy;
+        //this.edgeConstantB = -dx;
+        //this.edgeConstantC = -(edgeConstantA*oDestination.getX() + edgeConstantB*oDestination.getY());
 
         if(iWeight == null) {
-            this.iWeight = oSource.getPos().getDistanceTo(oDestination.getPos()).intValue();
+            this.iWeight = oSource.getDistanceTo(oDestination).intValue();
         }
         else {
             this.iWeight = iWeight;
@@ -99,10 +99,10 @@ public class CEdge {
 
         // new version from http://stackoverflow.com/questions/385305/efficient-maths-algorithm-to-calculate-intersections
         // also interesting would be this: https://code.google.com/p/straightedge/
-        Double x12 = this.oSource.getPos().getX() - this.oDestination.getPos().getX();
-        Double x34 = other.getSource().getPos().getX() - other.getDestination().getPos().getX();
-        Double y12 = this.oSource.getPos().getY() - this.oDestination.getPos().getY();
-        Double y34 = other.getSource().getPos().getY() - other.getDestination().getPos().getY();
+        Double x12 = this.oSource.getX() - this.oDestination.getX();
+        Double x34 = other.getSource().getX() - other.getDestination().getX();
+        Double y12 = this.oSource.getY() - this.oDestination.getY();
+        Double y34 = other.getSource().getY() - other.getDestination().getY();
 
         Double c = x12 * y34 - y12 * x34;
 
@@ -114,8 +114,8 @@ public class CEdge {
         else
         {
             // Intersection
-            Double a = this.oSource.getPos().getX() * this.oDestination.getPos().getY() - this.oSource.getPos().getY() * this.oDestination.getPos().getX();
-            Double b = other.getSource().getPos().getX() * other.getDestination().getPos().getY() - other.getSource().getPos().getY() * other.getDestination().getPos().getX();
+            Double a = this.oSource.getX() * this.oDestination.getY() - this.oSource.getY() * this.oDestination.getX();
+            Double b = other.getSource().getX() * other.getDestination().getY() - other.getSource().getY() * other.getDestination().getX();
 
             // this could be split to get an value r, which makes it possible to remove the isPointInRectancleBetween() Function
             Double x = (a * x34 - b * x12) / c;
@@ -123,7 +123,7 @@ public class CEdge {
 
             CPosition returnValue = new CPosition(x, y);
 
-            if(oSource.getPos().isPointInRectancleBetween(oDestination.getPos(), returnValue, 1.0)) {
+            if(oSource.isPointInRectancleBetween(oDestination, returnValue, 1.0)) {
                 return returnValue;
             }
         }

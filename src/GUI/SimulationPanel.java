@@ -117,8 +117,8 @@ public class SimulationPanel extends JPanel {
              if(this.showGraph) {
                  g2d.setColor(Color.GREEN);
                  for(CEdge edge : this.oWorld.getGraph().getEdges()) {
-                     g2d.drawLine(edge.getSource().getPos().getX().intValue(), edge.getSource().getPos().getY().intValue(), edge.getDestination().getPos().getX().intValue(), edge.getDestination().getPos().getY().intValue());
-                     this.drawArrowLine((Graphics2D)g, edge.getSource().getPos().getX().intValue(), edge.getSource().getPos().getY().intValue(), edge.getDestination().getPos().getX().intValue(), edge.getDestination().getPos().getY().intValue());
+                     g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
+                     this.drawArrowLine((Graphics2D)g, edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
                  }
              }
 
@@ -171,7 +171,7 @@ public class SimulationPanel extends JPanel {
             // redraw window
             this.repaint();
 
-            // sleep 5 miliseconds
+            // sleep 5 milliseconds
             try	{
                 java.lang.Thread.sleep(100);
             } catch (InterruptedException e) {

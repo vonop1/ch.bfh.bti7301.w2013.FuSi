@@ -11,10 +11,15 @@ import java.util.List;
  */
 
 public class CGraph {
-    public static int lastId = 0;
+    protected static int lastId = 0;
 
     private final List<CVertex> vertexes;
     private final List<CEdge> edges;
+
+    public static int incrementId() {
+        CGraph.lastId += 1;
+        return CGraph.lastId;
+    }
 
     /**
      * Creates an empty graph
@@ -45,7 +50,7 @@ public class CGraph {
     public CVertex getVertexByPosition(CPosition pos) {
 
         for(CVertex v : this.vertexes) {
-            if(v.getPos().compareTo(pos) == 0)  {   // we have found an already existing source
+            if(v.compareTo(pos) == 0)  {   // we have found an already existing source
                 return v;
             }
         }
@@ -59,14 +64,14 @@ public class CGraph {
 
         // find already existing source/destination vertex
         for(CVertex v : vertexes) {
-             if(v.getPos().compareTo(source) == 0)  {   // we have found an already existing source
+             if(v.compareTo(source) == 0)  {   // we have found an already existing source
                 vertexSource = v;
                 if(vertexDestination != null) {
                     // we have found both source and dest, so finish the search
                     break;
                 }
              }
-             if(v.getPos().compareTo(destination) == 0) {  // we have found an already existing destination
+             if(v.compareTo(destination) == 0) {  // we have found an already existing destination
                  vertexDestination = v;
                  if(vertexSource != null) {
                      // we have found both source and dest, so finish the search
