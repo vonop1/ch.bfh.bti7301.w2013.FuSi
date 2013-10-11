@@ -51,7 +51,7 @@ public class CWorld {
         this.aoObstacles = new Vector<CObstacle>();
         try
         {
-            File oConfigFile = new File ("C:/java/ch.bfh.bti7301.w2013.FuSi/XML/Config.xml");
+            File oConfigFile = new File ("./XML/Config.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document oConfigDoc = dBuilder.parse(oConfigFile);
