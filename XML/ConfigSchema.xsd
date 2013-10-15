@@ -36,8 +36,10 @@
   </xs:complexType>
 
   <xs:complexType name ="tyWalker">
-    <xs:attribute name ="x" use ="required" type="xs:nonNegativeInteger"/>
-    <xs:attribute name ="y" use ="required" type="xs:nonNegativeInteger"/>
+    <xs:sequence>
+      <xs:element name="source" type="tyPoint"/>
+      <xs:element name="target" type="tyPoint"/>
+    </xs:sequence>
   </xs:complexType>
   
 </xs:schema>

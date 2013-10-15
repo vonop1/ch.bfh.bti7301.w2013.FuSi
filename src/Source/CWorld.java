@@ -74,7 +74,7 @@ public class CWorld {
 
                        if (oPoint.getNodeType() == Node.ELEMENT_NODE)
                        {
-                           // Get Edgepoints of the Obstacle
+                           // Get Edge-points of the Obstacle
                            NamedNodeMap oPointAttributes = oPoint.getAttributes();
 
                            double dX = Integer.parseInt(oPointAttributes.getNamedItem("x").getNodeValue());
@@ -90,6 +90,51 @@ public class CWorld {
 
             }
 
+            // Get a List off all Walkers
+            NodeList walkers = oConfigDoc.getElementsByTagName("walker");
+
+            for (int i = 0; i < walkers.getLength(); i++)
+            {
+                Node walker = walkers.item(i);
+
+                if (walker.hasChildNodes())
+                {
+                    // Get a List off all Points of a Obstacle
+                    NodeList points = walker.getChildNodes();
+
+                    Node point = points.item(0);
+                    while (point.getNodeType() != Node.ELEMENT_NODE)
+                    {
+                        //remove empty elements
+                        point = point.getNextSibling();
+                    }
+
+                    NamedNodeMap pointAttributes = point.getAttributes();
+
+                    double dX = Integer.parseInt(pointAttributes.getNamedItem("x").getNodeValue());
+                    double dY = Integer.parseInt(pointAttributes.getNamedItem("y").getNodeValue());
+
+                    CPosition source = new CPosition(dX, dY);
+
+                    point = point.getNextSibling();
+
+                    while (point.getNodeType() != Node.ELEMENT_NODE)
+                    {
+                        //remove empty elements
+                        point = point.getNextSibling();
+                    }
+
+                    pointAttributes = point.getAttributes();
+
+                    dX = Integer.parseInt(pointAttributes.getNamedItem("x").getNodeValue());
+                    dY = Integer.parseInt(pointAttributes.getNamedItem("y").getNodeValue());
+
+                    CPosition destination = new CPosition(dX, dY);
+
+                    addWalker(new CWalker(source, destination));
+                }
+
+            }
 
         }
         catch (Exception e)

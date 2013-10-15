@@ -21,4 +21,11 @@
       <point x="330" y="280"/>
     </obj>
   </objList>
+  <walkerList>
+    <walker>
+      <source x="20" y="20"/>
+      <target x="520" y="300"/>
+    </walker>
+    
+  </walkerList>
 </Config>
