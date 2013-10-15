@@ -10,7 +10,6 @@ import Util.CDijkstra;
 import Util.CGraph;
 import Util.CPosition;
 import Util.CVertex;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.NodeType;
 import org.w3c.dom.*;
 
 /**
@@ -51,11 +50,13 @@ public class CWorld {
         this.aoObstacles = new Vector<CObstacle>();
         try
         {
+            // load Config from File Config.xml
             File oConfigFile = new File ("./XML/Config.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document oConfigDoc = dBuilder.parse(oConfigFile);
 
+            // Get a List off all Obstacles
             NodeList aoObj = oConfigDoc.getElementsByTagName("obj");
 
             for (int i = 0; i < aoObj.getLength(); i++)
@@ -65,6 +66,7 @@ public class CWorld {
 
                if (oObj.hasChildNodes())
                {
+                   // Get a List off all Points of a Obstacle
                    NodeList aoPoint = oObj.getChildNodes();
                    for (int j = 0; j < aoPoint.getLength(); j++)
                    {
@@ -72,6 +74,7 @@ public class CWorld {
 
                        if (oPoint.getNodeType() == Node.ELEMENT_NODE)
                        {
+                           // Get Edgepoints of the Obstacle
                            NamedNodeMap oPointAttributes = oPoint.getAttributes();
 
                            double dX = Integer.parseInt(oPointAttributes.getNamedItem("x").getNodeValue());
@@ -107,21 +110,10 @@ public class CWorld {
 
         // add basic lines
         for(CObstacle obstacle : this.aoObstacles) {
-            int j = 0;
             Vector<CPosition> wayPoints = obstacle.getWaypoints();
             for(int i = 0; i < wayPoints.size(); i++) {
-                if(i+1 >= wayPoints.size()) {
-                    j = 0;
-                }
-                else {
-                    j = i + 1;
-                }
-
-                if( i > (int)(wayPoints.size() / 2)){
+                for (int j = 0; j< wayPoints.size(); j++) {
                     this.oGraph.addEdge(wayPoints.elementAt(j), wayPoints.elementAt(i), true);
-                }
-                else
-                {
                     this.oGraph.addEdge(wayPoints.elementAt(i), wayPoints.elementAt(j), true);
                 }
             }
@@ -169,7 +161,7 @@ public class CWorld {
     public void stepSimulation() {
         // let the people move their bodies ^^
         for(CWalker walker : this.aoWalkers) {
-            if( walker.walkAStep() == true ) {
+            if( walker.walkAStep()) {
                 // Walker has reached target, remove the guy
                 // TODO
             }
