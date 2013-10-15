@@ -48,9 +48,7 @@ public class SimulationPanel extends JPanel {
 
         this.oWorld = new CWorld();
 
-        this.oWorld.addWalker(new CWalker(new CPosition(20, 20), new CPosition(520, 300)));
-        //this.oWorld.addWalker(new CWalker(new CPosition(20, 300), new CPosition(520, 20)));
-
+        //Load Obstacles and Walkers from Config File
         this.oWorld.loadConfig();
 
         this.oWorld.buildGraph();
@@ -167,9 +165,9 @@ public class SimulationPanel extends JPanel {
         Line2D.Double line = new Line2D.Double(x1,y1,x2,y2);
 
         Polygon arrowHead = new Polygon();
-        arrowHead.addPoint( 0,5);
-        arrowHead.addPoint( -5, -5);
-        arrowHead.addPoint( 5,-5);
+        arrowHead.addPoint( 0,0);
+        arrowHead.addPoint( -5, -10);
+        arrowHead.addPoint( 5,-10);
 
         tx.setToIdentity();
         double angle = Math.atan2(line.y2-line.y1, line.x2-line.x1);

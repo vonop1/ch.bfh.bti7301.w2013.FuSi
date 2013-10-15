@@ -85,7 +85,7 @@ public class CWorld {
 
                    }
 
-                   this.aoObstacles.add(new CObstacle(aoPosition));
+                   addObstacle(new CObstacle(aoPosition));
                }
 
             }
@@ -109,6 +109,7 @@ public class CWorld {
                         point = point.getNextSibling();
                     }
 
+                    // Get Source Point with X-Coordinate and Y-Coordinate
                     NamedNodeMap pointAttributes = point.getAttributes();
 
                     double dX = Integer.parseInt(pointAttributes.getNamedItem("x").getNodeValue());
@@ -124,6 +125,7 @@ public class CWorld {
                         point = point.getNextSibling();
                     }
 
+                    // Get Destination Point with X-Coordinate and Y-Coordinate
                     pointAttributes = point.getAttributes();
 
                     dX = Integer.parseInt(pointAttributes.getNamedItem("x").getNodeValue());
@@ -139,7 +141,7 @@ public class CWorld {
         }
         catch (Exception e)
         {
-
+          System.out.print(e);
         }
         return this.aoObstacles;
     }
