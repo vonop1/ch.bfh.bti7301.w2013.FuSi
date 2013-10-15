@@ -29,7 +29,7 @@ public class CDijkstra {
      * This method returns the path from the source to the selected target in the Graph and
      * NULL if no path exists
      */
-    public LinkedList<CVertex> getPath(CVertex oSource, CVertex oTarget)
+    public LinkedList<CVertex> getShortestPath(CVertex oSource, CVertex oTarget)
     {
         execute(oSource, oTarget);
         
@@ -51,7 +51,11 @@ public class CDijkstra {
         return oPath;
     }
 
-    //
+    /**
+     * executes the dijskta on the instance variables and save the result in the predecessors instance vector
+     * @param oSource
+     * @param oTarget
+     */
     private void execute(CVertex oSource, CVertex oTarget) {
         aoSettledNodes = new Vector<CVertex>();
         aoUnSettledNodes = new Vector<CVertex>();
@@ -73,6 +77,10 @@ public class CDijkstra {
         }
     }
 
+    /**
+     * Finds the minimal distance of a node to all neighbor nodes
+     * @param oNode
+     */
     private void findMinimalDistances(CVertex oNode) 
     {
         Vector<CVertex> aoAdjacentNodes = getNeighbors(oNode);
@@ -88,6 +96,12 @@ public class CDijkstra {
 
     }
 
+    /**
+     * get the Distance (weight) between two vertexes
+     * @param node the source node
+     * @param target the target node
+     * @return weight
+     */
     private int getDistance(CVertex node, CVertex target) {
         for (CEdge edge : aoEdges)
         {
@@ -95,10 +109,21 @@ public class CDijkstra {
             {
                 return edge.getWeight();
             }
+            // Erweiterung durch Roger für Unterstützung von ungerichteten Graphen
+            if (edge.getDestination().equals(node) && edge.getSource().equals(target))
+            {
+                return edge.getWeight();
+            }
+            // ENDE Erweiterung durch Roger für Unterstützung von ungerichteten Graphen
         }
         throw new RuntimeException("Should not happen");
     }
 
+    /**
+     * Get all unsettled neighbors of a node
+     * @param oNode
+     * @return
+     */
     private Vector<CVertex> getNeighbors(CVertex oNode) {
         Vector<CVertex> oNeighbors = new Vector<CVertex>();
         for (CEdge oEdge : aoEdges)
@@ -107,10 +132,21 @@ public class CDijkstra {
             {
                 oNeighbors.add(oEdge.getDestination());
             }
+            // Erweiterung durch Roger für Unterstützung von ungerichteten Graphen
+            if (oEdge.getDestination().equals(oNode) && !isSettled(oEdge.getSource()))
+            {
+                oNeighbors.add(oEdge.getSource());
+            }
+            // ENDE Erweiterung durch Roger für Unterstützung von ungerichteten Graphen
         }
         return oNeighbors;
     }
 
+    /**
+     * returns the node with the minimal shortest distance from the list
+     * @param aoVertexes list of vertexes
+     * @return the min(vertex.distance)
+     */
     private CVertex getMinimum(Vector<CVertex> aoVertexes) 
     {
         CVertex oMinimum = null;
@@ -131,11 +167,21 @@ public class CDijkstra {
         return oMinimum;
     }
 
+    /**
+     * returns if a node is settled (besucht)
+     * @param oVertex
+     * @return
+     */
     private boolean isSettled(CVertex oVertex) 
     {
         return aoSettledNodes.contains(oVertex);
     }
 
+    /**
+     * get the calculated shortest distance from start to oDestinationParameter or MAX_Value when not calculated
+     * @param oDestination the vertex of the graph
+     * @return the current shortest distance
+     */
     private int getShortestDistance(CVertex oDestination) 
     {
         Integer iDistance = aoDistance.get(oDestination);
@@ -148,4 +194,34 @@ public class CDijkstra {
             return iDistance;
         }
     }
+
+// Alternative Dijsktra algorithm
+//    private static final int INFINITY = -1;
+//    public void dijkstra(Graphnode<T> src) {
+//        Set<Graphnode<T>> t = new HashSet<Graphnode<T>>();
+//        // t is the set of nodes n for which n.getDistance() is "tentative".
+//        // For all other nodes, n.getDistance() is the actual distance from src.
+//        for (Graphnode<T> n : nodes) {
+//            t.add(n);
+//            if (n == src) {
+//                n.setDistance(0);
+//            } else {
+//                n.setDistance(INFINITY);
+//            }
+//        }
+//        while (! t.isEmpty()) {
+//            Graphnode<T> n = removeNodeWithSmallestDistance(t);
+//            int nDist = n.getDistance();
+//            if (nDist != INFINITY) {
+//                for (Graphnode<T> m : n.getSuccessors()) {
+//                    int oldDist = m.getDistance();
+//                    int newDist = nDist + edgeWeight(n, m);
+//                    if (oldDist == INFINITY || newDist < oldDist) {
+//                        m.setDistance(newDist);
+//                    }
+//                }
+//            }
+//        }
 }
+
+

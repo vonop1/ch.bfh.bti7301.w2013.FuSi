@@ -171,7 +171,7 @@ public class CWorld {
             for(int i = 0; i < wayPoints.size(); i++) {
                 for (int j = 0; j< wayPoints.size(); j++) {
                     this.oGraph.addWayPointEdge(wayPoints.elementAt(j), wayPoints.elementAt(i));
-                    this.oGraph.addWayPointEdge(wayPoints.elementAt(i), wayPoints.elementAt(j));
+                    //this.oGraph.addWayPointEdge(wayPoints.elementAt(i), wayPoints.elementAt(j));
                 }
             }
         }
@@ -205,7 +205,7 @@ public class CWorld {
 
             CVertex position = this.oGraph.getVertexByPosition(walker.getPosition());
             CVertex target = this.oGraph.getVertexByPosition(walker.getTarget());
-            walker.setDesiredPath(dijkstra.getPath(position, target));
+            walker.setDesiredPath(dijkstra.getShortestPath(position, target));
         }
 
 

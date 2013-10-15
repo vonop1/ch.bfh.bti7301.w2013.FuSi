@@ -50,8 +50,12 @@ public class CWalker {
         if(vertexes == null) {
             this.desiredPath = new LinkedList<CVertex>();
         }
-        this.desiredPath = vertexes;
-        this.desiredPath.removeFirst(); // remove his own position
+        else {
+            this.desiredPath = vertexes;
+            if(vertexes.size() > 0) {
+                this.desiredPath.removeFirst(); // remove his own position
+            }
+        }
     }
 
     public LinkedList<CVertex> getDesiredPath() {
