@@ -67,25 +67,37 @@ public class CWalker {
             Double xDelta = nextCheckPoint.getX() - this.oPos.getX();
             Double yDelta = nextCheckPoint.getY() - this.oPos.getY();
 
-            // Divison by 0 prevention
-            if(yDelta.compareTo(0.0) == 0) {
-                yDelta = 0.000001;
-            }
-            Double quotientDelta = ( xDelta / yDelta) + 1;
-
-            // Divison by 0 prevention
-            if(quotientDelta.compareTo(0.0) == 0 ) { quotientDelta = 0.000001; }
-
+            Double x = 0.0;
             Double y = 0.0;
-            if (quotientDelta > 0)
+
+            Double dAngle = 0.0;
+            if (xDelta != 0.0)
             {
-                y = Math.sqrt(Math.pow(stepSize, 2) / quotientDelta);
+                dAngle = Math.atan( Math.abs(yDelta) / Math.abs(xDelta) );
+            }
+
+            if (xDelta > 0)
+            {
+                // positive x direction
+                x = Math.cos(dAngle) * stepSize;
+
             }
             else
             {
-                y = -Math.sqrt(Math.pow(stepSize, 2) / Math.abs(quotientDelta));
+                //negative x Direction
+                x = - Math.cos(dAngle) * stepSize;
             }
-            Double x = y * (quotientDelta - 1);
+
+            if (yDelta > 0)
+            {
+                // positive y Direction
+                y = Math.sin(dAngle) * stepSize;
+            }
+            else
+            {
+                // negative y Direction
+                y = - (Math.sin(dAngle) * stepSize);
+            }
 
             CPosition newPos = new CPosition(oPos.getX() + x, oPos.getY() + y);
 
