@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <xs:element name ="objList">
-    <xs:complexType >
+  <xs:element name ="Config">
+    <xs:complexType>
       <xs:sequence>
-        <xs:element name="obj" minOccurs="0" maxOccurs="unbounded" type="tyObj"/>
+        <xs:element name="objList" type="tyObjList"/>
+        <xs:element name="walkerList" type="tyWalkerList"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
 
-  <xs:complexType name="tyObj">
-    <xs:sequence>
-      <xs:element name="point" minOccurs="2" maxOccurs="unbounded" type="tyPoint"/>
-    </xs:sequence>
-  </xs:complexType>
+
+    <xs:complexType name="tyObjList">
+      <xs:sequence>
+        <xs:element name="obj" minOccurs="0" maxOccurs="unbounded" type="tyObj"/>
+      </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="tyObj">
+        <xs:sequence>
+            <xs:element name="point" minOccurs="2" maxOccurs="unbounded" type="tyPoint"/>
+        </xs:sequence>
+    </xs:complexType>
 
 
   <xs:complexType name ="tyPoint">
+    <xs:attribute name ="x" use ="required" type="xs:nonNegativeInteger"/>
+    <xs:attribute name ="y" use ="required" type="xs:nonNegativeInteger"/>
+  </xs:complexType>
+
+  <xs:complexType name ="tyWalkerList">
+    <xs:sequence>
+      <xs:element name="walker" minOccurs="0" maxOccurs="unbounded" type="tyWalker"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name ="tyWalker">
     <xs:attribute name ="x" use ="required" type="xs:nonNegativeInteger"/>
     <xs:attribute name ="y" use ="required" type="xs:nonNegativeInteger"/>
   </xs:complexType>
