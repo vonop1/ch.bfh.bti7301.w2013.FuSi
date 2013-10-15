@@ -1,6 +1,7 @@
 package Source;
 
 import java.io.File;
+import java.util.ListIterator;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -217,11 +218,19 @@ public class CWorld {
      */
     public void stepSimulation() {
         // let the people move their bodies ^^
-        for(CWalker walker : this.aoWalkers) {
-            if( walker.walkAStep()) {
+        ListIterator<CWalker> iter = this.aoWalkers.listIterator();
+        while(iter.hasNext()){
+            if(iter.next().walkAStep()){
                 // Walker has reached target, remove the guy
-                // TODO
+                iter.remove();
             }
         }
+
+//        for(CWalker walker : this.aoWalkers) {
+//            if( walker.walkAStep()) {
+//                // Walker has reached target, remove the guy
+//                this.aoWalkers.removeElement(walker) // fires a ConcurrentModificationException
+//            }
+//        }
     }
 }

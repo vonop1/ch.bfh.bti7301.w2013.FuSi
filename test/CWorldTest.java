@@ -51,34 +51,28 @@ public class CWorldTest {
         org.junit.Assert.assertEquals( 104.48, aoWaypoint.elementAt(3).getY(), dDeltaC);
     }
 
-//    @Test
-//    public void testDijkstra()
-//    {
-//        CVertex oVertex1 = new CVertex(1);
-//        CVertex oVertex2 = new CVertex(2);
-//        CVertex oVertex3 = new CVertex(3);
-//
-//        Vector<CVertex> aoVertex = new Vector<CVertex>();
-//
-//        aoVertex.add(oVertex1);
-//        aoVertex.add(oVertex2);
-//        aoVertex.add(oVertex3);
-//
-//        Vector<CEdge> aoEdge = new Vector<CEdge>();
-//
-//        aoEdge.add(new CEdge(1, oVertex1, oVertex2, 5));
-//        aoEdge.add(new CEdge(2, oVertex2, oVertex3, 8));
-//        aoEdge.add(new CEdge(3, oVertex1, oVertex3, 36));
-//
-//        CDijkstra oDijkstra = new CDijkstra(new CGraph(aoVertex, aoEdge));
-//
-//        List<CVertex> oResult = oDijkstra.getPath(oVertex1, oVertex3);
-//
-//        org.junit.Assert.assertEquals(0, oResult.indexOf(oVertex1));
-//        org.junit.Assert.assertEquals(1, oResult.indexOf(oVertex2));
-//        org.junit.Assert.assertEquals(2, oResult.indexOf(oVertex3));
-//
-//    }
+    @Test
+    public void testDijkstra()
+    {
+        CVertex oVertex1 = new CVertex(1, 5);
+        CVertex oVertex2 = new CVertex(2, 8);
+        CVertex oVertex3 = new CVertex(3, 36);
+
+        CGraph graph = new CGraph();
+
+        graph.addWayPointEdge(oVertex1, oVertex2);
+        graph.addWayPointEdge(oVertex2, oVertex3);
+        graph.addWayPointEdge(oVertex1, oVertex3);
+
+        CDijkstra oDijkstra = new CDijkstra(graph);
+
+        List<CVertex> oResult = oDijkstra.getShortestPath(oVertex1, oVertex3);
+
+        org.junit.Assert.assertEquals(0, oResult.indexOf(oVertex1));
+        //org.junit.Assert.assertEquals(1, oResult.indexOf(oVertex2));
+        org.junit.Assert.assertEquals(1, oResult.indexOf(oVertex3));
+
+    }
 
 //    @Test
 //    public void testAssertArrayEquals() {
