@@ -48,39 +48,26 @@ public class CPosition implements Comparable<CPosition> {
         return Math.sqrt(Math.pow(other.getX() - this.getX(),2) + Math.pow(other.getY() - this.getY(),2));
     }
 
-    public boolean isPointInRectancleBetween(CPosition other, CPosition point, Double toleranceRange) {
-        if(toleranceRange == null) {
-            toleranceRange = 0.0;
-        }
-        if(toleranceRange.isNaN()) {
-            toleranceRange = 0.0;
-        }
-
-        Double effectiveXRange = Math.abs(this.getX() - other.getX()) * 0.05;
-        Double effectiveYRange = Math.abs(this.getY() - other.getY()) * 0.05;
-
-
+    public boolean isPointInRectangleBetween(CPosition other, CPosition point) {
 
         if(other.getX() > this.getX()) {
-
-
-            if(!(this.getX() + effectiveXRange < point.getX() && point.getX() < other.getX() - effectiveXRange)) {
+            if(!(this.getX() < point.getX() && point.getX() < other.getX())) {
                 return false;
             }
         }
         else {
-            if(!(other.getX() + effectiveXRange < point.getX() && point.getX() < this.getX() - effectiveXRange)) {
+            if(!(other.getX() < point.getX() && point.getX() < this.getX())) {
                 return false;
             }
         }
 
         if(other.getY() > this.getY()) {
-            if(!(this.getY() + effectiveYRange < point.getY() && point.getY() < other.getY() - effectiveYRange)) {
+            if(!(this.getY() < point.getY() && point.getY() < other.getY())) {
                 return false;
             }
         }
         else {
-            if(!(other.getY() + effectiveYRange < point.getY() && point.getY() < this.getY() - effectiveYRange)) {
+            if(!(other.getY() < point.getY() && point.getY() < this.getY())) {
                 return false;
             }
         }

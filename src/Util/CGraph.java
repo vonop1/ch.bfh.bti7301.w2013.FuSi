@@ -1,5 +1,7 @@
 package Util;
 
+import Source.CObstacle;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class CGraph {
     private final List<CVertex> vertexes;
     private final List<CEdge> edges;
     private final List<CEdge> trashEdges;
+    private final List<CEdge> obstacleEdges;
 
     public static int incrementId() {
         CGraph.lastId += 1;
@@ -29,6 +32,7 @@ public class CGraph {
         this.vertexes = new LinkedList<CVertex>();
         this.edges = new LinkedList<CEdge>();
         this.trashEdges = new LinkedList<CEdge>();
+        this.obstacleEdges = new LinkedList<CEdge>();
     }
 
     /**
@@ -36,10 +40,11 @@ public class CGraph {
      * @param vertexes the vertexes
      * @param edges the edges
      */
-    public CGraph(List<CVertex> vertexes, List<CEdge> edges) {
+    public CGraph(List<CVertex> vertexes, List<CEdge> edges, List<CEdge> obstacleEdges) {
         this.vertexes = vertexes;
         this.edges = edges;
         this.trashEdges = new LinkedList<CEdge>();
+        this.obstacleEdges = obstacleEdges;
     }
 
     public List<CVertex> getVertexes() {
@@ -65,7 +70,22 @@ public class CGraph {
         return null;
     }
 
-    public void addEdge(CPosition source, CPosition destination, boolean isObstacleEdge) {
+    /**
+     * adds an obstacle edge. an obstacle edge is only relevant to the addWayPointEdge Method to check if a Waypoint
+     * intersects with an obstacle
+     * @param source
+     * @param destination
+     */
+    public void addObstacleEdge(CPosition source, CPosition destination) {
+        this.obstacleEdges.add(new CEdge(new CVertex(source), new CVertex(destination), null));
+    }
+
+    /**
+     * adds a Waypoint edge to the graph if it does not intersect with an obstacle edge
+     * @param source
+     * @param destination
+     */
+    public void addWayPointEdge(CPosition source, CPosition destination) {
         CVertex vertexSource = null;
         CVertex vertexDestination = null;
 
@@ -106,18 +126,14 @@ public class CGraph {
             this.vertexes.add(vertexDestination);
         }
 
-        CEdge newEdge = new CEdge(vertexSource, vertexDestination, null, isObstacleEdge);
+        CEdge newEdge = new CEdge(vertexSource, vertexDestination, null);
 
         // Check if the edge crosses an existing objectedge
         // obstacle edges will be added everytime
-        if(!isObstacleEdge) {
-            for(CEdge e : this.edges) {
-                if(e.isObstacleEdge()) {
-                    if( e.calcIntersectionWith(newEdge) != null) {
-                        this.trashEdges.add(newEdge);
-                        return;
-                    }
-                }
+        for(CEdge e : this.obstacleEdges) {
+            if( e.calcIntersectionWith(newEdge) != null) {
+                this.trashEdges.add(newEdge);
+                return;
             }
         }
 

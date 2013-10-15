@@ -155,13 +155,23 @@ public class CWorld {
     public void buildGraph() {
         this.oGraph = new CGraph();
 
+        // add obstacle lines
+        for(CObstacle obstacle : this.aoObstacles) {
+            Vector<CPosition> positions = obstacle.getPositions();
+            for(int i = 0; i < positions.size(); i++) {
+                for (int j = 0; j< positions.size(); j++) {
+                    this.oGraph.addObstacleEdge(positions.elementAt(j), positions.elementAt(i));
+                }
+            }
+        }
+
         // add basic lines
         for(CObstacle obstacle : this.aoObstacles) {
             Vector<CPosition> wayPoints = obstacle.getWaypoints();
             for(int i = 0; i < wayPoints.size(); i++) {
                 for (int j = 0; j< wayPoints.size(); j++) {
-                    this.oGraph.addEdge(wayPoints.elementAt(j), wayPoints.elementAt(i), true);
-                    this.oGraph.addEdge(wayPoints.elementAt(i), wayPoints.elementAt(j), true);
+                    this.oGraph.addWayPointEdge(wayPoints.elementAt(j), wayPoints.elementAt(i));
+                    this.oGraph.addWayPointEdge(wayPoints.elementAt(i), wayPoints.elementAt(j));
                 }
             }
         }
@@ -174,7 +184,7 @@ public class CWorld {
                     if(obstacle.compareTo(innerObstacle) != 0) { // if it is not the same obstacle
 
                          for(CPosition innerPosition : innerObstacle.getWaypoints()) {
-                            this.oGraph.addEdge(position, innerPosition, false);
+                            this.oGraph.addWayPointEdge(position, innerPosition);
                          }
                     }
                 }
@@ -182,12 +192,12 @@ public class CWorld {
         }
 
         for(CWalker walker : this.aoWalkers) {
-            this.oGraph.addEdge(walker.getPosition(), walker.getTarget(), false);
+            this.oGraph.addWayPointEdge(walker.getPosition(), walker.getTarget());
 
             for(CObstacle obstacle : this.aoObstacles) {
                 for(CPosition position : obstacle.getWaypoints()) {
-                    this.oGraph.addEdge(walker.getPosition(), position, false);
-                    this.oGraph.addEdge(position, walker.getTarget(), false);
+                    this.oGraph.addWayPointEdge(walker.getPosition(), position);
+                    this.oGraph.addWayPointEdge(position, walker.getTarget());
                 }
             }
 

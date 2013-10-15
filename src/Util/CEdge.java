@@ -12,14 +12,8 @@ public class CEdge {
     private CVertex oSource;
     private CVertex oDestination;
     private int iWeight;
-    private boolean bisObstacleEdge;
 
-    private Double edgeConstantA;
-    private Double edgeConstantB;
-    private Double edgeConstantC;
-
-
-    public CEdge (CVertex oSource, CVertex oDestination, Integer iWeight, boolean isObstacleEdge)
+    public CEdge (CVertex oSource, CVertex oDestination, Integer iWeight)
     {
         this.iId = CGraph.incrementId();
         this.oSource = oSource;
@@ -41,8 +35,6 @@ public class CEdge {
         else {
             this.iWeight = iWeight;
         }
-
-        this.bisObstacleEdge = isObstacleEdge;
     }
 
     public int getId ()
@@ -65,22 +57,6 @@ public class CEdge {
         return iWeight;
     }
 
-    public Double getEdgeConstantA() {
-        return edgeConstantA;
-    }
-
-    public Double getEdgeConstantB() {
-        return edgeConstantB;
-    }
-
-    public Double getEdgeConstantC() {
-        return edgeConstantC;
-    }
-
-    public boolean isObstacleEdge() {
-        return bisObstacleEdge;
-    }
-
     public CPosition calcIntersectionWith(CEdge other) {
 
         // errechne Schnittpunkt
@@ -93,7 +69,7 @@ public class CEdge {
 //
 //        CPosition returnValue = new CPosition(x, y);
 //
-//        if(oSource.getPos().isPointInRectancleBetween(oDestination.getPos(), returnValue)) {
+//        if(oSource.getPos().isPointInRectangleBetween(oDestination.getPos(), returnValue)) {
 //            return returnValue;
 //        }
 
@@ -117,14 +93,14 @@ public class CEdge {
             Double a = this.oSource.getX() * this.oDestination.getY() - this.oSource.getY() * this.oDestination.getX();
             Double b = other.getSource().getX() * other.getDestination().getY() - other.getSource().getY() * other.getDestination().getX();
 
-            // this could be split to get an value r, which makes it possible to remove the isPointInRectancleBetween() Function
+            // this could be split to get an value r, which makes it possible to remove the isPointInRectangleBetween() Function
             Double x = (a * x34 - b * x12) / c;
             Double y = (a * y34 - b * y12) / c;
 
             CPosition returnValue = new CPosition(x, y);
 
-            if(oSource.isPointInRectancleBetween(oDestination, returnValue, 1.0)) {
-                if(other.getSource().isPointInRectancleBetween(other.oDestination, returnValue, 1.0)) {
+            if(oSource.isPointInRectangleBetween(oDestination, returnValue)) {
+                if(other.getSource().isPointInRectangleBetween(other.oDestination, returnValue)) {
                     return returnValue;
                 }
             }
