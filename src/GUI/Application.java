@@ -129,6 +129,10 @@ public class Application extends JFrame implements WindowListener, KeyListener {
 		if ( e.getKeyCode() == KeyEvent.VK_F2) {
             simulationPanel.setupDummyWorld();
 		}
+
+        if ( e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            simulationPanel.runOneStep();
+        }
 	}
 	
 	/*

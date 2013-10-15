@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.text.DecimalFormat;
 import java.util.Vector;
 
 /**
@@ -48,7 +49,7 @@ public class SimulationPanel extends JPanel {
         this.oWorld = new CWorld();
 
         this.oWorld.addWalker(new CWalker(new CPosition(20, 20), new CPosition(520, 300)));
-        this.oWorld.addWalker(new CWalker(new CPosition(20, 300), new CPosition(520, 20)));
+        //this.oWorld.addWalker(new CWalker(new CPosition(20, 300), new CPosition(520, 20)));
 
         this.oWorld.loadConfig();
 
@@ -119,7 +120,7 @@ public class SimulationPanel extends JPanel {
                  g2d.setColor(Color.GREEN);
                  for(CEdge edge : this.oWorld.getGraph().getEdges()) {
                      g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
-                     this.drawArrowLine(g2d, edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
+                     //this.drawArrowLine(g2d, edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
                  }
 
 //                 g2d.setColor(Color.RED);
@@ -134,15 +135,26 @@ public class SimulationPanel extends JPanel {
                 CPosition position = walker.getPosition();
 
                 g2d.setColor(Color.ORANGE);
-                g2d.fillOval(position.getX().intValue() - walker.getSize(), position.getY().intValue() - walker.getSize(), walker.getSize() * 2, walker.getSize() * 2);
+                g2d.fillOval(((Double)(position.getX() - walker.getSize())).intValue(),
+                             ((Double)(position.getY() - walker.getSize())).intValue(),
+                             ((Double)(walker.getSize() * 2)).intValue(),
+                             ((Double)(walker.getSize() * 2)).intValue());
+
 
                 // draw the target as x, because the X marks the point =)
-                int upperleftX = walker.getTarget().getX().intValue() - walker.getSize();
-                int upperleftY = walker.getTarget().getY().intValue() - walker.getSize();
-                int width = walker.getSize() * 2;
-                int height = walker.getSize() * 2;
+                int upperleftX = ((Double)(walker.getTarget().getX() - walker.getSize())).intValue();
+                int upperleftY = ((Double)(walker.getTarget().getY() - walker.getSize())).intValue();
+                int width = ((Double)(walker.getSize() * 2)).intValue();
+                int height = ((Double)(walker.getSize() * 2)).intValue();
                 g.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
                 g.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
+
+                DecimalFormat df = new DecimalFormat("#.00");
+
+                g2d.setColor(Color.CYAN);
+                g.drawString("x" + df.format(walker.getPosition().getX()) + "/y" + df.format(walker.getPosition().getY()), position.getX().intValue() + width + 10, position.getY().intValue() );
+
+                g.drawString("x" + df.format(walker.getDesiredPath().getFirst().getX()) + "/y" + df.format(walker.getDesiredPath().getFirst().getY()), ((Double)(walker.getDesiredPath().getFirst().getX() + 100.0)).intValue(), walker.getDesiredPath().getFirst().getY().intValue());
 
             }
         }
@@ -180,7 +192,7 @@ public class SimulationPanel extends JPanel {
 
             // sleep 5 milliseconds
             try	{
-                java.lang.Thread.sleep(100);
+                java.lang.Thread.sleep(20);
             } catch (InterruptedException e) {
 
             }
@@ -191,6 +203,10 @@ public class SimulationPanel extends JPanel {
 
             }
         } while (true);
+    }
+
+    public void runOneStep() {
+        this.oWorld.stepSimulation();
     }
 
     public void toggleRunningState() {
