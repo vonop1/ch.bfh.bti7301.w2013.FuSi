@@ -46,13 +46,16 @@ public class CWorld {
         this.aoObstacles.add(obstacle);
     }
 
-    public Vector<CObstacle> loadConfig ()
+    public Vector<CObstacle> loadConfig (File oConfigFile)
     {
+        if(oConfigFile == null) {
+            return null;
+        }
+
         this.aoObstacles = new Vector<CObstacle>();
         try
         {
             // load Config from File Config.xml
-            File oConfigFile = new File ("./XML/Config.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document oConfigDoc = dBuilder.parse(oConfigFile);
