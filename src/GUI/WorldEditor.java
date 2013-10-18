@@ -33,10 +33,9 @@ public class WorldEditor extends JPanel {
 
         // We want to positionate our Elements with x und y coordinates
         setLayout(null);
-
-        // set the Panel size to the Window size
-        //this.setBounds(0,0,Application.INSTANCE.getWidth(), Application.INSTANCE.getHeight());
+        setBounds(0,0,500,500);
     }
+
     public void setupEditor() {
         MovingAdapter ma = new MovingAdapter();
         addMouseMotionListener(ma);

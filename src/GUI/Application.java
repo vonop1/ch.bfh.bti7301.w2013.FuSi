@@ -32,6 +32,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
     }
 
     SimulationPanel simulationPanel = new SimulationPanel();
+    WorldEditor worldEditor = new WorldEditor();
 
     public final void initUI() {
         //final JFrame frame = new JFrame("Passenger Simulation");
@@ -46,6 +47,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         this.getContentPane().add(mainPanel);
 
         JMenuBar menuBar = new JMenuBar();
+        menuBar.setBounds(0,0,800,20);
         JMenu menu = new JMenu("Options");
         //menu.setMnemonic(KeyEvent.VK_A);
         //menu.getAccessibleContext().setAccessibleDescription("The only menu in this program that has menu items");
@@ -55,19 +57,25 @@ public class Application extends JFrame implements WindowListener, KeyListener {
             public void actionPerformed(ActionEvent e) {
                 //System.out.println("Simulation");
                 //Application
+                // set the Panel size to the Window size
+                simulationPanel.setBounds(0, 0, 800, 580);
                 Application.INSTANCE.getContentPane().removeAll();
                 Application.INSTANCE.getContentPane().add(simulationPanel);
                 Application.INSTANCE.revalidate();
+                simulationPanel.setupDummyWorld();
+                //simulationPanel.repaint();
                 //setVisible(true);
                 //simulationPanel.runSimulationLoop();
-                simulationPanel.setupDummyWorld();
-                simulationPanel.repaint();
             }
         });
         JMenuItem itemWorldEditor = new JMenuItem("World Editor");
         itemWorldEditor.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //System.out.println("World Editor");
+                worldEditor.setBounds(0, 0, 800, 580);
+                Application.INSTANCE.getContentPane().removeAll();
+                Application.INSTANCE.getContentPane().add(worldEditor);
+                Application.INSTANCE.revalidate();
+                worldEditor.setupEditor();
             }
         });
         menu.add(itemSimulation);
@@ -76,20 +84,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         this.setVisible(true);
     }
 
-	/**
-	 * starts the simulation
-	 */
-	public void startup()
-	{
-        // Add Simulation panel
-        SimulationPanel simulationPanel = new SimulationPanel();
 
-        getContentPane().add(simulationPanel);
-
-        setVisible(true);
-
-        simulationPanel.runSimulationLoop();
-	}
 
 	/*
 	 * (non-Javadoc)
