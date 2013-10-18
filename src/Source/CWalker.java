@@ -4,7 +4,6 @@ import Util.CPosition;
 import Util.CVertex;
 
 import java.util.LinkedList;
-import java.util.Vector;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,6 +12,15 @@ import java.util.Vector;
  * Time: 14:09
  */
 public class CWalker {
+   static Integer idCounter = 0;
+
+    static Integer getNextId()
+    {
+        return idCounter++;
+    }
+
+
+   private Integer id;
    private CPosition oPos;
    private CPosition oTarget;
    private CPosition oStart;
@@ -25,6 +33,7 @@ public class CWalker {
        this.oStart = start;
        this.oPos = start;
        this.oTarget = target;
+       this.id = getNextId();
    }
 
    public CPosition getPosition()
@@ -114,5 +123,23 @@ public class CWalker {
         }
 
         return this.desiredPath.size() == 0;
+    }
+
+    /**
+     * Get the unique Identifier of the Walker
+     * @return unique Identifier
+     */
+    public Integer getId ()
+    {
+        return id;
+    }
+
+    @Override
+    public boolean equals (Object obj) {
+        if (obj.getClass() == this.getClass())
+        {
+            return ((CWalker)obj).getId().equals(this.getId());
+        }
+        return false;
     }
 }

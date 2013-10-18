@@ -173,7 +173,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
              }
 
 
-            for(CWalker walker : oWorld.getWalkers()) {
+            for(CWalker walker : oWorld.getWalkers().values()) {
                 CPosition position = walker.getPosition();
 
                 g2d.setColor(Color.ORANGE);

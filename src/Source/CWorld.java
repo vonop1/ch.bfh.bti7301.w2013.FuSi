@@ -1,8 +1,7 @@
 package Source;
 
 import java.io.File;
-import java.util.ListIterator;
-import java.util.Vector;
+import java.util.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
@@ -20,17 +19,18 @@ import org.w3c.dom.*;
  * Time: 14:30
  */
 public class CWorld {
-    private Vector<CWalker> aoWalkers = new Vector<CWalker>();
+    private Map<Integer, CWalker> aoWalkers = new HashMap<Integer, CWalker>();
 
     //private CGraph oGraph;
     private Vector<CObstacle> aoObstacles = new Vector<CObstacle>();
+    private CGrid grid = new CGrid();
 
     public CWorld ()
     {
 
     }
 
-    public Vector<CWalker> getWalkers() {
+    public Map<Integer, CWalker> getWalkers() {
         return aoWalkers;
     }
 
@@ -39,7 +39,7 @@ public class CWorld {
     }
 
     public void addWalker(CWalker walker) {
-        this.aoWalkers.add(walker);
+        this.aoWalkers.put(walker.getId(), walker);
     }
 
     public void addObstacle(CObstacle obstacle) {
@@ -192,7 +192,7 @@ public class CWorld {
             }
         }
 
-        for(CWalker walker : this.aoWalkers) {
+        for(CWalker walker : this.aoWalkers.values()) {
             this.oGraph.addWayPointEdge(walker.getPosition(), walker.getTarget());
 
             for(CObstacle obstacle : this.aoObstacles) {
@@ -218,11 +218,17 @@ public class CWorld {
      */
     public void stepSimulation() {
         // let the people move their bodies ^^
-        ListIterator<CWalker> iter = this.aoWalkers.listIterator();
+        Iterator<CWalker> iter = this.aoWalkers.values().iterator();
         while(iter.hasNext()){
-            if(iter.next().walkAStep()){
+            CWalker walker = iter.next();
+            grid.unsubscribeWalker(walker);
+            if(walker.walkAStep()){
                 // Walker has reached target, remove the guy
                 iter.remove();
+            }
+            else
+            {
+                grid.subscribeWalker(walker);
             }
         }
 
@@ -233,4 +239,16 @@ public class CWorld {
 //            }
 //        }
     }
+
+    /**
+     * Get Neighbours defined by Position
+     */
+    Vector<CWalker> getNeighbours (CPosition pos)
+    {
+        Vector<CWalker> neighbours = new Vector<CWalker>();
+
+
+        return neighbours;
+    }
+
 }
