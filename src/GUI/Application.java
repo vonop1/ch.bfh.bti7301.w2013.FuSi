@@ -46,7 +46,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         mainPanel.setBackground(Color.YELLOW);
         this.getContentPane().add(mainPanel);
 
-        JMenuBar menuBar = new JMenuBar();
+        final JMenuBar menuBar = new JMenuBar();
         menuBar.setBounds(0,0,800,20);
         JMenu menu = new JMenu("Options");
         //menu.setMnemonic(KeyEvent.VK_A);
@@ -71,6 +71,12 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         JMenuItem itemWorldEditor = new JMenuItem("World Editor");
         itemWorldEditor.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                JMenu menu = new JMenu("Add");
+                JMenuItem Rectangle = new JMenuItem("Rectangle");
+                JMenuItem Ellipse = new JMenuItem("Ellipse");
+                menu.add(Rectangle);
+                menu.add(Ellipse);
+                menuBar.add(menu);
                 worldEditor.setBounds(0, 0, 800, 580);
                 Application.INSTANCE.getContentPane().removeAll();
                 Application.INSTANCE.getContentPane().add(worldEditor);
