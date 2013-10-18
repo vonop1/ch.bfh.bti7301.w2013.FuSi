@@ -14,6 +14,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.text.DecimalFormat;
 import java.util.Vector;
 
@@ -33,6 +35,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
     protected Timer timer = null;
 
+    protected Vector<File> files = new Vector<File>();
 
     protected CWorld oWorld = null;
 
@@ -42,26 +45,61 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         // We want to positionate our Elements with x und y coordinates
         setLayout(null);
 
+        reloadConfigfiles();
+
         this.timer = new Timer(20, this);
 
         this.repaint();
     }
 
+    public void reloadConfigfiles() {
+        File dir = new File("./XML");
+
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".xml");
+            }
+        };
+
+        int i = 0;
+        for(File file : dir.listFiles(filter)) {
+            i += 1;
+            if(i >= 10) {
+                break;
+            }
+
+            this.files.add(file);
+        }
+    }
 
     /**
      * creates a random world
      */
     public void setupDummyWorld() {
+        this.timer.stop();
 
-        this.oWorld = new CWorld();
+        this.oWorld = null;
+        //this.oWorld = new CWorld();
 
         //Load Obstacles and Walkers from Config File
-        this.oWorld.loadConfig();
+        //this.oWorld.loadConfig();
 
-        this.oWorld.buildGraph();
+        //this.oWorld.buildGraph();
 
-        this.timer.start();
+        //this.timer.start();
 
+    }
+
+    public void setupWorld(File configfile) {
+        if(configfile != null ) {
+            this.oWorld = new CWorld();
+
+            this.oWorld.loadConfig(configfile);
+
+            this.oWorld.buildGraph();
+
+            this.timer.start();
+        }
     }
 
     @Override
@@ -80,22 +118,40 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
          */
     public void keyPressed(KeyEvent e) {
 
+        if(this.oWorld == null) {
 
+            switch(e.getKeyCode()) {
+                case KeyEvent.VK_0:
 
-        // P-Key pauses, resumes simulation
-        if ( e.getKeyCode() == KeyEvent.VK_P) {
-            this.toggleRunningState();
+                    break;
+                case KeyEvent.VK_1:
+                case KeyEvent.VK_2:
+                case KeyEvent.VK_3:
+                case KeyEvent.VK_4:
+                case KeyEvent.VK_5:
+                case KeyEvent.VK_6:
+                case KeyEvent.VK_7:
+                case KeyEvent.VK_8:
+                case KeyEvent.VK_9:
+                    this.setupWorld(this.files.elementAt(0));
+                    break;
+            }
         }
+        else {
+            // P-Key pauses, resumes simulation
+            if ( e.getKeyCode() == KeyEvent.VK_P) {
+                this.toggleRunningState();
+            }
 
-        // P-Key pauses, resumes simulation
-        if ( e.getKeyCode() == KeyEvent.VK_G) {
-            this.toggleShowGraph();
+            // P-Key pauses, resumes simulation
+            if ( e.getKeyCode() == KeyEvent.VK_G) {
+                this.toggleShowGraph();
+            }
+
+            if ( e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                this.runOneStep();
+            }
         }
-
-        if ( e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            this.runOneStep();
-        }
-
     }
 
     @Override
@@ -127,7 +183,12 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         g2d.setColor(Color.WHITE);
 
         if(oWorld == null) {
-            g2d.drawString("Passenger Simulation - please load a world or Press F2 for Dummyworld", 200, 50);
+            g2d.drawString("Bitte wähle eine Welt, die geladen werden soll:", 100, 50);
+            Integer i = 0;
+            for(File file : this.files) {
+                i += 1;
+                g2d.drawString(i.toString() + " - " + file.getName(), 100, 50 + (i * 30));
+            }
         }
         else {
            for(CObstacle obstacle : oWorld.getObstacles()) {
