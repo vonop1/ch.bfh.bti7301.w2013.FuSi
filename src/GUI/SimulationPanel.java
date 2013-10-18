@@ -8,6 +8,8 @@ import Util.CPosition;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.text.DecimalFormat;
@@ -19,13 +21,16 @@ import java.util.Vector;
  * Date: 04.10.13
  * Time: 10:30
  */
-public class SimulationPanel extends JPanel {
+public class SimulationPanel extends JPanel implements ActionListener {
 
     /**
      * Holds the informaticon if the simulation is running
      */
-    protected boolean isRunning = false;
+    //protected boolean isRunning = false;
     protected boolean showGraph = true;
+
+    protected Timer timer = null;
+
 
     protected CWorld oWorld = null;
 
@@ -35,8 +40,9 @@ public class SimulationPanel extends JPanel {
         // We want to positionate our Elements with x und y coordinates
         setLayout(null);
 
-        // set the Panel size to the Window size
-        this.setBounds(0,0,500, 500);
+        this.timer = new Timer(20, this);
+
+        this.repaint();
     }
 
 
@@ -44,7 +50,6 @@ public class SimulationPanel extends JPanel {
      * creates a random world
      */
     public void setupDummyWorld() {
-        this.isRunning = false;
 
         this.oWorld = new CWorld();
 
@@ -53,8 +58,14 @@ public class SimulationPanel extends JPanel {
 
         this.oWorld.buildGraph();
 
-        this.isRunning = true;
+        this.timer.start();
 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+            this.oWorld.stepSimulation();
+            this.repaint();
     }
 
     /**
@@ -183,7 +194,7 @@ public class SimulationPanel extends JPanel {
 
     /**
      * the simulation loop itself
-     */
+
     public void runSimulationLoop() {
         do {
             // redraw window
@@ -203,13 +214,21 @@ public class SimulationPanel extends JPanel {
             }
         } while (true);
     }
+     */
 
     public void runOneStep() {
         this.oWorld.stepSimulation();
     }
 
     public void toggleRunningState() {
-        this.isRunning = !this.isRunning;
+
+        if( this.timer.isRunning() ) {
+            this.timer.stop();
+        }
+        else {
+            this.timer.start();
+        }
+
     }
 
     public void toggleShowGraph() {
