@@ -66,8 +66,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
     @Override
     public void actionPerformed(ActionEvent e) {
-            this.oWorld.stepSimulation();
-            this.repaint();
+        this.runOneStep();
     }
 
     @Override
@@ -111,16 +110,14 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
      */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        doDrawing(g);
+        doDrawing((Graphics2D)g);
     }
 
     /**
      * doDrawing does the actual drawing
-     * @param g contains the reference to the Java2D graphics object
+     * @param g2d contains the reference to the Java2D graphics object
      */
-    private void doDrawing(Graphics g) {
-
-        Graphics2D g2d = (Graphics2D) g;
+    private void doDrawing(Graphics2D g2d) {
 
         //Customize the main world
         g2d.setBackground(Color.BLACK);
@@ -191,17 +188,17 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 int upperleftY = ((Double)(walker.getTarget().getY() - walker.getSize())).intValue();
                 int width = ((Double)(walker.getSize() * 2)).intValue();
                 int height = ((Double)(walker.getSize() * 2)).intValue();
-                g.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
-                g.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
+                g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
+                g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
 
                 DecimalFormat df = new DecimalFormat("#.00");
 
                 g2d.setColor(Color.CYAN);
-                g.drawString("x" + df.format(walker.getPosition().getX()) + "/y" + df.format(walker.getPosition().getY()), position.getX().intValue() + width + 10, position.getY().intValue() );
+                g2d.drawString("x" + df.format(walker.getPosition().getX()) + "/y" + df.format(walker.getPosition().getY()), position.getX().intValue() + width + 10, position.getY().intValue() );
 
-                if(walker.getDesiredPath().size() > 0 ) {
-                    g.drawString("x" + df.format(walker.getDesiredPath().getFirst().getX()) + "/y" + df.format(walker.getDesiredPath().getFirst().getY()), ((Double)(walker.getDesiredPath().getFirst().getX() + 100.0)).intValue(), walker.getDesiredPath().getFirst().getY().intValue());
-                }
+                //if(walker.getDesiredPath().size() > 0 ) {
+                //    g2d.drawString("x" + df.format(walker.getDesiredPath().getFirst().getX()) + "/y" + df.format(walker.getDesiredPath().getFirst().getY()), ((Double)(walker.getDesiredPath().getFirst().getX() + 100.0)).intValue(), walker.getDesiredPath().getFirst().getY().intValue());
+                //}
             }
         }
     }
@@ -228,32 +225,9 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         //g.drawLine(x1,y1,x2,y2);
     }
 
-    /**
-     * the simulation loop itself
-
-    public void runSimulationLoop() {
-        do {
-            // redraw window
-            this.repaint();
-
-            // sleep 5 milliseconds
-            try	{
-                java.lang.Thread.sleep(20);
-            } catch (InterruptedException e) {
-
-            }
-
-            // when the simulation is running....
-            if(this.isRunning ) {
-                  this.oWorld.stepSimulation();
-
-            }
-        } while (true);
-    }
-     */
-
     public void runOneStep() {
         this.oWorld.stepSimulation();
+        this.repaint();
     }
 
     public void toggleRunningState() {
