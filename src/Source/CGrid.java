@@ -1,5 +1,8 @@
 package Source;
 
+import Util.CEdge;
+import Util.CPosition;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -13,7 +16,7 @@ import java.util.Vector;
 public class CGrid {
 
 
-    final int gridSizeC = 50;
+    final int gridSizeC = 20;
     private Map<Integer,Map<Integer, Vector<CWalker>>> grid = new HashMap<Integer, Map<Integer, Vector<CWalker>>>();
 
     /**
@@ -93,5 +96,46 @@ public class CGrid {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Get Neighbours of a Walker
+     */
+    Vector<CWalker> getNeighbours (CWalker walker)
+    {
+        Vector<CWalker> neighbours = new Vector<CWalker>();
+
+        Integer gridColumn = walker.getPosition().getY().intValue() / gridSizeC;
+        Integer gridRow = walker.getPosition().getX().intValue() / gridSizeC;
+
+        Map<Integer, Vector<CWalker>> gridRowMap;
+        for (int i = gridColumn - 1; i < gridColumn + 2; i++)
+        {
+            if (grid.containsKey(i))
+            {
+                gridRowMap = grid.get(gridColumn);
+
+                for (int j = gridRow -1; j < gridRow + 2; j++)
+                {
+                    if (gridRowMap.containsKey(j))
+                    {
+                        neighbours.addAll(gridRowMap.get(j));
+                    }
+                }
+            }
+        }
+
+        neighbours.remove(walker);
+
+        return neighbours;
+    }
+
+    /**
+     * Subscribe Obstacle Positions in Grid
+     */
+    void subscribeObstacle (Vector<CObstacle> obstacles)
+    {
+
+      //TODO subscribe obstacle in grid
     }
 }

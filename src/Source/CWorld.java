@@ -230,6 +230,9 @@ public class CWorld {
             {
                 grid.subscribeWalker(walker);
             }
+
+            grid.getNeighbours(walker);
+
         }
 
 //        for(CWalker walker : this.aoWalkers) {
@@ -240,15 +243,5 @@ public class CWorld {
 //        }
     }
 
-    /**
-     * Get Neighbours defined by Position
-     */
-    Vector<CWalker> getNeighbours (CPosition pos)
-    {
-        Vector<CWalker> neighbours = new Vector<CWalker>();
-
-
-        return neighbours;
-    }
 
 }

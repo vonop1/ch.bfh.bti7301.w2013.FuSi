@@ -30,6 +30,18 @@
       <source x="20" y="300"/>
       <target x="520" y="20"/>
     </walker>
+    <walker>
+      <source x="20" y="100"/>
+      <target x="520" y="300"/>
+    </walker>
+    <walker>
+      <source x="20" y="130"/>
+      <target x="520" y="300"/>
+    </walker>
+    <walker>
+      <source x="20" y="200"/>
+      <target x="520" y="300"/>
+    </walker>
     
   </walkerList>
 </Config>
