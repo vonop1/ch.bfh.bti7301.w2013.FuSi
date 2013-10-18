@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.text.DecimalFormat;
@@ -21,7 +23,7 @@ import java.util.Vector;
  * Date: 04.10.13
  * Time: 10:30
  */
-public class SimulationPanel extends JPanel implements ActionListener {
+public class SimulationPanel extends JPanel implements ActionListener, KeyListener {
 
     /**
      * Holds the informaticon if the simulation is running
@@ -66,6 +68,40 @@ public class SimulationPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
             this.oWorld.stepSimulation();
             this.repaint();
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /*
+         * (non-Javadoc)
+         * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+         */
+    public void keyPressed(KeyEvent e) {
+
+
+
+        // P-Key pauses, resumes simulation
+        if ( e.getKeyCode() == KeyEvent.VK_P) {
+            this.toggleRunningState();
+        }
+
+        // P-Key pauses, resumes simulation
+        if ( e.getKeyCode() == KeyEvent.VK_G) {
+            this.toggleShowGraph();
+        }
+
+        if ( e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            this.runOneStep();
+        }
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
