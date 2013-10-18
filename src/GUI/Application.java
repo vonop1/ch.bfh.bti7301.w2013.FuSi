@@ -1,10 +1,7 @@
 package GUI;
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.lang.String;
 import java.lang.System;
 
@@ -16,32 +13,61 @@ import java.lang.System;
  */
 public class Application extends JFrame implements WindowListener, KeyListener {
 
+    // Singleton Pattern
+    //public static Application INSTANCE = new Application();
+
     /**
      * Startup the application
      * @param args
      */
     public static void main(String[] args) {
         // Let's go
-        Application.INSTANCE.startup();
+        //Application.INSTANCE.setVisible(true);
+        Application app = new Application();
     }
 
-    // Singleton Pattern
-	public static Application INSTANCE = new Application();
-	
+    public Application() {
+        initUI();
+    }
 
-	public Application() {
-		// call the constructor of the JFrame and set title
-		super("Passenger Simulation");
-		
-		// register Exit event
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.addKeyListener(this);
+    SimulationPanel simulationPanel = new SimulationPanel();
 
-        // set Background and Window Size
-		this.setBackground(Color.BLACK);
-		setSize(800, 500);
-
-	}
+    public final void initUI() {
+        final JFrame frame = new JFrame("Passenger Simulation");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
+        //frame.pack();
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setBackground(Color.BLACK);
+        frame.setContentPane(mainPanel);
+        //frame.getContentPane().add(mainPanel);
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Options");
+        //menu.setMnemonic(KeyEvent.VK_A);
+        //menu.getAccessibleContext().setAccessibleDescription("The only menu in this program that has menu items");
+        menuBar.add(menu);
+        JMenuItem itemSimulation = new JMenuItem("Start Simulation");
+        itemSimulation.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //System.out.println("Simulation");
+                frame.getContentPane().add(simulationPanel);
+                setVisible(true);
+                //simulationPanel.runSimulationLoop();
+            }
+        });
+        JMenuItem itemWorldEditor = new JMenuItem("World Editor");
+        itemWorldEditor.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //System.out.println("World Editor");
+            }
+        });
+        menu.add(itemSimulation);
+        menu.add(itemWorldEditor);
+        frame.setJMenuBar(menuBar);
+        frame.setVisible(true);
+    }
 
 	/**
 	 * starts the simulation

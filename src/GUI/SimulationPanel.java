@@ -36,7 +36,7 @@ public class SimulationPanel extends JPanel {
         setLayout(null);
 
         // set the Panel size to the Window size
-        this.setBounds(0,0,Application.INSTANCE.getWidth(), Application.INSTANCE.getHeight());
+        this.setBounds(0,0,500, 500);
     }
 
 
