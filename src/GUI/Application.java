@@ -14,7 +14,7 @@ import java.lang.System;
 public class Application extends JFrame implements WindowListener, KeyListener {
 
     // Singleton Pattern
-    //public static Application INSTANCE = new Application();
+    public static Application INSTANCE = new Application();
 
     /**
      * Startup the application
@@ -22,27 +22,29 @@ public class Application extends JFrame implements WindowListener, KeyListener {
      */
     public static void main(String[] args) {
         // Let's go
-        //Application.INSTANCE.setVisible(true);
-        Application app = new Application();
+        Application.INSTANCE.setVisible(true);
+        //Application app = new Application();
     }
 
-    public Application() {
+    private Application() {
+        super("Passenger Simulation");
         initUI();
     }
 
     SimulationPanel simulationPanel = new SimulationPanel();
 
     public final void initUI() {
-        final JFrame frame = new JFrame("Passenger Simulation");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //final JFrame frame = new JFrame("Passenger Simulation");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
         //frame.pack();
-        frame.setSize(800, 600);
-        frame.setLocationRelativeTo(null);
+        this.setSize(800, 600);
+        this.setLocationRelativeTo(null);
+
         JPanel mainPanel = new JPanel();
-        mainPanel.setBackground(Color.BLACK);
-        frame.setContentPane(mainPanel);
-        //frame.getContentPane().add(mainPanel);
+        mainPanel.setBackground(Color.YELLOW);
+        this.getContentPane().add(mainPanel);
+
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Options");
         //menu.setMnemonic(KeyEvent.VK_A);
@@ -52,9 +54,14 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         itemSimulation.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //System.out.println("Simulation");
-                frame.getContentPane().add(simulationPanel);
-                setVisible(true);
+                //Application
+                Application.INSTANCE.getContentPane().removeAll();
+                Application.INSTANCE.getContentPane().add(simulationPanel);
+                Application.INSTANCE.revalidate();
+                //setVisible(true);
                 //simulationPanel.runSimulationLoop();
+                simulationPanel.setupDummyWorld();
+                simulationPanel.repaint();
             }
         });
         JMenuItem itemWorldEditor = new JMenuItem("World Editor");
@@ -65,8 +72,8 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         });
         menu.add(itemSimulation);
         menu.add(itemWorldEditor);
-        frame.setJMenuBar(menuBar);
-        frame.setVisible(true);
+        this.setJMenuBar(menuBar);
+        this.setVisible(true);
     }
 
 	/**

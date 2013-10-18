@@ -15,7 +15,7 @@ import java.util.Vector;
 public class CObstacle implements Comparable<CObstacle> {
 
     Integer iId;
-    double dDistToEdgeC = 10.0;
+    double dDistToEdgeC = 13.0;
     protected Vector<CPosition> aoPosition;
 
     /**
