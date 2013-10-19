@@ -23,17 +23,21 @@ import javax.swing.SwingUtilities;
  * To change this template use File | Settings | File Templates.
  */
 
-public class WorldEditor extends JPanel {
+public class WorldEditor extends JPanel{
 
     private ZRectangle zrect;
     private ZEllipse zell;
+
+    public void add(){
+
+
+    }
 
     public WorldEditor() {
         super();
 
         // We want to positionate our Elements with x und y coordinates
         setLayout(null);
-        setBounds(0,0,500,500);
     }
 
     public void setupEditor() {
@@ -48,12 +52,10 @@ public class WorldEditor extends JPanel {
         setDoubleBuffered(true);
     }
 
+
     private void doDrawing(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
-
-        Font font = new Font("Serif", Font.BOLD, 40);
-        g2d.setFont(font);
 
         g2d.setColor(new Color(0, 0, 200));
         g2d.fill(zrect);

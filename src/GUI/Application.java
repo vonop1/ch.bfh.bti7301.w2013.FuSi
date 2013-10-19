@@ -1,6 +1,9 @@
 package GUI;
+import com.sun.org.apache.xpath.internal.functions.FuncFalse;
+import sun.font.TrueTypeFont;
+
 import javax.swing.*;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.*;
 import java.lang.String;
 import java.lang.System;
@@ -40,7 +43,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
-         this.addKeyListener(this);
+        this.addKeyListener(this);
 
         this.getContentPane().add(mainPanel);
 
@@ -73,19 +76,49 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         // set the Panel size to the Window size
         simulationPanel.setBounds(0, 0, 800, 580);
 
+        for(int m = 0; m < menuBar.getMenuCount(); ++m) {
+            if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Add")){
+                menuBar.remove(menuBar.getMenu(m));
+            }
+        }
+
         simulationPanel.setupDummyWorld();
         this.getContentPane().removeAll();
         this.getContentPane().add(simulationPanel);
         this.revalidate();
+        this.repaint();
     }
 
     public void loadWorldEditor() {
-        JMenu menu = new JMenu("Add");
-        JMenuItem Rectangle = new JMenuItem("Rectangle");
-        JMenuItem Ellipse = new JMenuItem("Ellipse");
-        menu.add(Rectangle);
-        menu.add(Ellipse);
-        menuBar.add(menu);
+        boolean menuAdd = false;
+        for(int m = 0; m < menuBar.getMenuCount(); ++m) {
+            if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Add")){
+                menuAdd = true;
+            }
+        }
+        if(!menuAdd) {
+            JMenu menu = new JMenu("Add");
+            JMenuItem itemRectangle = new JMenuItem("Rectangle");
+            itemRectangle.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    Rectangle rectangle = new Rectangle();
+                    worldEditor.add(rectangle);
+                    rectangle.newRectangle();
+                    worldEditor.repaint();
+                    System.out.println("Test");
+                }
+            });
+            JMenuItem itemEllipse = new JMenuItem("Ellipse");
+            itemEllipse.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+
+                }
+            });
+            menu.add(itemRectangle);
+            menu.add(itemEllipse);
+            menuBar.add(menu);
+        }
+
         worldEditor.setBounds(0, 0, 800, 580);
         Application.INSTANCE.getContentPane().removeAll();
         Application.INSTANCE.getContentPane().add(worldEditor);
