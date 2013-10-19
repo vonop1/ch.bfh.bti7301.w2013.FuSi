@@ -57,54 +57,21 @@ public class CEdge {
         return iWeight;
     }
 
-    public CPosition calcIntersectionWith(CEdge other) {
+    public boolean hasIntersectionWith(CEdge other) {
 
-        // errechne Schnittpunkt
-        // a0*x + b0*y + c0 = 0
-        // a1*x + b1*y + c1 = 0    --> auflösen nach x,y
-        //
-        // wenn edgeConstantA 0 ist, muss auf eine andere Formel ausgewichen werden
-//        Double y = ( other.getEdgeConstantA() / this.edgeConstantA * this.edgeConstantC - other.getEdgeConstantC() ) / (other.edgeConstantB - other.getEdgeConstantA() / this.edgeConstantA * this.edgeConstantB );
-//        Double x = (this.edgeConstantB * y + this.edgeConstantC) / (-this.edgeConstantA);
-//
-//        CPosition returnValue = new CPosition(x, y);
-//
-//        if(oSource.getPos().isPointInRectangleBetween(oDestination.getPos(), returnValue)) {
-//            return returnValue;
-//        }
+        CPosition returnValue = CMathFunctions.calcIntersectionPoint(this.getSource(), this.getDestination(), other.getSource(), other.getDestination());
 
-        // new version from http://stackoverflow.com/questions/385305/efficient-maths-algorithm-to-calculate-intersections
-        // also interesting would be this: https://code.google.com/p/straightedge/
-        Double x12 = this.oSource.getX() - this.oDestination.getX();
-        Double x34 = other.getSource().getX() - other.getDestination().getX();
-        Double y12 = this.oSource.getY() - this.oDestination.getY();
-        Double y34 = other.getSource().getY() - other.getDestination().getY();
-
-        Double c = x12 * y34 - y12 * x34;
-
-        if (Math.abs(c) < 0.01)
+        if (returnValue == null)
         {
-            // No intersection , lines are parallel in this case
-            return null;
+            return false;
         }
-        else
-        {
-            // Intersection
-            Double a = this.oSource.getX() * this.oDestination.getY() - this.oSource.getY() * this.oDestination.getX();
-            Double b = other.getSource().getX() * other.getDestination().getY() - other.getSource().getY() * other.getDestination().getX();
 
-            // this could be split to get an value r, which makes it possible to remove the isPointInRectangleBetween() Function
-            Double x = (a * x34 - b * x12) / c;
-            Double y = (a * y34 - b * y12) / c;
-
-            CPosition returnValue = new CPosition(x, y);
-
-            if(oSource.isPointInRectangleBetween(oDestination, returnValue)) {
-                if(other.getSource().isPointInRectangleBetween(other.oDestination, returnValue)) {
-                    return returnValue;
-                }
+        if(oSource.isPointInRectangleBetween(oDestination, returnValue)) {
+            if(other.getSource().isPointInRectangleBetween(other.oDestination, returnValue)) {
+                return true;
             }
         }
-        return  null;
+
+        return  false;
     }
 }

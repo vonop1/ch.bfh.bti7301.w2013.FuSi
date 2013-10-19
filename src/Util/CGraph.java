@@ -131,7 +131,7 @@ public class CGraph {
         // Check if the edge crosses an existing objectedge
         // obstacle edges will be added everytime
         for(CEdge e : this.obstacleEdges) {
-            if( e.calcIntersectionWith(newEdge) != null) {
+            if( e.hasIntersectionWith(newEdge)) {
                 this.trashEdges.add(newEdge);
                 return;
             }
