@@ -81,7 +81,6 @@ public class Application extends JFrame implements WindowListener, KeyListener {
             }
         }
 
-        simulationPanel.setupDummyWorld();
         this.getContentPane().removeAll();
         this.getContentPane().add(simulationPanel);
         this.revalidate();
@@ -183,11 +182,6 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         // F2-Key starts the simulation
         if ( e.getKeyCode() == KeyEvent.VK_F2) {
             loadSimulationPanel();
-        }
-
-        // ESC-Key exits the simulation
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            System.exit(0);
         }
 	}
 	

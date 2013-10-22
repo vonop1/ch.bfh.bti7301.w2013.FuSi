@@ -12,8 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.DecimalFormat;
@@ -32,12 +30,14 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
      */
     //protected boolean isRunning = false;
     protected boolean showGraph = true;
+    protected boolean showGrid = false;
+    protected boolean showWalkerCoordinates = false;
 
     protected Timer timer = null;
 
     protected Vector<File> files = new Vector<File>();
 
-    protected CWorld oWorld = null;
+    protected CWorld simulationWorld = null;
 
     public SimulationPanel() {
         super();
@@ -72,33 +72,20 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         }
     }
 
-    /**
-     * creates a random world
-     */
-    public void setupDummyWorld() {
-        this.timer.stop();
+    public void setupWorld(File configFile) {
+        if(configFile != null ) {
+            this.simulationWorld = new CWorld();
 
-        this.oWorld = null;
-        //this.oWorld = new CWorld();
+            this.simulationWorld.loadConfig(configFile);
 
-        //Load Obstacles and Walkers from Config File
-        //this.oWorld.loadConfig();
-
-        //this.oWorld.buildGraph();
-
-        //this.timer.start();
-
-    }
-
-    public void setupWorld(File configfile) {
-        if(configfile != null ) {
-            this.oWorld = new CWorld();
-
-            this.oWorld.loadConfig(configfile);
-
-            this.oWorld.buildGraph();
+            this.simulationWorld.buildGraph();
 
             this.timer.start();
+        }
+        else {
+            this.timer.stop();
+            this.simulationWorld = null;
+            this.repaint();
         }
     }
 
@@ -109,7 +96,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
     @Override
     public void keyTyped(KeyEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // currently do nothing
     }
 
     /*
@@ -118,45 +105,69 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
          */
     public void keyPressed(KeyEvent e) {
 
-        if(this.oWorld == null) {
+        File fileToLoad = null;
+        switch(e.getKeyCode()) {
+            case KeyEvent.VK_0:
+                final JFileChooser fc = new JFileChooser();
+                fc.showOpenDialog(this);
+                fileToLoad = fc.getSelectedFile();
+                break;
 
-            switch(e.getKeyCode()) {
-                case KeyEvent.VK_0:
+            case KeyEvent.VK_1:
+            case KeyEvent.VK_2:
+            case KeyEvent.VK_3:
+            case KeyEvent.VK_4:
+            case KeyEvent.VK_5:
+            case KeyEvent.VK_6:
+            case KeyEvent.VK_7:
+            case KeyEvent.VK_8:
+            case KeyEvent.VK_9:
+                try {
+                    fileToLoad = this.files.elementAt(e.getKeyCode() - KeyEvent.VK_1);
+                }
+                catch(ArrayIndexOutOfBoundsException ex) {
+                    System.out.println(ex);
+                }
+                break;
 
-                    break;
-                case KeyEvent.VK_1:
-                case KeyEvent.VK_2:
-                case KeyEvent.VK_3:
-                case KeyEvent.VK_4:
-                case KeyEvent.VK_5:
-                case KeyEvent.VK_6:
-                case KeyEvent.VK_7:
-                case KeyEvent.VK_8:
-                case KeyEvent.VK_9:
-                    this.setupWorld(this.files.elementAt(0));
-                    break;
-            }
-        }
-        else {
-            // P-Key pauses, resumes simulation
-            if ( e.getKeyCode() == KeyEvent.VK_P) {
+            case KeyEvent.VK_P:
                 this.toggleRunningState();
-            }
+                break;
 
-            // P-Key pauses, resumes simulation
-            if ( e.getKeyCode() == KeyEvent.VK_G) {
-                this.toggleShowGraph();
-            }
-
-            if ( e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            case KeyEvent.VK_RIGHT:
                 this.runOneStep();
-            }
+                break;
+
+            case KeyEvent.VK_G:
+                this.toggleShowGraph();
+                break;
+
+            case KeyEvent.VK_H:
+                this.toggleShowGrid();
+                break;
+
+            case KeyEvent.VK_J:
+                this.toggleShowWalkerCoordinates();
+                break;
+
+            case KeyEvent.VK_ESCAPE:
+                if(this.simulationWorld == null) {
+                    System.exit(0);
+                }
+                else {
+                    this.setupWorld(null);
+                }
+                break;
+        }
+
+        if(fileToLoad != null ) {
+            this.setupWorld(fileToLoad);
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // currently do nothing
     }
 
     /**
@@ -182,16 +193,23 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         //Customize the obstacles
         g2d.setColor(Color.WHITE);
 
-        if(oWorld == null) {
+        if(simulationWorld == null) {
             g2d.drawString("Bitte wähle eine Welt, die geladen werden soll:", 100, 50);
             Integer i = 0;
             for(File file : this.files) {
                 i += 1;
                 g2d.drawString(i.toString() + " - " + file.getName(), 100, 50 + (i * 30));
+                if(i >= 9) {
+                    break;
+                }
             }
+
+            i += 1;
+            g2d.drawString("0 - XML-Datei selber wählen ...", 100, 50 + (i * 30));
+
         }
         else {
-           for(CObstacle obstacle : oWorld.getObstacles()) {
+           for(CObstacle obstacle : simulationWorld.getObstacles()) {
                Vector<CPosition> positions = obstacle.getPositions();
                int[] xCoordinates = new int[positions.size()];
                int[] yCoordinates = new int[positions.size()];
@@ -221,20 +239,20 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
              if(this.showGraph) {
                  g2d.setColor(Color.GREEN);
-                 for(CEdge edge : this.oWorld.getGraph().getEdges()) {
+                 for(CEdge edge : this.simulationWorld.getGraph().getEdges()) {
                      g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
                      //this.drawArrowLine(g2d, edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
                  }
 
 //                 g2d.setColor(Color.RED);
-//                 for(CEdge edge : this.oWorld.getGraph().getTrashEdges()) {
+//                 for(CEdge edge : this.simulationWorld.getGraph().getTrashEdges()) {
 //                     g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
 //                     this.drawArrowLine((Graphics2D)g, edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
 //                 }
              }
 
 
-            for(CWalker walker : oWorld.getWalkers().values()) {
+            for(CWalker walker : simulationWorld.getWalkers().values()) {
                 CPosition position = walker.getPosition();
 
                 g2d.setColor(Color.ORANGE);
@@ -252,18 +270,20 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
                 g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
 
-                DecimalFormat df = new DecimalFormat("#.00");
+                if(this.showWalkerCoordinates) {
+                    DecimalFormat df = new DecimalFormat("#.00");
+                    g2d.setColor(Color.CYAN);
+                    g2d.drawString("x" + df.format(walker.getPosition().getX()) + "/y" + df.format(walker.getPosition().getY()), position.getX().intValue() + width + 10, position.getY().intValue() );
 
-                g2d.setColor(Color.CYAN);
-                g2d.drawString("x" + df.format(walker.getPosition().getX()) + "/y" + df.format(walker.getPosition().getY()), position.getX().intValue() + width + 10, position.getY().intValue() );
-
-                //if(walker.getDesiredPath().size() > 0 ) {
-                //    g2d.drawString("x" + df.format(walker.getDesiredPath().getFirst().getX()) + "/y" + df.format(walker.getDesiredPath().getFirst().getY()), ((Double)(walker.getDesiredPath().getFirst().getX() + 100.0)).intValue(), walker.getDesiredPath().getFirst().getY().intValue());
-                //}
+                    //if(walker.getDesiredPath().size() > 0 ) {
+                    //    g2d.drawString("x" + df.format(walker.getDesiredPath().getFirst().getX()) + "/y" + df.format(walker.getDesiredPath().getFirst().getY()), ((Double)(walker.getDesiredPath().getFirst().getX() + 100.0)).intValue(), walker.getDesiredPath().getFirst().getY().intValue());
+                    //}
+                }
             }
         }
     }
 
+    /*
     private void drawArrowLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
 
         AffineTransform tx = new AffineTransform();
@@ -284,25 +304,59 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         g.fill(arrowHead);
         g.dispose();
         //g.drawLine(x1,y1,x2,y2);
-    }
+    }  */
 
     public void runOneStep() {
-        this.oWorld.stepSimulation();
-        this.repaint();
+        if(this.simulationWorld != null) {
+            this.simulationWorld.stepSimulation();
+            this.repaint();
+        }
     }
 
+    /**
+     * pauses/plays the simulation if a simulation is loaded
+     */
     public void toggleRunningState() {
-
-        if( this.timer.isRunning() ) {
-            this.timer.stop();
+        if(this.simulationWorld != null) {
+            if( this.timer.isRunning() ) {
+                this.timer.stop();
+            }
+            else {
+                this.timer.start();
+            }
         }
-        else {
-            this.timer.start();
-        }
-
     }
 
     public void toggleShowGraph() {
-        this.showGraph = !this.showGraph;
+        if(this.simulationWorld != null) {
+            this.showGraph = !this.showGraph;
+
+            // if the timer is not running, fire a repaint event
+            if(!this.timer.isRunning()) {
+                this.repaint();
+            }
+        }
+    }
+
+    public void toggleShowGrid() {
+        if(this.simulationWorld != null) {
+            this.showGrid = !this.showGrid;
+
+            // if the timer is not running, fire a repaint event
+            if(!this.timer.isRunning()) {
+                this.repaint();
+            }
+        }
+    }
+
+    public void toggleShowWalkerCoordinates() {
+        if(this.simulationWorld != null) {
+            this.showWalkerCoordinates = !this.showWalkerCoordinates;
+
+            // if the timer is not running, fire a repaint event
+            if(!this.timer.isRunning()) {
+                this.repaint();
+            }
+        }
     }
 }
