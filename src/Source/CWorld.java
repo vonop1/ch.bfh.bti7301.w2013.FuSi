@@ -46,6 +46,10 @@ public class CWorld {
         this.aoObstacles.add(obstacle);
     }
 
+    public int getGridSize() {
+        return this.grid.gridSizeC;
+    }
+
     public Vector<CObstacle> loadConfig (File oConfigFile)
     {
         if(oConfigFile == null) {

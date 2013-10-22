@@ -100,9 +100,9 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
     }
 
     /*
-         * (non-Javadoc)
-         * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-         */
+     * (non-Javadoc)
+     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+     */
     public void keyPressed(KeyEvent e) {
 
         File fileToLoad = null;
@@ -190,10 +190,9 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         g2d.setBackground(Color.BLACK);
         g2d.fillRect(getX(), getY(), getWidth(), getHeight());
 
-        //Customize the obstacles
-        g2d.setColor(Color.WHITE);
-
         if(simulationWorld == null) {
+
+            g2d.setColor(Color.WHITE);
             g2d.drawString("Bitte wähle eine Welt, die geladen werden soll:", 100, 50);
             Integer i = 0;
             for(File file : this.files) {
@@ -209,6 +208,25 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
         }
         else {
+           if(this.showGrid) {
+
+               g2d.setColor(Color.LIGHT_GRAY);
+
+               // draw vertical and horizontal lines
+               int i = 1;
+               while(i < this.getWidth()) {
+                   i += this.simulationWorld.getGridSize();
+
+                   // the vertical line
+                   g2d.drawLine(i, 0, i, this.getHeight());
+
+                   // the horizontal line
+                   g2d.drawLine(0, i, this.getWidth(), i);
+               }
+           }
+
+           //draw the obstacles
+           g2d.setColor(Color.WHITE);
            for(CObstacle obstacle : simulationWorld.getObstacles()) {
                Vector<CPosition> positions = obstacle.getPositions();
                int[] xCoordinates = new int[positions.size()];
