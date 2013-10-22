@@ -214,7 +214,8 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
                // draw vertical and horizontal lines
                int i = 1;
-               while(i < this.getWidth()) {
+               int max = Math.max(this.getWidth(), this.getHeight());
+               while(i < max) {
                    i += this.simulationWorld.getGridSize();
 
                    // the vertical line
