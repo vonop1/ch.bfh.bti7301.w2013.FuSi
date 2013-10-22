@@ -183,6 +183,11 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         if ( e.getKeyCode() == KeyEvent.VK_F2) {
             loadSimulationPanel();
         }
+
+        // F3-Key starts the world editor
+        if ( e.getKeyCode() == KeyEvent.VK_F3) {
+            loadWorldEditor();
+        }
 	}
 	
 	/*
