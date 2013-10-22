@@ -46,11 +46,6 @@ public class CWalker {
        return oTarget;
    }
 
-    public CPosition getStart()
-    {
-        return oStart;
-    }
-
    public Double getSize() {
        return size;
    }
@@ -136,10 +131,6 @@ public class CWalker {
 
     @Override
     public boolean equals (Object obj) {
-        if (obj.getClass() == this.getClass())
-        {
-            return ((CWalker)obj).getId().equals(this.getId());
-        }
-        return false;
+        return obj.getClass() == this.getClass() && ((CWalker)obj).getId().equals(this.getId());
     }
 }
