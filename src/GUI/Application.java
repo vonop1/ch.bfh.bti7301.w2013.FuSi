@@ -21,7 +21,6 @@ public class Application extends JFrame implements WindowListener, KeyListener {
 
     final SimulationPanel simulationPanel = new SimulationPanel();
     final WorldEditor worldEditor = new WorldEditor();
-    final MainPanel mainPanel = new MainPanel();
     final JMenuBar menuBar = new JMenuBar();
 
     /**
@@ -36,6 +35,8 @@ public class Application extends JFrame implements WindowListener, KeyListener {
     private Application() {
         super("Passenger Simulation");
         initUI();
+
+        loadSimulationPanel();
     }
 
     public final void initUI() {
@@ -44,8 +45,6 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
         this.addKeyListener(this);
-
-        this.getContentPane().add(mainPanel);
 
         menuBar.setBounds(0,0,800,20);
         JMenu menu = new JMenu("Options");
