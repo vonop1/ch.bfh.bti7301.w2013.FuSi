@@ -1,9 +1,6 @@
 package GUI;
-import com.sun.org.apache.xpath.internal.functions.FuncFalse;
-import sun.font.TrueTypeFont;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.lang.String;
 import java.lang.System;
@@ -25,7 +22,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
 
     /**
      * Startup the application
-     * @param args
+     * @param args application arguments
      */
     public static void main(String[] args) {
         // Let's go
@@ -41,7 +38,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
 
     public final void initUI() {
 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
         this.addKeyListener(this);
