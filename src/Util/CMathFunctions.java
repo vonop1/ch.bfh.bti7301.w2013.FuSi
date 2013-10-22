@@ -30,6 +30,8 @@ public class CMathFunctions {
 
         // new version from http://stackoverflow.com/questions/385305/efficient-maths-algorithm-to-calculate-intersections
         // also interesting would be this: https://code.google.com/p/straightedge/
+
+        // siehe auch http://www.java-forum.org/spiele-multimedia-programmierung/6588-einiges-geometrie-punkte-vektoren-geraden.html
         Double x12 = firstPos1.getX() - secondPos1.getX();
         Double x34 = firstPos2.getX() - secondPos2.getX();
         Double y12 = firstPos1.getY() - secondPos1.getY();
