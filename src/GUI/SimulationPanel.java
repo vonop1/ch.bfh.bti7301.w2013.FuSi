@@ -126,7 +126,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                     fileToLoad = this.files.elementAt(e.getKeyCode() - KeyEvent.VK_1);
                 }
                 catch(ArrayIndexOutOfBoundsException ex) {
-                    System.out.println(ex);
+                    //System.out.println(ex);
                 }
                 break;
 
