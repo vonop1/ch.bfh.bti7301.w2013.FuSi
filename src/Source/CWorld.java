@@ -235,33 +235,31 @@ public class CWorld {
      * calculates the next simulation step
      */
     public void stepSimulation() {
-        // let the people move their bodies ^^
+
+        // step 1: calculate the desired new position of each walker
+        for( CWalker walker : this.aoWalkers.values()) {
+            grid.unsubscribeWalker(walker);
+            walker.calcNextDesiredPosition();
+            grid.subscribeWalker(walker);
+        }
+
+        // step 2: check for collisions
+        for( CWalker walker : this.aoWalkers.values()) {
+            for( CWalker neighbourWalker : grid.getNeighbours(walker)) {
+                walker.checkAndHandleCollisionWith(neighbourWalker);
+            }
+        }
+
+        // step 3: make the step for each walker and remove walkers that reached their target
+        // we have to use iterators because we modify the walker list while we iterate over it
         Iterator<CWalker> iter = this.aoWalkers.values().iterator();
         while(iter.hasNext()){
             CWalker walker = iter.next();
-            grid.unsubscribeWalker(walker);
-            walker.calcNextDesiredPosition();
-
-                grid.subscribeWalker(walker);
-
-            grid.getNeighbours(walker);
-
+            if( walker.walkToNextDesiredPosition() ) {
+                // Walker has reached target, remove the guy
+                iter.remove();
+            }
         }
-
-        iter = this.aoWalkers.values().iterator();
-        while(iter.hasNext()){
-            CWalker walker = iter.next();
-            walker.walkToNextDesiredPosition();
-
-        }
-
-
-//        for(CWalker walker : this.aoWalkers) {
-//            if( walker.walkToNextDesiredPosition()) {
-//                // Walker has reached target, remove the guy
-//                this.aoWalkers.removeElement(walker) // fires a ConcurrentModificationException
-//            }
-//        }
     }
 
 

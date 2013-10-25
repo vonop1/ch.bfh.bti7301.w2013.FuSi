@@ -49,6 +49,16 @@ public class CWalker {
        return targetPosition;
    }
 
+   public CPosition getDesiredNextPosition() {
+       // if desiredNextPosition is null, he wants to stay at his location
+       if(desiredNextPosition == null) {
+           return currentPosition;
+       }
+       else {
+           return desiredNextPosition;
+       }
+   }
+
    public Double getSize() {
        return size;
    }
@@ -68,6 +78,18 @@ public class CWalker {
 
     public LinkedList<CVertex> getDesiredPath() {
         return this.desiredPath;
+    }
+
+    public boolean checkAndHandleCollisionWith(CWalker other) {
+
+        Boolean hasCollision = this.getDesiredNextPosition().isNearBy(other.getDesiredNextPosition(), stepSize / 2);
+
+        if(hasCollision) {
+            // when we have a collision, just wait in a first step
+            //this.desiredNextPosition = this.currentPosition;
+        }
+
+        return hasCollision;
     }
 
     /**
