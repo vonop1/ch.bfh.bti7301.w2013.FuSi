@@ -12,17 +12,18 @@ import java.awt.geom.Rectangle2D;
  * To change this template use File | Settings | File Templates.
  */
 
-public class Rectangle extends JPanel {
+public class Rectangle {
     private ZRectangle zrect;
 
     public Rectangle() {
         super();
-        setLayout(null);
+        //setLayout(null);
     }
 
     public void newRectangle(){
         zrect = new ZRectangle(50, 50, 50, 50);
     }
+    /*
     private void doDrawing(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
@@ -37,7 +38,7 @@ public class Rectangle extends JPanel {
         super.paintComponent(g);
         doDrawing(g);
     }
-
+    */
     class ZRectangle extends Rectangle2D.Float {
 
         public ZRectangle(float x, float y, float width, float height) {

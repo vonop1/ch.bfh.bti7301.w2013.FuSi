@@ -11,6 +11,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -25,19 +26,19 @@ import javax.swing.SwingUtilities;
 
 public class WorldEditor extends JPanel{
 
-    private ZRectangle zrect;
+    private ArrayList<ZRectangle> zrects = new ArrayList<ZRectangle>();
     private ZEllipse zell;
 
-    public void add(){
-
-
+    public void addRectangle(){
+        zrects.add(new ZRectangle(50,50,50,50));
+        repaint();
     }
 
     public WorldEditor() {
         super();
 
         // We want to positionate our Elements with x und y coordinates
-        setLayout(null);
+        //setLayout(null);
     }
 
     public void setupEditor() {
@@ -46,7 +47,7 @@ public class WorldEditor extends JPanel{
         addMouseListener(ma);
         addMouseWheelListener(new ScaleHandler());
 
-        zrect = new ZRectangle(50, 50, 50, 50);
+        zrects.add(new ZRectangle(50, 50, 50, 50));
         zell = new ZEllipse(150, 70, 80, 80);
 
         setDoubleBuffered(true);
@@ -58,7 +59,10 @@ public class WorldEditor extends JPanel{
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setColor(new Color(0, 0, 200));
-        g2d.fill(zrect);
+        for(ZRectangle zrect : zrects){
+            g2d.fill(zrect);
+        }
+
         g2d.setColor(new Color(0, 200, 0));
         g2d.fill(zell);
     }
@@ -166,11 +170,13 @@ public class WorldEditor extends JPanel{
             int dx = e.getX() - x;
             int dy = e.getY() - y;
 
-            if (zrect.isHit(x, y)) {
+            for (ZRectangle zrect : zrects){
+                if (zrect.isHit(x, y)) {
 
-                zrect.addX(dx);
-                zrect.addY(dy);
-                repaint();
+                    zrect.addX(dx);
+                    zrect.addY(dy);
+                    repaint();
+                }
             }
 
             if (zell.isHit(x, y)) {
@@ -194,15 +200,15 @@ public class WorldEditor extends JPanel{
             int y = e.getY();
 
             if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+                for (ZRectangle zrect : zrects){
+                    if (zrect.isHit(x, y)) {
 
-                if (zrect.isHit(x, y)) {
-
-                    float amount =  e.getWheelRotation() * 5f;
-                    zrect.addWidth(amount);
-                    zrect.addHeight(amount);
-                    repaint();
+                        float amount =  e.getWheelRotation() * 5f;
+                        zrect.addWidth(amount);
+                        zrect.addHeight(amount);
+                        repaint();
+                    }
                 }
-
                 if (zell.isHit(x, y)) {
 
                     float amount =  e.getWheelRotation() * 5f;
