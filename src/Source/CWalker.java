@@ -30,7 +30,7 @@ public class CWalker {
    private Double size = 5.0;
    private Double stepSize = 2.0;
 
-   private LinkedList<CVertex> desiredPath = new LinkedList<CVertex>();
+   private LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
 
    public CWalker(CPosition start, CPosition target) {
        this.startPosition = start;
@@ -63,7 +63,7 @@ public class CWalker {
        return size;
    }
 
-    public void setDesiredPath(LinkedList<CVertex> vertexes) {
+    public void setDesiredPath(LinkedList<CPosition> vertexes) {
         if(vertexes == null || vertexes.size() == 0) {
             throw new IllegalArgumentException("Der desiredPath darf nicht Null oder leer sein --> vermutlich Dijsktra kam zu keinem Ergebnis!");
         }
@@ -76,7 +76,7 @@ public class CWalker {
         }
     }
 
-    public LinkedList<CVertex> getDesiredPath() {
+    public LinkedList<CPosition> getDesiredPath() {
         return this.desiredPath;
     }
 
@@ -106,7 +106,7 @@ public class CWalker {
             return;
         }
 
-        CVertex nextCheckPoint = this.desiredPath.getFirst();
+        CPosition nextCheckPoint = this.desiredPath.getFirst();
 
         Double xDelta = nextCheckPoint.getX() - this.currentPosition.getX();
         Double yDelta = nextCheckPoint.getY() - this.currentPosition.getY();

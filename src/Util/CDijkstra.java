@@ -29,11 +29,11 @@ public class CDijkstra {
      * This method returns the path from the source to the selected target in the Graph and
      * NULL if no path exists
      */
-    public LinkedList<CVertex> getShortestPath(CVertex oSource, CVertex oTarget)
+    public LinkedList<CPosition> getShortestPath(CVertex oSource, CVertex oTarget)
     {
         execute(oSource, oTarget);
         
-        LinkedList<CVertex> oPath = new LinkedList<CVertex>();
+        LinkedList<CPosition> oPath = new LinkedList<CPosition>();
         CVertex step = oTarget;
         // Check if a path exists
         if (aoPredecessors.get(step) == null)

@@ -66,7 +66,7 @@ public class CWorldTest {
 
         CDijkstra oDijkstra = new CDijkstra(graph);
 
-        List<CVertex> oResult = oDijkstra.getShortestPath(oVertex1, oVertex3);
+        List<CPosition> oResult = oDijkstra.getShortestPath(oVertex1, oVertex3);
 
         org.junit.Assert.assertEquals(0, oResult.indexOf(oVertex1));
         //org.junit.Assert.assertEquals(1, oResult.indexOf(oVertex2));
