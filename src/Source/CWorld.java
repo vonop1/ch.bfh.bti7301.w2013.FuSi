@@ -25,9 +25,20 @@ public class CWorld {
     private Vector<CObstacle> aoObstacles = new Vector<CObstacle>();
     private CGrid grid = new CGrid();
 
+    private Integer worldWidth = 800;
+    private Integer worldHeight = 580;
+
     public CWorld ()
     {
 
+    }
+
+    public Integer getWorldWidth() {
+        return worldWidth;
+    }
+
+    public Integer getWorldHeight() {
+        return worldHeight;
     }
 
     public Map<Integer, CWalker> getWalkers() {
