@@ -222,8 +222,8 @@ public class CWorld {
 
             CDijkstra dijkstra = new CDijkstra(this.oGraph);
 
-            CVertex position = this.oGraph.getVertexByPosition(walker.getPosition());
-            CVertex target = this.oGraph.getVertexByPosition(walker.getTarget());
+            CPosition position = this.oGraph.getVertexByPosition(walker.getPosition());
+            CPosition target = this.oGraph.getVertexByPosition(walker.getTarget());
             walker.setDesiredPath(dijkstra.getShortestPath(position, target));
         }
 
