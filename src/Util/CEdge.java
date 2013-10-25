@@ -9,11 +9,11 @@ package Util;
 public class CEdge {
 
     private int iId;
-    private CVertex oSource;
-    private CVertex oDestination;
+    private CPosition oSource;
+    private CPosition oDestination;
     private int iWeight;
 
-    public CEdge (CVertex oSource, CVertex oDestination, Integer iWeight)
+    public CEdge (CPosition oSource, CPosition oDestination, Integer iWeight)
     {
         this.iId = CGraph.incrementId();
         this.oSource = oSource;
@@ -42,12 +42,12 @@ public class CEdge {
         return iId;
     }
 
-    public CVertex getSource ()
+    public CPosition getSource ()
     {
         return oSource;
     }
 
-    public CVertex getDestination ()
+    public CPosition getDestination ()
     {
         return oDestination;
     }
