@@ -78,6 +78,8 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
             this.simulationWorld.loadConfig(configFile);
 
+            this.setBounds(0,0, this.simulationWorld.getWorldWidth(), this.simulationWorld.getWorldHeight());
+
             this.simulationWorld.buildGraph();
 
             this.timer.start();
@@ -85,6 +87,8 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         else {
             this.timer.stop();
             this.simulationWorld = null;
+            this.setBounds(0,0, Application.INSTANCE.getWidth(),  Application.INSTANCE.getHeight());
+
             this.repaint();
         }
     }

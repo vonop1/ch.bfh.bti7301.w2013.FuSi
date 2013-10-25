@@ -1,16 +1,14 @@
 package GUI;
-import com.sun.org.apache.xpath.internal.functions.FuncFalse;
-import sun.font.TrueTypeFont;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.lang.String;
 import java.lang.System;
 
 /**
  * Die Application is the main class of the passenger simulation.
- * @author pvonow
+ * 
+ * @author Roger Jaggi
  * @version 1.0
  */
 public class Application extends JFrame implements WindowListener, KeyListener {
@@ -24,12 +22,10 @@ public class Application extends JFrame implements WindowListener, KeyListener {
 
     /**
      * Startup the application
-     * @param args
+     * @param args application arguments
      */
     public static void main(String[] args) {
         // Let's go
-        Application.INSTANCE.pack();
-        Application.INSTANCE.setLocationRelativeTo(null);
         Application.INSTANCE.setVisible(true);
     }
 
@@ -40,19 +36,19 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         loadSimulationPanel();
     }
 
-    public final void addComponentsToPane(Container pane) {
-
-    }
-
     public final void initUI() {
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setSize(800, 600);
+        this.setLocationRelativeTo(null);
         this.addKeyListener(this);
 
-        menuBar.setPreferredSize(new Dimension(800, 20));
+        menuBar.setBounds(0,0,800,20);
         JMenu menu = new JMenu("Options");
         menuBar.add(menu);
 
         JMenuItem itemSimulation = new JMenuItem("Start Simulation (F2)");
+        //itemSimulation.setMnemonic(KeyEvent.VK_F2);
         itemSimulation.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 loadSimulationPanel();
@@ -69,12 +65,12 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         menu.add(itemWorldEditor);
 
         this.setJMenuBar(menuBar);
+        this.setVisible(true);
     }
-
 
     public void loadSimulationPanel() {
         // set the Panel size to the Window size
-        simulationPanel.setPreferredSize(new Dimension(800, 600));
+        simulationPanel.setBounds(0, 0, 800, 580);
 
         for(int m = 0; m < menuBar.getMenuCount(); ++m) {
             if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Add")){
@@ -83,7 +79,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         }
 
         this.getContentPane().removeAll();
-        this.getContentPane().add(simulationPanel, BorderLayout.CENTER);
+        this.getContentPane().add(simulationPanel);
         this.revalidate();
         this.repaint();
     }
@@ -100,7 +96,11 @@ public class Application extends JFrame implements WindowListener, KeyListener {
             JMenuItem itemRectangle = new JMenuItem("Rectangle");
             itemRectangle.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    worldEditor.addRectangle();
+                    Rectangle rectangle = new Rectangle();
+                    worldEditor.add(rectangle);
+                    rectangle.newRectangle();
+                    worldEditor.repaint();
+                    System.out.println("Test");
                 }
             });
             JMenuItem itemEllipse = new JMenuItem("Ellipse");
@@ -114,10 +114,9 @@ public class Application extends JFrame implements WindowListener, KeyListener {
             menuBar.add(menu);
         }
 
-        // set the Panel size to the Window size
-        simulationPanel.setPreferredSize(new Dimension(800, 600));
+        worldEditor.setBounds(0, 0, 800, 580);
         Application.INSTANCE.getContentPane().removeAll();
-        Application.INSTANCE.getContentPane().add(worldEditor, BorderLayout.CENTER);
+        Application.INSTANCE.getContentPane().add(worldEditor);
         Application.INSTANCE.revalidate();
         worldEditor.setupEditor();
     }
@@ -182,9 +181,9 @@ public class Application extends JFrame implements WindowListener, KeyListener {
             loadSimulationPanel();
         }
 
-        // ESC-Key exits the simulation
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            System.exit(0);
+        // F3-Key starts the world editor
+        if ( e.getKeyCode() == KeyEvent.VK_F3) {
+            loadWorldEditor();
         }
 	}
 	

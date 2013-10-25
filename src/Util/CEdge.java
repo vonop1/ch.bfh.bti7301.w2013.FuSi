@@ -59,19 +59,8 @@ public class CEdge {
 
     public boolean hasIntersectionWith(CEdge other) {
 
-        CPosition returnValue = CMathFunctions.calcIntersectionPoint(this.getSource(), this.getDestination(), other.getSource(), other.getDestination());
+        CPosition returnValue = CMathFunctions.calcIntersectionPoint(this.getSource(), this.getDestination(), other.getSource(), other.getDestination(), false, false);
 
-        if (returnValue == null)
-        {
-            return false;
-        }
-
-        if(oSource.isPointInRectangleBetween(oDestination, returnValue)) {
-            if(other.getSource().isPointInRectangleBetween(other.oDestination, returnValue)) {
-                return true;
-            }
-        }
-
-        return  false;
+        return returnValue != null;
     }
 }
