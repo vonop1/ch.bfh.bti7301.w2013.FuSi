@@ -12,7 +12,7 @@ public class CPosition implements Comparable<CPosition> {
     private Double dX;
     private Double dY;
 
-    public CPosition(int X, int Y)
+    public CPosition(Integer X, Integer Y)
     {
         this.dX = Double.valueOf(X);
         this.dY = Double.valueOf(Y);
@@ -43,10 +43,21 @@ public class CPosition implements Comparable<CPosition> {
         return returnValue;
     }
 
+    /**
+     * calculates the the distance to another point
+     * @param other the other Point
+     * @return the distance as Double
+     */
     public Double getDistanceTo(CPosition other) {
         return calcDistance(this, other);
     }
 
+    /**
+     * determines if the point is in the radius of another point
+     * @param other the other point
+     * @param radius the radius
+     * @return true if the point is in the radius oder false if not
+     */
     public boolean isNearBy(CPosition other, Double radius) {
 
         if( Math.abs(other.getX() - this.getX()) < radius) {
@@ -55,10 +66,16 @@ public class CPosition implements Comparable<CPosition> {
             }
         }
         return false;
-
     }
 
-    public Double getDistanceToLine(CPosition lineStartPos, CPosition lineEndPos) {
+    /**
+     * calculates the distance to a line
+     * @param lineStartPos starting point of the line
+     * @param lineEndPos ending point of the line
+     * @param isInfiniteLine indicates if the lines is infinite or only between the two points
+     * @return the distance as Double
+     */
+    public Double getDistanceToLine(CPosition lineStartPos, CPosition lineEndPos, Boolean isInfiniteLine) {
         return calcLineToPointDistance(lineStartPos, lineEndPos, this, true);
     }
 
