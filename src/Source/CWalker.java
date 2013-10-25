@@ -82,11 +82,15 @@ public class CWalker {
 
     public boolean checkAndHandleCollisionWith(CWalker other) {
 
+        if(this.equals(other)) {
+            return false;
+        }
+
         Boolean hasCollision = this.getDesiredNextPosition().isNearBy(other.getDesiredNextPosition(), stepSize / 2);
 
         if(hasCollision) {
             // when we have a collision, just wait in a first step
-            //this.desiredNextPosition = this.currentPosition;
+            this.desiredNextPosition = this.currentPosition;
         }
 
         return hasCollision;

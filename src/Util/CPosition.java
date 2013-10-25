@@ -125,6 +125,10 @@ public class CPosition implements Comparable<CPosition> {
      */
     public static Double calcDistance(CPosition pointA, CPosition pointB)
     {
+        if(pointA == null || pointB == null) {
+            return null;
+        }
+
         Double deltaX = pointA.getX() - pointB.getX();
         Double deltaY = pointA.getY() - pointB.getY();
 
