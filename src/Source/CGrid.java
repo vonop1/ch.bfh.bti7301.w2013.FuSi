@@ -24,8 +24,8 @@ public class CGrid {
      */
     void subscribeWalker (CWalker walker)
     {
-        Integer gridColumn = walker.getPosition().getY().intValue() / gridSizeC;
-        Integer gridRow = walker.getPosition().getX().intValue() / gridSizeC;
+        Integer gridColumn = walker.getDesiredNextPosition().getY().intValue() / gridSizeC;
+        Integer gridRow = walker.getDesiredNextPosition().getX().intValue() / gridSizeC;
 
         Map<Integer, Vector<CWalker>> gridRowMap;
         Vector<CWalker> walkerInCell;
@@ -105,8 +105,8 @@ public class CGrid {
     {
         Vector<CWalker> neighbours = new Vector<CWalker>();
 
-        Integer gridColumn = walker.getPosition().getY().intValue() / gridSizeC;
-        Integer gridRow = walker.getPosition().getX().intValue() / gridSizeC;
+        Integer gridColumn = walker.getDesiredNextPosition().getY().intValue() / gridSizeC;
+        Integer gridRow = walker.getDesiredNextPosition().getX().intValue() / gridSizeC;
 
         Map<Integer, Vector<CWalker>> gridRowMap;
         for (int i = gridColumn - 1; i < gridColumn + 2; i++)
