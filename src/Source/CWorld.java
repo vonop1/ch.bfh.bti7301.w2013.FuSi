@@ -9,7 +9,6 @@ import javax.xml.parsers.DocumentBuilder;
 import Util.CDijkstra;
 import Util.CGraph;
 import Util.CPosition;
-import Util.CVertex;
 import org.w3c.dom.*;
 
 /**

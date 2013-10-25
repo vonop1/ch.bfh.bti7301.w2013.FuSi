@@ -49,6 +49,15 @@ public class CPosition implements Comparable<CPosition> {
         return returnValue;
     }
 
+    @Override
+    public boolean equals (Object obj)
+    {
+        return  obj != null &&
+                obj.getClass() == this.getClass() &&
+                ((CPosition)obj).getX().equals(this.getX()) &&
+                ((CPosition)obj).getY().equals(this.getY());
+    }
+
     /**
      * calculates the the distance to another point
      * @param other the other Point

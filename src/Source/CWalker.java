@@ -1,7 +1,6 @@
 package Source;
 
 import Util.CPosition;
-import Util.CVertex;
 
 import java.util.LinkedList;
 import java.util.NoSuchElementException;

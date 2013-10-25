@@ -54,9 +54,9 @@ public class CWorldTest {
     @Test
     public void testDijkstra()
     {
-        CVertex oVertex1 = new CVertex(1, 5);
-        CVertex oVertex2 = new CVertex(2, 8);
-        CVertex oVertex3 = new CVertex(3, 36);
+        CPosition oVertex1 = new CPosition(1, 5);
+        CPosition oVertex2 = new CPosition(2, 8);
+        CPosition oVertex3 = new CPosition(3, 36);
 
         CGraph graph = new CGraph();
 
