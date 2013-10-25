@@ -240,21 +240,24 @@ public class CWorld {
         while(iter.hasNext()){
             CWalker walker = iter.next();
             grid.unsubscribeWalker(walker);
-            if(walker.walkAStep()){
-                // Walker has reached target, remove the guy
-                iter.remove();
-            }
-            else
-            {
+            walker.calcNextDesiredPosition();
+
                 grid.subscribeWalker(walker);
-            }
 
             grid.getNeighbours(walker);
 
         }
 
+        iter = this.aoWalkers.values().iterator();
+        while(iter.hasNext()){
+            CWalker walker = iter.next();
+            walker.walkToNextDesiredPosition();
+
+        }
+
+
 //        for(CWalker walker : this.aoWalkers) {
-//            if( walker.walkAStep()) {
+//            if( walker.walkToNextDesiredPosition()) {
 //                // Walker has reached target, remove the guy
 //                this.aoWalkers.removeElement(walker) // fires a ConcurrentModificationException
 //            }

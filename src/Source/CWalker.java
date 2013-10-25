@@ -4,6 +4,7 @@ import Util.CPosition;
 import Util.CVertex;
 
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,29 +22,31 @@ public class CWalker {
 
 
    private Integer id;
-   private CPosition oPos;
-   private CPosition oTarget;
-   private CPosition oStart;
+   private CPosition currentPosition;
+   private CPosition targetPosition;
+   private CPosition startPosition;
+   private CPosition desiredNextPosition;
+
    private Double size = 5.0;
    private Double stepSize = 2.0;
 
    private LinkedList<CVertex> desiredPath = new LinkedList<CVertex>();
 
    public CWalker(CPosition start, CPosition target) {
-       this.oStart = start;
-       this.oPos = start;
-       this.oTarget = target;
+       this.startPosition = start;
+       this.currentPosition = start;
+       this.targetPosition = target;
        this.id = getNextId();
    }
 
    public CPosition getPosition()
    {
-       return oPos;
+       return currentPosition;
    }
 
    public CPosition getTarget()
    {
-       return oTarget;
+       return targetPosition;
    }
 
    public Double getSize() {
@@ -51,14 +54,15 @@ public class CWalker {
    }
 
     public void setDesiredPath(LinkedList<CVertex> vertexes) {
-        if(vertexes == null) {
-            this.desiredPath = new LinkedList<CVertex>();
+        if(vertexes == null || vertexes.size() == 0) {
+            throw new IllegalArgumentException("Der desiredPath darf nicht Null oder leer sein --> vermutlich Dijsktra kam zu keinem Ergebnis!");
         }
-        else {
-            this.desiredPath = vertexes;
-            if(vertexes.size() > 0) {
-                this.desiredPath.removeFirst(); // remove his own position
-            }
+
+        this.desiredPath = vertexes;
+
+        if(currentPosition.isNearBy(this.desiredPath.getFirst(), stepSize / 0.5)) {
+            // the first checkpoint is the current position, remove it from our list
+            this.desiredPath.removeFirst();
         }
     }
 
@@ -66,55 +70,52 @@ public class CWalker {
         return this.desiredPath;
     }
 
-    public boolean walkAStep() {
+    /**
+     * calculates the next position and saves the result to the nextDesiredPosition member var
+     * if there is no next position, desiredNextPosition is set to NULL
+     */
+    public void calcNextDesiredPosition() {
+        if(this.desiredPath.size() < 1) {
+            this.desiredNextPosition = null;
+            return;
+        }
+
+        CVertex nextCheckPoint = this.desiredPath.getFirst();
+
+        Double xDelta = nextCheckPoint.getX() - this.currentPosition.getX();
+        Double yDelta = nextCheckPoint.getY() - this.currentPosition.getY();
+
+        Double dAngle = 0.0;
+        if (xDelta != 0.0)
+        {
+            dAngle = Math.atan( Math.abs(yDelta) / Math.abs(xDelta) );
+        }
+
+        Double x = Math.cos(dAngle) * stepSize * ( xDelta > 0 ? 1 : -1 );
+        Double y = Math.sin(dAngle) * stepSize * ( yDelta > 0 ? 1 : -1 );
+
+        this.desiredNextPosition = new CPosition(currentPosition.getX() + x, currentPosition.getY() + y);
+    }
+
+    /**
+     * walks a step
+     * @return true if ok or false if the walker is on the target
+     */
+    public boolean walkToNextDesiredPosition() {
 
         if(this.desiredPath.size() > 0)
         {
-            CVertex nextCheckPoint = this.desiredPath.getFirst();
-
-            Double xDelta = nextCheckPoint.getX() - this.oPos.getX();
-            Double yDelta = nextCheckPoint.getY() - this.oPos.getY();
-
-            Double x = 0.0;
-            Double y = 0.0;
-
-            Double dAngle = 0.0;
-            if (xDelta != 0.0)
-            {
-                dAngle = Math.atan( Math.abs(yDelta) / Math.abs(xDelta) );
+            if(this.desiredNextPosition == null) {
+                return true;
             }
 
-            if (xDelta > 0)
-            {
-                // positive x direction
-                x = Math.cos(dAngle) * stepSize;
-
-            }
-            else
-            {
-                //negative x Direction
-                x = - Math.cos(dAngle) * stepSize;
-            }
-
-            if (yDelta > 0)
-            {
-                // positive y Direction
-                y = Math.sin(dAngle) * stepSize;
-            }
-            else
-            {
-                // negative y Direction
-                y = - (Math.sin(dAngle) * stepSize);
-            }
-
-            CPosition newPos = new CPosition(oPos.getX() + x, oPos.getY() + y);
-
-            if(newPos.isNearBy(nextCheckPoint, stepSize / 0.5)) {
+            if(this.desiredNextPosition.isNearBy(this.desiredPath.getFirst(), stepSize / 0.5)) {
                 // Yes, we reached a checkpoint, remove it from our list
                 this.desiredPath.removeFirst();
             }
 
-            this.oPos = newPos;
+            this.currentPosition = this.desiredNextPosition;
+            this.desiredNextPosition = null;
         }
 
         return this.desiredPath.size() == 0;
