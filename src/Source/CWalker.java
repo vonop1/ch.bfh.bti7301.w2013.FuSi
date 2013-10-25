@@ -98,7 +98,7 @@ public class CWalker {
     }
 
     /**
-     * walks a step
+     * walks a step to the next desired Position and resets desiredNextPosition member variable to NULL
      * @return true if ok or false if the walker is on the target
      */
     public boolean walkToNextDesiredPosition() {
@@ -115,9 +115,10 @@ public class CWalker {
             }
 
             this.currentPosition = this.desiredNextPosition;
-            this.desiredNextPosition = null;
+
         }
 
+        this.desiredNextPosition = null;
         return this.desiredPath.size() == 0;
     }
 
