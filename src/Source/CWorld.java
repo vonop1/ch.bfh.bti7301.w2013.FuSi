@@ -257,6 +257,7 @@ public class CWorld {
             CWalker walker = iter.next();
             if( walker.walkToNextDesiredPosition() ) {
                 // Walker has reached target, remove the guy
+                grid.unsubscribeWalker(walker);
                 iter.remove();
             }
         }

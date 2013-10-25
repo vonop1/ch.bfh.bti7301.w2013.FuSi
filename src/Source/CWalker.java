@@ -26,6 +26,8 @@ public class CWalker {
    private CPosition targetPosition;
    private CPosition startPosition;
    private CPosition desiredNextPosition;
+   private Double nextStepDeltaX;
+   private Double nextStepDeltaY;
 
    private Double size = 5.0;
    private Double stepSize = 2.0;
@@ -86,14 +88,30 @@ public class CWalker {
             return false;
         }
 
-        Boolean hasCollision = this.getDesiredNextPosition().isNearBy(other.getDesiredNextPosition(), stepSize / 2);
+        Boolean hasCollision = this.getDesiredNextPosition().isNearBy(other.getDesiredNextPosition(), this.getSize() + other.getSize() + 1);
 
         if(hasCollision) {
-            // when we have a collision, just wait in a first step
-            this.desiredNextPosition = this.currentPosition;
+
+            // show if the collision is in the walk direction of the walker
+            if((new CPosition(this.desiredNextPosition.getX() + this.nextStepDeltaX, this.desiredNextPosition.getY() + this.nextStepDeltaY))
+                    .isNearBy(other.getDesiredNextPosition(), this.getSize() + other.getSize() + 1)) {
+
+                // when we have a collision, just wait
+                this.desiredNextPosition = null;
+            }
+            else {
+                hasCollision = false;
+            }
         }
 
         return hasCollision;
+    }
+
+
+    public boolean isInFrontOf(CWalker other, Double maxDistance) {
+
+        return false;
+
     }
 
     /**
@@ -117,10 +135,10 @@ public class CWalker {
             dAngle = Math.atan( Math.abs(yDelta) / Math.abs(xDelta) );
         }
 
-        Double x = Math.cos(dAngle) * stepSize * ( xDelta > 0 ? 1 : -1 );
-        Double y = Math.sin(dAngle) * stepSize * ( yDelta > 0 ? 1 : -1 );
+        this.nextStepDeltaX = Math.cos(dAngle) * stepSize * ( xDelta > 0 ? 1 : -1 );
+        this.nextStepDeltaY = Math.sin(dAngle) * stepSize * ( yDelta > 0 ? 1 : -1 );
 
-        this.desiredNextPosition = new CPosition(currentPosition.getX() + x, currentPosition.getY() + y);
+        this.desiredNextPosition = new CPosition(currentPosition.getX() + nextStepDeltaX, currentPosition.getY() + nextStepDeltaY);
     }
 
     /**
@@ -132,7 +150,7 @@ public class CWalker {
         if(this.desiredPath.size() > 0)
         {
             if(this.desiredNextPosition == null) {
-                return true;
+                return false;
             }
 
             if(this.desiredNextPosition.isNearBy(this.desiredPath.getFirst(), stepSize / 0.5)) {
