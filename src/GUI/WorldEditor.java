@@ -1,15 +1,12 @@
 package GUI;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import javax.swing.JFrame;
@@ -26,29 +23,23 @@ import javax.swing.SwingUtilities;
 
 public class WorldEditor extends JPanel{
 
+    //ArrayList with all resizable and movable rectangles
     private ArrayList<ZRectangle> zrects = new ArrayList<ZRectangle>();
-    private ZEllipse zell;
 
-    public void addRectangle(){
-        zrects.add(new ZRectangle(50,50,50,50));
-        repaint();
-    }
+    //private Point2D[] points;
+    private int SIZE = 8;
+    private int pos;
+    private ZEllipse zell;
 
     public WorldEditor() {
         super();
-
-        // We want to positionate our Elements with x und y coordinates
-        //setLayout(null);
     }
 
     public void setupEditor() {
         MovingAdapter ma = new MovingAdapter();
         addMouseMotionListener(ma);
         addMouseListener(ma);
-        addMouseWheelListener(new ScaleHandler());
-
-        zrects.add(new ZRectangle(50, 50, 50, 50));
-        zell = new ZEllipse(150, 70, 80, 80);
+        //addMouseWheelListener(new ScaleHandler());
 
         setDoubleBuffered(true);
     }
@@ -58,13 +49,21 @@ public class WorldEditor extends JPanel{
 
         Graphics2D g2d = (Graphics2D) g;
 
-        g2d.setColor(new Color(0, 0, 200));
+        double x = 0;
+        double y = 0;
+
         for(ZRectangle zrect : zrects){
+            g2d.setColor(new Color(255, 255, 255));
             g2d.fill(zrect);
+            x = zrect.getX() - SIZE / 2;
+            y = zrect.getY() - SIZE / 2;
+            g2d.setColor(new Color(0, 0, 0));
+            g2d.fill(new Rectangle2D.Double(x, y, SIZE, SIZE));
+            x = zrect.getX() + zrect.getWidth() - SIZE / 2;
+            y = zrect.getY() + zrect.getHeight() - SIZE / 2;
+            g2d.fill(new Rectangle2D.Double(x, y, SIZE, SIZE));
         }
 
-        g2d.setColor(new Color(0, 200, 0));
-        g2d.fill(zell);
     }
 
     @Override
@@ -73,6 +72,79 @@ public class WorldEditor extends JPanel{
         super.paintComponent(g);
         doDrawing(g);
     }
+
+    public void addRectangle(){
+        zrects.add(new ZRectangle(50,50,50,50));
+        repaint();
+    }
+
+    private class MovingAdapter extends MouseAdapter {
+
+            private int x;
+            private int y;
+            private int i;
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point p = e.getPoint();
+                x = e.getX();
+                y = e.getY();
+                i = 0;
+
+                for (ZRectangle zrect : zrects) {
+                    double x = zrect.getX() - SIZE / 2;
+                    double y = zrect.getY() - SIZE / 2;
+                    Rectangle2D r = new Rectangle2D.Double(x, y, SIZE, SIZE);
+
+                    if (r.contains(p)) {
+                        pos = i;
+                        return;
+                    }
+                    i++;
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent event) {
+                pos = -1;
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+
+                int dx = e.getX() - x;
+                int dy = e.getY() - y;
+
+                for (ZRectangle zrect : zrects){
+                    if (zrect.isHit(x, y)) {
+
+                        zrect.addX(dx);
+                        zrect.addY(dy);
+                        repaint();
+                    }
+                }
+
+                if (zell.isHit(x, y)) {
+
+                    zell.addX(dx);
+                    zell.addY(dy);
+                    repaint();
+                }
+
+                x += dx;
+                y += dy;
+
+                if (pos == -1) {
+                    return;
+                }
+
+                ZRectangle zrect = zrects.get(i);
+
+                //points[pos] = e.getPoint();
+                repaint();
+            }
+        }
+}
 
     class ZEllipse extends Ellipse2D.Float {
 
@@ -116,7 +188,6 @@ public class WorldEditor extends JPanel{
     class ZRectangle extends Rectangle2D.Float {
 
         public ZRectangle(float x, float y, float width, float height) {
-
             setRect(x, y, width, height);
         }
 
@@ -152,45 +223,8 @@ public class WorldEditor extends JPanel{
         }
     }
 
-    class MovingAdapter extends MouseAdapter {
 
-        private int x;
-        private int y;
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-            x = e.getX();
-            y = e.getY();
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-
-            int dx = e.getX() - x;
-            int dy = e.getY() - y;
-
-            for (ZRectangle zrect : zrects){
-                if (zrect.isHit(x, y)) {
-
-                    zrect.addX(dx);
-                    zrect.addY(dy);
-                    repaint();
-                }
-            }
-
-            if (zell.isHit(x, y)) {
-
-                zell.addX(dx);
-                zell.addY(dy);
-                repaint();
-            }
-
-            x += dx;
-            y += dy;
-        }
-    }
-
+    /*
     class ScaleHandler implements MouseWheelListener {
 
         @Override
@@ -219,6 +253,6 @@ public class WorldEditor extends JPanel{
             }
         }
     }
-}
+    */
 
 
