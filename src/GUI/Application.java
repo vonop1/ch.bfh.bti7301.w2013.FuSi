@@ -96,11 +96,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
             JMenuItem itemRectangle = new JMenuItem("Rectangle");
             itemRectangle.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    Rectangle rectangle = new Rectangle();
-                    worldEditor.add(rectangle);
-                    rectangle.newRectangle();
-                    worldEditor.repaint();
-                    System.out.println("Test");
+                    worldEditor.addRectangle();
                 }
             });
             JMenuItem itemEllipse = new JMenuItem("Ellipse");
