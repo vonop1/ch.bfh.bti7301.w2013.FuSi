@@ -1,7 +1,6 @@
 package Source;
 
 import Util.CPosition;
-import Util.CVertex;
 
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -32,7 +31,7 @@ public class CWalker {
    private Double size = 5.0;
    private Double stepSize = 2.0;
 
-   private LinkedList<CVertex> desiredPath = new LinkedList<CVertex>();
+   private LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
 
    public CWalker(CPosition start, CPosition target) {
        this.startPosition = start;
@@ -82,7 +81,7 @@ public class CWalker {
         }
     }
 
-    public LinkedList<CVertex> getDesiredPath() {
+    public LinkedList<CPosition> getDesiredPath() {
         return this.desiredPath;
     }
 
@@ -130,7 +129,7 @@ public class CWalker {
             return;
         }
 
-        CVertex nextCheckPoint = this.desiredPath.getFirst();
+        CPosition nextCheckPoint = this.desiredPath.getFirst();
 
         Double xDelta = nextCheckPoint.getX() - this.currentPosition.getX();
         Double yDelta = nextCheckPoint.getY() - this.currentPosition.getY();

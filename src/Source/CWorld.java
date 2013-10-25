@@ -9,7 +9,6 @@ import javax.xml.parsers.DocumentBuilder;
 import Util.CDijkstra;
 import Util.CGraph;
 import Util.CPosition;
-import Util.CVertex;
 import org.w3c.dom.*;
 
 /**
@@ -225,8 +224,8 @@ public class CWorld {
 
             CDijkstra dijkstra = new CDijkstra(this.oGraph);
 
-            CVertex position = this.oGraph.getVertexByPosition(walker.getPosition());
-            CVertex target = this.oGraph.getVertexByPosition(walker.getTarget());
+            CPosition position = this.oGraph.getVertexByPosition(walker.getPosition());
+            CPosition target = this.oGraph.getVertexByPosition(walker.getTarget());
             walker.setDesiredPath(dijkstra.getShortestPath(position, target));
         }
 

@@ -11,17 +11,17 @@ import java.util.*;
  */
 public class CDijkstra {
 
-    private Vector<CVertex> aoNodes;
+    private Vector<CPosition> aoNodes;
     private Vector<CEdge> aoEdges;
-    private Vector<CVertex> aoSettledNodes;
-    private Vector<CVertex> aoUnSettledNodes;
-    private Map<CVertex, CVertex> aoPredecessors;
-    private Map<CVertex, Integer> aoDistance;
+    private Vector<CPosition> aoSettledNodes;
+    private Vector<CPosition> aoUnSettledNodes;
+    private Map<CPosition, CPosition> aoPredecessors;
+    private Map<CPosition, Integer> aoDistance;
 
     public CDijkstra (CGraph oGraph)
     {
         // Create a copy of the array so that we can operate on this array
-        this.aoNodes = new Vector<CVertex>(oGraph.getVertexes());
+        this.aoNodes = new Vector<CPosition>(oGraph.getVertexes());
         this.aoEdges = new Vector<CEdge>(oGraph.getEdges());
     }
 
@@ -29,12 +29,12 @@ public class CDijkstra {
      * This method returns the path from the source to the selected target in the Graph and
      * NULL if no path exists
      */
-    public LinkedList<CVertex> getShortestPath(CVertex oSource, CVertex oTarget)
+    public LinkedList<CPosition> getShortestPath(CPosition oSource, CPosition oTarget)
     {
         execute(oSource, oTarget);
         
-        LinkedList<CVertex> oPath = new LinkedList<CVertex>();
-        CVertex step = oTarget;
+        LinkedList<CPosition> oPath = new LinkedList<CPosition>();
+        CPosition step = oTarget;
         // Check if a path exists
         if (aoPredecessors.get(step) == null)
         {
@@ -56,16 +56,16 @@ public class CDijkstra {
      * @param oSource
      * @param oTarget
      */
-    private void execute(CVertex oSource, CVertex oTarget) {
-        aoSettledNodes = new Vector<CVertex>();
-        aoUnSettledNodes = new Vector<CVertex>();
-        aoDistance = new HashMap<CVertex, Integer>();
-        aoPredecessors = new HashMap<CVertex, CVertex>();
+    private void execute(CPosition oSource, CPosition oTarget) {
+        aoSettledNodes = new Vector<CPosition>();
+        aoUnSettledNodes = new Vector<CPosition>();
+        aoDistance = new HashMap<CPosition, Integer>();
+        aoPredecessors = new HashMap<CPosition, CPosition>();
         aoDistance.put(oSource, 0);
         aoUnSettledNodes.add(oSource);
         while (aoUnSettledNodes.size() > 0)
         {
-            CVertex oNode = getMinimum(aoUnSettledNodes);
+            CPosition oNode = getMinimum(aoUnSettledNodes);
             aoSettledNodes.add(oNode);
             aoUnSettledNodes.remove(oNode);
             findMinimalDistances(oNode);
@@ -81,10 +81,10 @@ public class CDijkstra {
      * Finds the minimal distance of a node to all neighbor nodes
      * @param oNode
      */
-    private void findMinimalDistances(CVertex oNode) 
+    private void findMinimalDistances(CPosition oNode) 
     {
-        Vector<CVertex> aoAdjacentNodes = getNeighbors(oNode);
-        for (CVertex oTarget : aoAdjacentNodes)
+        Vector<CPosition> aoAdjacentNodes = getNeighbors(oNode);
+        for (CPosition oTarget : aoAdjacentNodes)
         {
             if (getShortestDistance(oTarget) > getShortestDistance(oNode) + getDistance(oNode, oTarget)) 
             {
@@ -102,7 +102,7 @@ public class CDijkstra {
      * @param target the target node
      * @return weight
      */
-    private int getDistance(CVertex node, CVertex target) {
+    private int getDistance(CPosition node, CPosition target) {
         for (CEdge edge : aoEdges)
         {
             if (edge.getSource().equals(node) && edge.getDestination().equals(target)) 
@@ -124,8 +124,8 @@ public class CDijkstra {
      * @param oNode
      * @return
      */
-    private Vector<CVertex> getNeighbors(CVertex oNode) {
-        Vector<CVertex> oNeighbors = new Vector<CVertex>();
+    private Vector<CPosition> getNeighbors(CPosition oNode) {
+        Vector<CPosition> oNeighbors = new Vector<CPosition>();
         for (CEdge oEdge : aoEdges)
         {
             if (oEdge.getSource().equals(oNode) && !isSettled(oEdge.getDestination()))
@@ -147,10 +147,10 @@ public class CDijkstra {
      * @param aoVertexes list of vertexes
      * @return the min(vertex.distance)
      */
-    private CVertex getMinimum(Vector<CVertex> aoVertexes) 
+    private CPosition getMinimum(Vector<CPosition> aoVertexes) 
     {
-        CVertex oMinimum = null;
-        for (CVertex oVertex : aoVertexes) 
+        CPosition oMinimum = null;
+        for (CPosition oVertex : aoVertexes) 
         {
             if (oMinimum == null) 
             {
@@ -172,7 +172,7 @@ public class CDijkstra {
      * @param oVertex
      * @return
      */
-    private boolean isSettled(CVertex oVertex) 
+    private boolean isSettled(CPosition oVertex) 
     {
         return aoSettledNodes.contains(oVertex);
     }
@@ -182,7 +182,7 @@ public class CDijkstra {
      * @param oDestination the vertex of the graph
      * @return the current shortest distance
      */
-    private int getShortestDistance(CVertex oDestination) 
+    private int getShortestDistance(CPosition oDestination) 
     {
         Integer iDistance = aoDistance.get(oDestination);
         if (iDistance == null) 

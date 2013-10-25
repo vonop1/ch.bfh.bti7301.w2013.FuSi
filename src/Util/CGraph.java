@@ -15,7 +15,7 @@ import java.util.List;
 public class CGraph {
     protected static int lastId = 0;
 
-    private final List<CVertex> vertexes;
+    private final List<CPosition> vertexes;
     private final List<CEdge> edges;
     private final List<CEdge> trashEdges;
     private final List<CEdge> obstacleEdges;
@@ -35,7 +35,7 @@ public class CGraph {
      * Creates an empty graph
      */
     public CGraph(Integer maxWidth, Integer maxHeight) {
-        this.vertexes = new LinkedList<CVertex>();
+        this.vertexes = new LinkedList<CPosition>();
         this.edges = new LinkedList<CEdge>();
         this.trashEdges = new LinkedList<CEdge>();
         this.obstacleEdges = new LinkedList<CEdge>();
@@ -48,7 +48,7 @@ public class CGraph {
      * @param vertexes the vertexes
      * @param edges the edges
      */
-    public CGraph(List<CVertex> vertexes, List<CEdge> edges, List<CEdge> obstacleEdges, Integer maxWidth, Integer maxHeight) {
+    public CGraph(List<CPosition> vertexes, List<CEdge> edges, List<CEdge> obstacleEdges, Integer maxWidth, Integer maxHeight) {
         this.vertexes = vertexes;
         this.edges = edges;
         this.trashEdges = new LinkedList<CEdge>();
@@ -57,7 +57,7 @@ public class CGraph {
         this.maxHeight = maxHeight;
     }
 
-    public List<CVertex> getVertexes() {
+    public List<CPosition> getVertexes() {
         return vertexes;
     }
 
@@ -69,9 +69,9 @@ public class CGraph {
         return trashEdges;
     }
 
-    public CVertex getVertexByPosition(CPosition pos) {
+    public CPosition getVertexByPosition(CPosition pos) {
 
-        for(CVertex v : this.vertexes) {
+        for(CPosition v : this.vertexes) {
             if(v.compareTo(pos) == 0)  {   // we have found an already existing source
                 return v;
             }
@@ -94,18 +94,17 @@ public class CGraph {
      * @param destination
      */
     public void addObstacleEdge(CPosition source, CPosition destination) {
-        this.obstacleEdges.add(new CEdge(new CVertex(source), new CVertex(destination), null));
+        this.obstacleEdges.add(new CEdge(source, destination, null));
     }
 
     /**
      * adds a Waypoint edge to the graph if it does not intersect with an obstacle edge
      * @param source
      * @param destination
-     * @return true if the adding was successful or false if not
      */
     public Boolean addWayPointEdge(CPosition source, CPosition destination) {
-        CVertex vertexSource = null;
-        CVertex vertexDestination = null;
+        CPosition vertexSource = null;
+        CPosition vertexDestination = null;
 
         if(source == null || destination == null) {
             throw new IllegalArgumentException("Die Punkte einer Edge dürfen nicht NULL sein!");
@@ -117,7 +116,7 @@ public class CGraph {
         }
 
         // find already existing source/destination vertex
-        for(CVertex v : vertexes) {
+        for(CPosition v : vertexes) {
              if(v.compareTo(source) == 0)  {   // we have found an already existing source
                 vertexSource = v;
                 if(vertexDestination != null) {
@@ -144,12 +143,12 @@ public class CGraph {
         }
 
         if(vertexSource == null) {
-            vertexSource = new CVertex(source);
+            vertexSource = source;
             this.vertexes.add(vertexSource);
         }
 
         if(vertexDestination == null) {
-            vertexDestination = new CVertex(destination);
+            vertexDestination = destination;
             this.vertexes.add(vertexDestination);
         }
 
