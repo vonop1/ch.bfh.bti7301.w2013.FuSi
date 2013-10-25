@@ -69,8 +69,6 @@ public class Application extends JFrame implements WindowListener, KeyListener {
     }
 
     public void loadSimulationPanel() {
-        // set the Panel size to the Window size
-        simulationPanel.setBounds(0, 0, 800, 580);
 
         for(int m = 0; m < menuBar.getMenuCount(); ++m) {
             if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Add")){
