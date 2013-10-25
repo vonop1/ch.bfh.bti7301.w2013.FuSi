@@ -24,6 +24,12 @@ public class CPosition implements Comparable<CPosition> {
         this.dY = Y;
     }
 
+    public CPosition(CPosition pos)
+    {
+        this.dX = pos.getX();
+        this.dY = pos.getY();
+    }
+
     public Double getX() {
         return dX;
     }

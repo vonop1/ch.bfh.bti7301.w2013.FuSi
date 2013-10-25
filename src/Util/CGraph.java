@@ -117,12 +117,12 @@ public class CGraph {
         }
 
         if(vertexSource == null) {
-            vertexSource = new CVertex(source);
+            vertexSource = new CPosition(source);
             this.vertexes.add(vertexSource);
         }
 
         if(vertexDestination == null) {
-            vertexDestination = new CVertex(destination);
+            vertexDestination = new CPosition(destination);
             this.vertexes.add(vertexDestination);
         }
 
