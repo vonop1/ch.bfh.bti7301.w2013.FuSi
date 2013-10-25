@@ -68,7 +68,7 @@ public class CWalker {
         return this.desiredNextPosition == null;
     }
 
-    public void setDesiredPath(LinkedList<CVertex> vertexes) {
+    public void setDesiredPath(LinkedList<CPosition> vertexes) {
         if(vertexes == null || vertexes.size() == 0) {
             throw new IllegalArgumentException("Der desiredPath darf nicht Null oder leer sein --> vermutlich Dijsktra kam zu keinem Ergebnis!");
         }
