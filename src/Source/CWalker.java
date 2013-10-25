@@ -65,6 +65,10 @@ public class CWalker {
        return size;
    }
 
+    public Boolean isStanding() {
+        return this.desiredNextPosition == null;
+    }
+
     public void setDesiredPath(LinkedList<CVertex> vertexes) {
         if(vertexes == null || vertexes.size() == 0) {
             throw new IllegalArgumentException("Der desiredPath darf nicht Null oder leer sein --> vermutlich Dijsktra kam zu keinem Ergebnis!");
@@ -93,11 +97,13 @@ public class CWalker {
         if(hasCollision) {
 
             // show if the collision is in the walk direction of the walker
-            if((new CPosition(this.desiredNextPosition.getX() + this.nextStepDeltaX, this.desiredNextPosition.getY() + this.nextStepDeltaY))
+            if(this.desiredNextPosition != null && (new CPosition(this.desiredNextPosition.getX() + this.nextStepDeltaX, this.desiredNextPosition.getY() + this.nextStepDeltaY))
                     .isNearBy(other.getDesiredNextPosition(), this.getSize() + other.getSize() + 1)) {
 
-                // when we have a collision, just wait
-                this.desiredNextPosition = null;
+                if(!other.isStanding()) {
+                    // when we have a collision, just wait if the other is not waiting
+                    this.desiredNextPosition = null;
+                }
             }
             else {
                 hasCollision = false;

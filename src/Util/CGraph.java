@@ -19,20 +19,28 @@ public class CGraph {
     private final List<CEdge> edges;
     private final List<CEdge> trashEdges;
     private final List<CEdge> obstacleEdges;
+    private Integer maxWidth;
+    private Integer maxHeight;
 
     public static int incrementId() {
         CGraph.lastId += 1;
         return CGraph.lastId;
     }
 
+    public static void resetId() {
+        CGraph.lastId = 0;
+    }
+
     /**
      * Creates an empty graph
      */
-    public CGraph() {
+    public CGraph(Integer maxWidth, Integer maxHeight) {
         this.vertexes = new LinkedList<CVertex>();
         this.edges = new LinkedList<CEdge>();
         this.trashEdges = new LinkedList<CEdge>();
         this.obstacleEdges = new LinkedList<CEdge>();
+        this.maxWidth = maxWidth;
+        this.maxHeight = maxHeight;
     }
 
     /**
@@ -40,11 +48,13 @@ public class CGraph {
      * @param vertexes the vertexes
      * @param edges the edges
      */
-    public CGraph(List<CVertex> vertexes, List<CEdge> edges, List<CEdge> obstacleEdges) {
+    public CGraph(List<CVertex> vertexes, List<CEdge> edges, List<CEdge> obstacleEdges, Integer maxWidth, Integer maxHeight) {
         this.vertexes = vertexes;
         this.edges = edges;
         this.trashEdges = new LinkedList<CEdge>();
         this.obstacleEdges = obstacleEdges;
+        this.maxWidth = maxWidth;
+        this.maxHeight = maxHeight;
     }
 
     public List<CVertex> getVertexes() {
@@ -70,6 +80,13 @@ public class CGraph {
         return null;
     }
 
+    public Boolean isPointInWorld(CPosition point) {
+        if(0 <= point.getX() && point.getX() <= this.maxWidth && 0 <= point.getY() && point.getY() <= this.maxHeight) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * adds an obstacle edge. an obstacle edge is only relevant to the addWayPointEdge Method to check if a Waypoint
      * intersects with an obstacle
@@ -84,10 +101,20 @@ public class CGraph {
      * adds a Waypoint edge to the graph if it does not intersect with an obstacle edge
      * @param source
      * @param destination
+     * @return true if the adding was successful or false if not
      */
-    public void addWayPointEdge(CPosition source, CPosition destination) {
+    public Boolean addWayPointEdge(CPosition source, CPosition destination) {
         CVertex vertexSource = null;
         CVertex vertexDestination = null;
+
+        if(source == null || destination == null) {
+            throw new IllegalArgumentException("Die Punkte einer Edge dürfen nicht NULL sein!");
+        }
+
+        if(!isPointInWorld(source) || !isPointInWorld(destination)) {
+            // one point is not in the world, refuse to add the edge
+            return false;
+        }
 
         // find already existing source/destination vertex
         for(CVertex v : vertexes) {
@@ -111,7 +138,7 @@ public class CGraph {
             // we already have both vertexes in our graph, let's check if there is already an edge between those
             for(CEdge e : this.edges) {
                 if(e.getDestination().compareTo(vertexDestination) == 0 && e.getSource().compareTo(vertexSource) == 0) {
-                    return;
+                    return true;
                 }
             }
         }
@@ -133,12 +160,13 @@ public class CGraph {
         for(CEdge e : this.obstacleEdges) {
             if( e.hasIntersectionWith(newEdge)) {
                 this.trashEdges.add(newEdge);
-                return;
+                return false;
             }
         }
 
         // no crossing line, add it to the graph
         this.edges.add(newEdge);
+        return true;
     }
 
 }

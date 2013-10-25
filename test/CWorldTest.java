@@ -58,7 +58,7 @@ public class CWorldTest {
         CVertex oVertex2 = new CVertex(2, 8);
         CVertex oVertex3 = new CVertex(3, 36);
 
-        CGraph graph = new CGraph();
+        CGraph graph = new CGraph(500, 500);
 
         graph.addWayPointEdge(oVertex1, oVertex2);
         graph.addWayPointEdge(oVertex2, oVertex3);

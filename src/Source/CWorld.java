@@ -172,7 +172,10 @@ public class CWorld {
     }
 
     public void buildGraph() {
-        this.oGraph = new CGraph();
+
+        CGraph.resetId();
+
+        this.oGraph = new CGraph(this.getWorldWidth(), this.getWorldHeight());
 
         // add obstacle lines
         for(CObstacle obstacle : this.aoObstacles) {
