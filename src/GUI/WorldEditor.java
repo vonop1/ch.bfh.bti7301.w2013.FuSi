@@ -1,5 +1,7 @@
 package GUI;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -28,7 +30,7 @@ public class WorldEditor extends JPanel{
 
     //private Point2D[] points;
     private int SIZE = 8;
-    private int pos;
+    private boolean resize;
     private ZEllipse zell;
 
     public WorldEditor() {
@@ -52,13 +54,11 @@ public class WorldEditor extends JPanel{
         double x = 0;
         double y = 0;
 
+        //create new white rectangles with small black sizing rectangles
         for(ZRectangle zrect : zrects){
             g2d.setColor(new Color(255, 255, 255));
             g2d.fill(zrect);
-            x = zrect.getX() - SIZE / 2;
-            y = zrect.getY() - SIZE / 2;
             g2d.setColor(new Color(0, 0, 0));
-            g2d.fill(new Rectangle2D.Double(x, y, SIZE, SIZE));
             x = zrect.getX() + zrect.getWidth() - SIZE / 2;
             y = zrect.getY() + zrect.getHeight() - SIZE / 2;
             g2d.fill(new Rectangle2D.Double(x, y, SIZE, SIZE));
@@ -82,31 +82,28 @@ public class WorldEditor extends JPanel{
 
             private int x;
             private int y;
-            private int i;
 
             @Override
             public void mousePressed(MouseEvent e) {
                 Point p = e.getPoint();
                 x = e.getX();
                 y = e.getY();
-                i = 0;
 
                 for (ZRectangle zrect : zrects) {
-                    double x = zrect.getX() - SIZE / 2;
-                    double y = zrect.getY() - SIZE / 2;
+                    double x = zrect.getX() + zrect.getWidth() - SIZE / 2;
+                    double y = zrect.getY() + zrect.getHeight() - SIZE / 2;
                     Rectangle2D r = new Rectangle2D.Double(x, y, SIZE, SIZE);
 
                     if (r.contains(p)) {
-                        pos = i;
+                        resize = true;
                         return;
                     }
-                    i++;
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent event) {
-                pos = -1;
+                resize = false;
             }
 
             @Override
@@ -122,26 +119,33 @@ public class WorldEditor extends JPanel{
                         zrect.addY(dy);
                         repaint();
                     }
+                    if(resize){
+                        System.out.println("dx:" + dx + "/n dy:" + dy);
+                        zrect.addWidth(1);
+                        zrect.addHeight(1);
+                        repaint();
+                    }
                 }
-
+                /*
                 if (zell.isHit(x, y)) {
 
                     zell.addX(dx);
                     zell.addY(dy);
                     repaint();
                 }
+                */
 
                 x += dx;
                 y += dy;
 
-                if (pos == -1) {
-                    return;
-                }
+                //if (pos == -1) {
+                //    return;
+                //}
 
-                ZRectangle zrect = zrects.get(i);
+                //ZRectangle zrect = zrects.get(i);
 
                 //points[pos] = e.getPoint();
-                repaint();
+                //repaint();
             }
         }
 }
