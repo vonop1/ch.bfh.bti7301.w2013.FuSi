@@ -11,7 +11,7 @@ public class CMathFunctions {
     /**
      * calculates the intersection point of two lines within two given points each
      */
-    static CPosition calcIntersectionPoint(CPosition line1StartPos, CPosition line1EndPos, CPosition line2StartPos, CPosition line2EndPos, Boolean isLine1Infinite, Boolean isLine2Infinite)
+    public static CPosition calcIntersectionPoint(CPosition line1StartPos, CPosition line1EndPos, CPosition line2StartPos, CPosition line2EndPos, Boolean isLine1Infinite, Boolean isLine2Infinite)
     {
         // version from http://stackoverflow.com/questions/385305/efficient-maths-algorithm-to-calculate-intersections
         // see also http://www.java-forum.org/spiele-multimedia-programmierung/6588-einiges-geometrie-punkte-vektoren-geraden.html
@@ -40,12 +40,12 @@ public class CMathFunctions {
         // check if point lies between the x-Coordinates of the first limited line
         if( !isLine1Infinite ) {
             if(line1StartPos.getX() > line1EndPos.getX()) {
-                if(!(line1EndPos.getX() < x && x < line1StartPos.getX())) {
+                if(!(line1EndPos.getX() <= x && x <= line1StartPos.getX())) {
                     return null;
                 }
             }
             else {
-                if(!(line1StartPos.getX() < x && x < line1EndPos.getX())) {
+                if(!(line1StartPos.getX() <= x && x <= line1EndPos.getX())) {
                     return null;
                 }
             }
@@ -54,12 +54,12 @@ public class CMathFunctions {
         // check if point lies between the x-Coordinates of the second limited line
         if( !isLine2Infinite ) {
             if(line2StartPos.getX() > line2EndPos.getX()) {
-                if(!(line2EndPos.getX() < x && x < line2StartPos.getX())) {
+                if(!(line2EndPos.getX() <= x && x <= line2StartPos.getX())) {
                     return null;
                 }
             }
             else {
-                if(!(line2StartPos.getX() < x && x < line2EndPos.getX())) {
+                if(!(line2StartPos.getX() <= x && x <= line2EndPos.getX())) {
                     return null;
                 }
             }
@@ -76,8 +76,8 @@ public class CMathFunctions {
      * @param line2EndPos end position of second line
      * @param isInfiniteLines indicate if the lines are infinite or only between the given points
      * @return intersection point as CPosition or null if there is none
-
-    static CPosition calcIntersectionPoint2(CPosition line1StartPos, CPosition line1EndPos, CPosition line2StartPos, CPosition line2EndPos, Boolean isInfiniteLines)
+      */
+    public static CPosition calcIntersectionPoint2(CPosition line1StartPos, CPosition line1EndPos, CPosition line2StartPos, CPosition line2EndPos, Boolean isLine1Infinite, Boolean isLine2Infinite)
     {
         // -----------------------------------------------------------------------------------------
         // METHODE FUNKTIONIERT NOCH NICHT WIE GEWüNSCHT!
@@ -85,7 +85,7 @@ public class CMathFunctions {
 
         // inspired by http://stackoverflow.com/questions/385305/efficient-maths-algorithm-to-calculate-intersections
         Double dx_cx = line2EndPos.getX() - line2StartPos.getX();
-        Double dy_cy = line1EndPos.getY() - line2StartPos.getY();
+        Double dy_cy = line2EndPos.getY() - line2StartPos.getY();
         Double bx_ax = line1EndPos.getX() - line1StartPos.getX();
         Double by_ay = line1EndPos.getY() - line1StartPos.getY();
 
@@ -106,7 +106,8 @@ public class CMathFunctions {
         Double s = ((ay_cy) * (bx_ax) - (ax_cx) * (by_ay)) / de;
 
         // r and s must between 0 and 1, so that the intersection point is on both lines
-        if( !isInfiniteLines && !( 0 < r && r < 1 && 0 < s && s < 1 ) ) {
+        if( !(isLine1Infinite  || ( 0 <= r && r <= 1)) || !(isLine2Infinite ||(0 <= s && s <= 1 )) )
+        {
             return null;
         }
 
@@ -116,5 +117,4 @@ public class CMathFunctions {
 
         return new CPosition(px, py);
     }
-     */
 }
