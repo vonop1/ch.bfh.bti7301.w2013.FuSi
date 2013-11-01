@@ -241,26 +241,36 @@ public class CWorld {
      * calculates the next simulation step
      */
     public void stepSimulation() {
-
+        boolean hasBlockedWalkers = true;
+        Integer calculationRoundCount = 0;
         // step 1: calculate the desired new position of each walker
-        for( CWalker walker : this.aoWalkers.values()) {
-            grid.unsubscribeWalker(walker);
-            walker.calcNextDesiredPosition();
-            grid.subscribeWalker(walker);
-        }
+        while(hasBlockedWalkers) {
+            hasBlockedWalkers = false;
+            calculationRoundCount += 1;
 
-        // step 2: check for collisions
-        for( CWalker walker : this.aoWalkers.values()) {
-            for( CWalker neighbourWalker : grid.getNeighbours(walker)) {
-                walker.checkAndHandleCollisionWith(neighbourWalker);
+            if(calculationRoundCount > 10000) {
+                throw new IllegalArgumentException("Deadlock in CWorld.stepSimulation erkannt: calculationRoundCount > 10000");
+            }
+
+            for( CWalker walker : this.aoWalkers.values()) {
+                if(calculationRoundCount != 1) {
+                    grid.unsubscribeWalker(walker);
+                }
+                walker.calcNextDesiredPosition(calculationRoundCount);
+                grid.subscribeWalker(walker);
+
+                for( CWalker neighbourWalker : grid.getNeighbours(walker)) {
+                    hasBlockedWalkers = hasBlockedWalkers || walker.checkCollisionWith(neighbourWalker); // if one collision return true, the the while loop must run once again
+                }
             }
         }
 
-        // step 3: make the step for each walker and remove walkers that reached their target
+        // step 2: make the step for each walker and remove walkers that reached their target
         // we have to use iterators because we modify the walker list while we iterate over it
         Iterator<CWalker> iter = this.aoWalkers.values().iterator();
         while(iter.hasNext()){
             CWalker walker = iter.next();
+            grid.unsubscribeWalker(walker);
             if( walker.walkToNextDesiredPosition() ) {
                 // Walker has reached target, remove the guy
                 grid.unsubscribeWalker(walker);
