@@ -74,7 +74,8 @@ public class CMathFunctions {
      * @param line1EndPos end position of first line
      * @param line2StartPos start position of second line
      * @param line2EndPos end position of second line
-     * @param isInfiniteLines indicate if the lines are infinite or only between the given points
+     * @param isLine1Infinite indicate if the first line are infinite or only between the given points
+     * @param isLine2Infinite indicate if the second line are infinite or only between the given points
      * @return intersection point as CPosition or null if there is none
       */
     public static CPosition calcIntersectionPoint2(CPosition line1StartPos, CPosition line1EndPos, CPosition line2StartPos, CPosition line2EndPos, Boolean isLine1Infinite, Boolean isLine2Infinite)
