@@ -32,6 +32,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
     protected boolean showGraph = true;
     protected boolean showGrid = false;
     protected boolean showWalkerCoordinates = false;
+    protected boolean showWalkerIDs = false;
 
     protected Timer timer = null;
 
@@ -153,6 +154,9 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
             case KeyEvent.VK_J:
                 this.toggleShowWalkerCoordinates();
                 break;
+            case KeyEvent.VK_I:
+                this.toggleShowWalkerIDs();
+                break;
 
             case KeyEvent.VK_ESCAPE:
                 if(this.simulationWorld == null) {
@@ -228,6 +232,18 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                    // the horizontal line
                    g2d.drawLine(0, i, this.getWidth(), i);
                }
+
+               g2d.setColor(Color.CYAN);
+               int max_x = this.getWidth() / this.simulationWorld.getGridSize();
+               int max_y = this.getHeight() / this.simulationWorld.getGridSize();
+               for(int x = 0; x < max_x; x++) {
+                   for(int y = 0; y < max_y; y++) {
+                       if( this.simulationWorld.getGrid().hasCellObject(x,y) ) {
+                           g2d.fillRect( x * this.simulationWorld.getGridSize() + 3, y * this.simulationWorld.getGridSize() + 3, this.simulationWorld.getGridSize() -3, this.simulationWorld.getGridSize() -3  );
+
+                       }
+                   }
+               }
            }
 
            //draw the obstacles
@@ -293,9 +309,11 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
                 g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
 
-                //g2d.setColor(Color.BLACK);
-                //g2d.setFont(new Font("Serif", Font.BOLD, 9));
-                //g2d.drawString(walker.getId().toString(), position.getX().intValue() - (walker.getSize().intValue() / 2), position.getY().intValue() + (walker.getSize().intValue()));
+                if(this.showWalkerIDs) {
+                    g2d.setColor(Color.BLACK);
+                    g2d.setFont(new Font("Serif", Font.BOLD, 9));
+                    g2d.drawString(walker.getId().toString(), position.getX().intValue() - (walker.getSize().intValue() / 2), position.getY().intValue() + (walker.getSize().intValue()));
+                }
 
                 if(this.showWalkerCoordinates) {
                     DecimalFormat df = new DecimalFormat("#.00");
@@ -379,6 +397,17 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
     public void toggleShowWalkerCoordinates() {
         if(this.simulationWorld != null) {
             this.showWalkerCoordinates = !this.showWalkerCoordinates;
+
+            // if the timer is not running, fire a repaint event
+            if(!this.timer.isRunning()) {
+                this.repaint();
+            }
+        }
+    }
+
+    public void toggleShowWalkerIDs() {
+        if(this.simulationWorld != null) {
+            this.showWalkerIDs = !this.showWalkerIDs;
 
             // if the timer is not running, fire a repaint event
             if(!this.timer.isRunning()) {

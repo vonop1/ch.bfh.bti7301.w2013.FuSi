@@ -97,6 +97,8 @@ public class CGrid {
 
     /**
      * Get Neighbours of a Walker
+     * @param walker the walker
+     * @return
      */
     Vector<CWalker> getNeighbours (CWalker walker)
     {
@@ -144,7 +146,7 @@ public class CGrid {
      * @param col to ask
      * @return cell has Walker or Obstacle
      */
-    boolean hasCellObject (int row, int col)
+    public boolean hasCellObject (int row, int col)
     {
         boolean cellHasObject = false;
 

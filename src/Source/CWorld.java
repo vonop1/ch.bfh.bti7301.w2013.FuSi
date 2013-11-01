@@ -40,6 +40,10 @@ public class CWorld {
         return worldHeight;
     }
 
+    public CGrid getGrid() {
+        return this.grid;
+    }
+
     public Map<Integer, CWalker> getWalkers() {
         return aoWalkers;
     }
