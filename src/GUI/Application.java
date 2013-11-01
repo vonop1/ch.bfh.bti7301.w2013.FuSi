@@ -143,6 +143,14 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         itemPolygon.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
+                int edges;
+                String input = JOptionPane.showInputDialog(Application.INSTANCE, "Wieviele Ecken?" , "Anzahl Polygon-Ecken", JOptionPane.QUESTION_MESSAGE);
+                try {
+                    edges = Integer.parseInt(input);
+                    worldEditor.addPolygon(edges);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(Application.INSTANCE, "Bitte eine Zahl eingeben", "Falsches Format", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
