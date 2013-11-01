@@ -1,8 +1,5 @@
 package Source;
 
-import Util.CEdge;
-import Util.CPosition;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -17,7 +14,7 @@ public class CGrid {
 
 
     final int gridSizeC = 20;
-    private Map<Integer,Map<Integer, Vector<CWalker>>> grid = new HashMap<Integer, Map<Integer, Vector<CWalker>>>();
+    private Map<Integer,Map<Integer, Vector<CWalker>>> walkerGrid = new HashMap<Integer, Map<Integer, Vector<CWalker>>>();
 
     /**
      * Subscribe Walker Position in Grid
@@ -29,14 +26,14 @@ public class CGrid {
 
         Map<Integer, Vector<CWalker>> gridRowMap;
         Vector<CWalker> walkerInCell;
-        if (grid.containsKey(gridColumn))
+        if (walkerGrid.containsKey(gridColumn))
         {
-            gridRowMap = grid.get(gridColumn);
+            gridRowMap = walkerGrid.get(gridColumn);
         }
         else
         {
             gridRowMap = new HashMap<Integer, Vector<CWalker>>();
-            grid.put(gridColumn, gridRowMap);
+            walkerGrid.put(gridColumn, gridRowMap);
         }
 
         if (gridRowMap.containsKey(gridRow))
@@ -66,9 +63,9 @@ public class CGrid {
 
         Map<Integer, Vector<CWalker>> gridRowMap;
         Vector<CWalker> walkerInCell;
-        if (grid.containsKey(gridColumn))
+        if (walkerGrid.containsKey(gridColumn))
         {
-            gridRowMap = grid.get(gridColumn);
+            gridRowMap = walkerGrid.get(gridColumn);
 
             if (gridRowMap.containsKey(gridRow))
             {
@@ -88,7 +85,7 @@ public class CGrid {
 
             if (gridRowMap.isEmpty())
             {
-                grid.remove(gridColumn);
+                walkerGrid.remove(gridColumn);
             }
         }
         else
@@ -100,6 +97,8 @@ public class CGrid {
 
     /**
      * Get Neighbours of a Walker
+     * @param walker the walker
+     * @return
      */
     Vector<CWalker> getNeighbours (CWalker walker)
     {
@@ -111,9 +110,9 @@ public class CGrid {
         Map<Integer, Vector<CWalker>> gridRowMap;
         for (int i = gridColumn - 1; i < gridColumn + 2; i++)
         {
-            if (grid.containsKey(i))
+            if (walkerGrid.containsKey(i))
             {
-                gridRowMap = grid.get(gridColumn);
+                gridRowMap = walkerGrid.get(gridColumn);
 
                 for (int j = gridRow -1; j < gridRow + 2; j++)
                 {
@@ -135,7 +134,32 @@ public class CGrid {
      */
     void subscribeObstacle (Vector<CObstacle> obstacles)
     {
+        for (CObstacle obstacle : obstacles)
+        {
 
-      //TODO subscribe obstacle in grid
+        }
+    }
+
+    /**
+     * Ask if a Cell has a Walker or Obstacle
+     * @param row to ask
+     * @param col to ask
+     * @return cell has Walker or Obstacle
+     */
+    public boolean hasCellObject (int row, int col)
+    {
+        boolean cellHasObject = false;
+
+        if (walkerGrid.containsKey(col))
+        {
+            Map<Integer, Vector<CWalker>> gridRowMap = walkerGrid.get(col);
+
+            if (gridRowMap.containsKey(row))
+            {
+                return !gridRowMap.get(row).isEmpty();
+            }
+        }
+
+        return cellHasObject;
     }
 }
