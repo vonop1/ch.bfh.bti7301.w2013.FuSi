@@ -21,11 +21,13 @@ public class CWorld {
     private Map<Integer, CWalker> aoWalkers = new HashMap<Integer, CWalker>();
 
     //private CGraph oGraph;
-    private Vector<CObstacle> aoObstacles = new Vector<CObstacle>();
-    private CGrid grid = new CGrid();
 
     private Integer worldWidth = 800;
     private Integer worldHeight = 580;
+
+    private Vector<CObstacle> aoObstacles = new Vector<CObstacle>();
+    private CGrid grid = new CGrid(worldWidth, worldHeight);
+
 
     public CWorld ()
     {
@@ -111,6 +113,9 @@ public class CWorld {
                }
 
             }
+
+            //subscribe obstacles in grid
+            grid.subscribeObstacle(getObstacles());
 
             // Get a List off all Walkers
             NodeList walkers = oConfigDoc.getElementsByTagName("walker");

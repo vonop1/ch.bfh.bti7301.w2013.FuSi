@@ -4,24 +4,26 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.lang.String;
 import java.lang.System;
+import java.util.ArrayList;
 
 /**
- * Die Application is the main class of the passenger simulation.
+ * The application is the main class of the passenger simulation.
  * 
- * @author Roger Jaggi
+ * @author vonop1, jaggr2
  * @version 1.0
  */
 public class Application extends JFrame implements WindowListener, KeyListener {
 
-    // Singleton Pattern
+    // Singleton Pattern for our application
     public static Application INSTANCE = new Application();
 
+    // the main components
     final SimulationPanel simulationPanel = new SimulationPanel();
     final WorldEditor worldEditor = new WorldEditor();
     final JMenuBar menuBar = new JMenuBar();
 
     /**
-     * Startup the application
+     * Startup the application and shows the window
      * @param args application arguments
      */
     public static void main(String[] args) {
@@ -29,6 +31,9 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         Application.INSTANCE.setVisible(true);
     }
 
+    /**
+     * constructor for the application with the simulation panel
+     */
     private Application() {
         super("Passenger Simulation");
         initUI();
@@ -36,19 +41,27 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         loadSimulationPanel();
     }
 
-    public final void initUI() {
+    /**
+     * initializes the GUI components
+     */
+    private void initUI() {
 
+        // set default parameters
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
+
+        // add listener for key events
         this.addKeyListener(this);
 
+        // add menuBar
         menuBar.setBounds(0,0,800,20);
         JMenu menu = new JMenu("Options");
         menuBar.add(menu);
+        this.setJMenuBar(menuBar);
 
+        // JMenuItem for the SimulationPanel
         JMenuItem itemSimulation = new JMenuItem("Start Simulation (F2)");
-        //itemSimulation.setMnemonic(KeyEvent.VK_F2);
         itemSimulation.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 loadSimulationPanel();
@@ -56,6 +69,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         });
         menu.add(itemSimulation);
 
+        // JMenuItem for the WorldEditor
         JMenuItem itemWorldEditor = new JMenuItem("World Editor");
         itemWorldEditor.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -64,27 +78,98 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         });
         menu.add(itemWorldEditor);
 
-        this.setJMenuBar(menuBar);
+        // show the UI
         this.setVisible(true);
     }
 
+    /**
+     *  loads the simulation panel for the Passenger Simulation
+     */
     public void loadSimulationPanel() {
-        // set the Panel size to the Window size
-        simulationPanel.setBounds(0, 0, 800, 580);
 
+        // check if JMenu Add is present and if yes remove it
         for(int m = 0; m < menuBar.getMenuCount(); ++m) {
             if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Add")){
                 menuBar.remove(menuBar.getMenu(m));
             }
         }
 
+        /*  - set the panel size
+            - remove other content
+            - add the simulationPanel to our application
+            - revalidate the application
+         */
+        simulationPanel.setBounds(0, 0, 800, 580);
         this.getContentPane().removeAll();
         this.getContentPane().add(simulationPanel);
         this.revalidate();
-        this.repaint();
     }
 
     public void loadWorldEditor() {
+
+        // ArrayList with all menu items for the world editor
+        ArrayList<JMenuItem> items = new ArrayList<JMenuItem>();
+
+        // JMenuItem Rectangle
+        JMenuItem itemRectangle = new JMenuItem("Rectangle");
+        items.add(itemRectangle);
+        itemRectangle.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                worldEditor.addRectangle();
+            }
+        });
+
+        // JMenuItem Triangle
+        JMenuItem itemTriangle = new JMenuItem("Triangle");
+        items.add(itemTriangle);
+        itemTriangle.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        // JMenuItem Ellipse
+        JMenuItem itemEllipse = new JMenuItem("Ellipse");
+        items.add(itemEllipse);
+        itemEllipse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        // JMenuItem Polygon
+        JMenuItem itemPolygon = new JMenuItem("Polygon");
+        items.add(itemPolygon);
+        itemPolygon.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                int edges;
+                String input = JOptionPane.showInputDialog(Application.INSTANCE, "Wieviele Ecken?" , "Anzahl Polygon-Ecken", JOptionPane.QUESTION_MESSAGE);
+                try {
+                    edges = Integer.parseInt(input);
+                    worldEditor.addPolygon(edges);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(Application.INSTANCE, "Bitte eine Zahl eingeben", "Falsches Format", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // JMenuItem Walker
+        JMenuItem itemWalker = new JMenuItem("Walker");
+        items.add(itemWalker);
+        itemWalker.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        // JMenu Add
+        JMenu menu = new JMenu("Add");
+        for(JMenuItem item : items) {
+            menu.add(item);
+        }
+
+        //check if menuAdd already is present, if not add it to the menuBar
         boolean menuAdd = false;
         for(int m = 0; m < menuBar.getMenuCount(); ++m) {
             if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Add")){
@@ -92,29 +177,21 @@ public class Application extends JFrame implements WindowListener, KeyListener {
             }
         }
         if(!menuAdd) {
-            JMenu menu = new JMenu("Add");
-            JMenuItem itemRectangle = new JMenuItem("Rectangle");
-            itemRectangle.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    worldEditor.addRectangle();
-                }
-            });
-            JMenuItem itemEllipse = new JMenuItem("Ellipse");
-            itemEllipse.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-
-                }
-            });
-            menu.add(itemRectangle);
-            menu.add(itemEllipse);
             menuBar.add(menu);
         }
 
+        /*  - set the panel size
+            - remove other content
+            -  add the worldEditor to our application
+            - revalidate the application
+            - setup the default editor
+         */
         worldEditor.setBounds(0, 0, 800, 580);
-        Application.INSTANCE.getContentPane().removeAll();
-        Application.INSTANCE.getContentPane().add(worldEditor);
-        Application.INSTANCE.revalidate();
+        this.getContentPane().removeAll();
+        this.getContentPane().add(worldEditor);
+        this.revalidate();
         worldEditor.setupEditor();
+
     }
 
 	/*

@@ -1,5 +1,9 @@
 package Source;
 
+import Util.CEdge;
+import Util.CMathFunctions;
+import Util.CPosition;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -14,8 +18,16 @@ public class CGrid {
 
 
     final int gridSizeC = 20;
+    final int worldWidth;
+    final int worldHigh;
     private Map<Integer,Map<Integer, Vector<CWalker>>> walkerGrid = new HashMap<Integer, Map<Integer, Vector<CWalker>>>();
+    private Map<Integer,Map<Integer, Vector<CObstacle>>> obstacleGrid = new HashMap<Integer, Map<Integer, Vector<CObstacle>>>();
 
+    public CGrid (int worldWidth, int worldHigh)
+    {
+        this.worldWidth = worldWidth;
+        this.worldHigh = worldHigh;
+    }
     /**
      * Subscribe Walker Position in Grid
      */
@@ -134,8 +146,71 @@ public class CGrid {
      */
     void subscribeObstacle (Vector<CObstacle> obstacles)
     {
+        // for all objects
         for (CObstacle obstacle : obstacles)
         {
+
+           Vector <CPosition> positions= obstacle.getPositions();
+
+           // for all edges of a object
+           for (int i = 0; i < positions.size(); i++)
+           {
+               CPosition point1Start;
+               CPosition point1End;
+               if (i == 0)
+               {
+                   point1Start = positions.lastElement();
+                   point1End = positions.firstElement();
+               }
+               else
+               {
+                   point1Start = positions.elementAt(i - 1);
+                   point1End = positions.elementAt(i);
+               }
+
+               for (int x = 0; x < worldWidth; x += gridSizeC)
+               {
+                   //calc intersection points from edge with x-grid-lines
+                   CPosition intersectPoint = CMathFunctions.calcIntersectionPoint(point1Start, point1End,
+                                                                                    new CPosition(x, 0),
+                                                                                    new CPosition(x, gridSizeC),
+                                                                                    false, true);
+                   if (intersectPoint != null)
+                   {
+                       int gridColumn = intersectPoint.getY().intValue() / gridSizeC;
+                       int gridRow = x / gridSizeC;
+
+                       // for cell left and right of intersection Point add obstacle to grid
+                       for (int k = gridRow -1 ; k <= gridRow; k++)
+                       {
+                          addObstacleToGrid(obstacle, gridColumn, k);
+                       }
+
+                   }
+               }
+
+               for (int y = 0; y < worldHigh; y += gridSizeC)
+               {
+                   //calc intersection points from edge with x-grid-lines
+                   CPosition intersectPoint = CMathFunctions.calcIntersectionPoint2(point1Start, point1End,
+                                                                                   new CPosition(0, y),
+                                                                                   new CPosition(gridSizeC,y),
+                                                                                   false, true);
+
+                   if (intersectPoint != null)
+                   {
+                       int gridColumn = y / gridSizeC;
+                       int gridRow = intersectPoint.getX().intValue() / gridSizeC;
+
+                       // for cell left and right of intersection Point add obstacle to grid
+                       for (int k = gridColumn -1 ; k <= gridColumn; k++)
+                       {
+                           addObstacleToGrid(obstacle, k, gridRow);
+                       }
+
+                   }
+               }
+           }
 
         }
     }
@@ -156,10 +231,56 @@ public class CGrid {
 
             if (gridRowMap.containsKey(row))
             {
-                return !gridRowMap.get(row).isEmpty();
+                cellHasObject = !gridRowMap.get(row).isEmpty();
+            }
+        }
+
+        if (obstacleGrid.containsKey(col))
+        {
+            Map<Integer, Vector<CObstacle>> gridRowMap = obstacleGrid.get(col);
+
+            if (gridRowMap.containsKey(row))
+            {
+                cellHasObject |= !gridRowMap.get(row).isEmpty();
             }
         }
 
         return cellHasObject;
+    }
+
+    private void addObstacleToGrid (CObstacle obstacle, int gridColumn, int gridRow)
+    {
+
+        Map<Integer, Vector<CObstacle>> gridRowMap;
+        Vector<CObstacle> obstacleInCell;
+
+        //Create Vector of Rows for Column when not exist
+        if (obstacleGrid.containsKey(gridColumn))
+        {
+            gridRowMap = obstacleGrid.get(gridColumn);
+        }
+        else
+        {
+            gridRowMap = new HashMap<Integer, Vector<CObstacle>>();
+            obstacleGrid.put(gridColumn, gridRowMap);
+        }
+
+        //Create Vector of obstacles for Cell when not exist
+        if (gridRowMap.containsKey(gridRow))
+        {
+            obstacleInCell = gridRowMap.get(gridRow);
+        }
+        else
+        {
+            obstacleInCell = new Vector<CObstacle>();
+            gridRowMap.put(gridRow, obstacleInCell);
+        }
+
+        //add obstacle to gridcell
+        if (!obstacleInCell.contains(obstacle))
+        {
+            obstacleInCell.add(obstacle);
+        }
+
     }
 }
