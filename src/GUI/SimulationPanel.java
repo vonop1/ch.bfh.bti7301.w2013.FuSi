@@ -293,9 +293,9 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
                 g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
 
-                g2d.setColor(Color.BLACK);
-                g2d.setFont(new Font("Serif", Font.BOLD, 9));
-                g2d.drawString(walker.getId().toString(), position.getX().intValue() - (walker.getSize().intValue() / 2), position.getY().intValue() + (walker.getSize().intValue()));
+                //g2d.setColor(Color.BLACK);
+                //g2d.setFont(new Font("Serif", Font.BOLD, 9));
+                //g2d.drawString(walker.getId().toString(), position.getX().intValue() - (walker.getSize().intValue() / 2), position.getY().intValue() + (walker.getSize().intValue()));
 
                 if(this.showWalkerCoordinates) {
                     DecimalFormat df = new DecimalFormat("#.00");
