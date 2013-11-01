@@ -2,8 +2,9 @@ package Source;
 
 import Util.CPosition;
 
+import java.util.Collection;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
+import java.util.Vector;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,10 +29,12 @@ public class CWalker {
    private Double nextStepDeltaX;
    private Double nextStepDeltaY;
 
-   private Double size = 5.0;
+   private Double halfWalkerSize = 5.0;
    private Double stepSize = 2.0;
 
    private LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
+   private LinkedList<CWalker> blockedWith = new LinkedList<CWalker>();
+
 
    public CWalker(CPosition start, CPosition target) {
        this.startPosition = start;
@@ -51,21 +54,15 @@ public class CWalker {
    }
 
    public CPosition getDesiredNextPosition() {
-       // if desiredNextPosition is null, he wants to stay at his location
-       if(desiredNextPosition == null) {
-           return currentPosition;
-       }
-       else {
-           return desiredNextPosition;
-       }
+       return desiredNextPosition;
    }
 
-   public Double getSize() {
-       return size;
+   public Double getHalfWalkerSize() {
+       return halfWalkerSize;
    }
 
-    public Boolean isStanding() {
-        return this.desiredNextPosition == null;
+    public Boolean isBlocked() {
+        return this.blockedWith.size() > 0;
     }
 
     public void setDesiredPath(LinkedList<CPosition> vertexes) {
@@ -85,65 +82,103 @@ public class CWalker {
         return this.desiredPath;
     }
 
-    public boolean checkAndHandleCollisionWith(CWalker other) {
+    public void resetBlockedOn() {
+        this.blockedWith = new LinkedList<CWalker>();
+    }
 
-        if(this.equals(other)) {
+    public LinkedList<CWalker> getBlockedWith() {
+        return this.blockedWith;
+    }
+
+    /**
+     * checks if the walker has a collision with the desiredNextPosition of another walker
+     * @param other the walker
+     * @return true if we have a collision or false if not
+     */
+    public boolean checkCollisionWith(CWalker other) {
+
+        if(this.equals(other) || this.getDesiredNextPosition() == null || other.getDesiredNextPosition() == null) {
             return false;
         }
 
-        Boolean hasCollision = this.getDesiredNextPosition().isNearBy(other.getDesiredNextPosition(), this.getSize() + other.getSize() + 1);
+        boolean hasCollision = this.getDesiredNextPosition().getDistanceTo(other.getDesiredNextPosition()) < this.getHalfWalkerSize() + other.getHalfWalkerSize();
 
         if(hasCollision) {
-
-            // show if the collision is in the walk direction of the walker
-            if(this.desiredNextPosition != null && (new CPosition(this.desiredNextPosition.getX() + this.nextStepDeltaX, this.desiredNextPosition.getY() + this.nextStepDeltaY))
-                    .isNearBy(other.getDesiredNextPosition(), this.getSize() + other.getSize() + 1)) {
-
-                if(!other.isStanding()) {
-                    // when we have a collision, just wait if the other is not waiting
-                    this.desiredNextPosition = null;
-                }
-            }
-            else {
-                hasCollision = false;
-            }
+            this.blockedWith.add(other);
         }
 
         return hasCollision;
     }
 
 
-    public boolean isInFrontOf(CWalker other, Double maxDistance) {
+    public boolean isSomeoneInFrontOf(Collection<CWalker> others) {
+        if(this.desiredNextPosition == null) {
+            return false;
+        }
+        // show if the collision is in the walk direction of the walker
+        CPosition frontPosition = new CPosition(this.desiredNextPosition.getX() + this.nextStepDeltaX, this.desiredNextPosition.getY() + this.nextStepDeltaY);
+
+        for(CWalker other : others) {
+            if(other.getDesiredNextPosition() != null && frontPosition.getDistanceTo(other.getDesiredNextPosition()) < (this.getHalfWalkerSize() + other.getHalfWalkerSize()) ) {
+                return true;
+            }
+        }
 
         return false;
-
     }
 
     /**
      * calculates the next position and saves the result to the nextDesiredPosition member var
      * if there is no next position, desiredNextPosition is set to NULL
      */
-    public void calcNextDesiredPosition() {
+    /**
+     * calculates the next position and saves the result to the nextDesiredPosition member var
+     * @param roundCount the calculation round count
+     * @return true if the new position has no collision with others
+     */
+    public boolean calcNextDesiredPosition(Integer roundCount) {
         if(this.desiredPath.size() < 1) {
             this.desiredNextPosition = null;
-            return;
+            return false;
         }
 
-        CPosition nextCheckPoint = this.desiredPath.getFirst();
+        if(roundCount == 1) {
+            CPosition nextCheckPoint = this.desiredPath.getFirst();
 
-        Double xDelta = nextCheckPoint.getX() - this.currentPosition.getX();
-        Double yDelta = nextCheckPoint.getY() - this.currentPosition.getY();
+            Double xDelta = nextCheckPoint.getX() - this.currentPosition.getX();
+            Double yDelta = nextCheckPoint.getY() - this.currentPosition.getY();
 
-        Double dAngle = 0.0;
-        if (xDelta != 0.0)
-        {
-            dAngle = Math.atan( Math.abs(yDelta) / Math.abs(xDelta) );
+            Double dAngle = 0.0;
+            if (xDelta != 0.0)
+            {
+                dAngle = Math.atan( Math.abs(yDelta) / Math.abs(xDelta) );
+            }
+
+            this.nextStepDeltaX = Math.cos(dAngle) * stepSize * ( xDelta > 0 ? 1 : -1 );
+            this.nextStepDeltaY = Math.sin(dAngle) * stepSize * ( yDelta > 0 ? 1 : -1 );
+
+            this.desiredNextPosition = new CPosition(currentPosition.getX() + nextStepDeltaX, currentPosition.getY() + nextStepDeltaY);
+
+            return false;
+        }
+        else {
+            if( this.isBlocked() ) {
+                this.desiredNextPosition = this.currentPosition;
+
+                /* boolean minOneIsBlocked = false;
+                for(CWalker blockedWalker : this.blockedWith) {
+                    minOneIsBlocked = minOneIsBlocked || blockedWalker.isBlocked();
+                }
+
+                if(minOneIsBlocked) {
+                    // if minimum one other is blocked, then we stand still and remove the blockation
+                    this.desiredNextPosition = this.currentPosition;
+                } */
+            }
         }
 
-        this.nextStepDeltaX = Math.cos(dAngle) * stepSize * ( xDelta > 0 ? 1 : -1 );
-        this.nextStepDeltaY = Math.sin(dAngle) * stepSize * ( yDelta > 0 ? 1 : -1 );
-
-        this.desiredNextPosition = new CPosition(currentPosition.getX() + nextStepDeltaX, currentPosition.getY() + nextStepDeltaY);
+        this.resetBlockedOn();
+        return false;
     }
 
     /**
@@ -152,19 +187,21 @@ public class CWalker {
      */
     public boolean walkToNextDesiredPosition() {
 
-        if(this.desiredPath.size() > 0)
-        {
-            if(this.desiredNextPosition == null) {
-                return false;
-            }
+        if(this.isBlocked()) {
+            throw new IllegalArgumentException("The Walker must no be blocked!");
+        }
 
+        if(this.desiredNextPosition == null) {
+            throw new IllegalArgumentException("this.desiredNextPosition must not be NULL!");
+        }
+
+        if(this.desiredPath.size() > 0) {
             if(this.desiredNextPosition.isNearBy(this.desiredPath.getFirst(), stepSize / 0.5)) {
                 // Yes, we reached a checkpoint, remove it from our list
                 this.desiredPath.removeFirst();
             }
 
             this.currentPosition = this.desiredNextPosition;
-
         }
 
         this.desiredNextPosition = null;

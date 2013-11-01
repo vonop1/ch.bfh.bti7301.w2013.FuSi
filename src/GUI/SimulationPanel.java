@@ -233,14 +233,12 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                    g2d.drawLine(0, i, this.getWidth(), i);
                }
 
-               g2d.setColor(Color.CYAN);
                int max_x = this.getWidth() / this.simulationWorld.getGridSize();
                int max_y = this.getHeight() / this.simulationWorld.getGridSize();
                for(int x = 0; x < max_x; x++) {
                    for(int y = 0; y < max_y; y++) {
                        if( this.simulationWorld.getGrid().hasCellObject(x,y) ) {
-                           g2d.fillRect( x * this.simulationWorld.getGridSize() + 3, y * this.simulationWorld.getGridSize() + 3, this.simulationWorld.getGridSize() -3, this.simulationWorld.getGridSize() -3  );
-
+                           g2d.fillRect(x * this.simulationWorld.getGridSize() + 3, y * this.simulationWorld.getGridSize() + 3, this.simulationWorld.getGridSize() - 3, this.simulationWorld.getGridSize() - 3);
                        }
                    }
                }
@@ -294,25 +292,26 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
             for(CWalker walker : simulationWorld.getWalkers().values()) {
                 CPosition position = walker.getPosition();
 
-                g2d.setColor(Color.ORANGE);
-                g2d.fillOval(((Double)(position.getX() - walker.getSize())).intValue(),
-                             ((Double)(position.getY() - walker.getSize())).intValue(),
-                             ((Double)(walker.getSize() * 2)).intValue(),
-                             ((Double)(walker.getSize() * 2)).intValue());
+                g2d.setColor(( walker.isBlocked() ? Color.RED : Color.ORANGE) );
+                g2d.fillOval(((Double)(position.getX() - walker.getHalfWalkerSize())).intValue(),
+                             ((Double)(position.getY() - walker.getHalfWalkerSize())).intValue(),
+                             ((Double)(walker.getHalfWalkerSize() * 2)).intValue(),
+                             ((Double)(walker.getHalfWalkerSize() * 2)).intValue());
 
 
                 // draw the target as x, because the X marks the point =)
-                int upperleftX = ((Double)(walker.getTarget().getX() - walker.getSize())).intValue();
-                int upperleftY = ((Double)(walker.getTarget().getY() - walker.getSize())).intValue();
-                int width = ((Double)(walker.getSize() * 2)).intValue();
-                int height = ((Double)(walker.getSize() * 2)).intValue();
+                g2d.setColor(Color.ORANGE);
+                int upperleftX = ((Double)(walker.getTarget().getX() - walker.getHalfWalkerSize())).intValue();
+                int upperleftY = ((Double)(walker.getTarget().getY() - walker.getHalfWalkerSize())).intValue();
+                int width = ((Double)(walker.getHalfWalkerSize() * 2)).intValue();
+                int height = ((Double)(walker.getHalfWalkerSize() * 2)).intValue();
                 g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
                 g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
 
                 if(this.showWalkerIDs) {
                     g2d.setColor(Color.BLACK);
                     g2d.setFont(new Font("Serif", Font.BOLD, 9));
-                    g2d.drawString(walker.getId().toString(), position.getX().intValue() - (walker.getSize().intValue() / 2), position.getY().intValue() + (walker.getSize().intValue()));
+                    g2d.drawString(walker.getId().toString(), position.getX().intValue() - (walker.getHalfWalkerSize().intValue() / 2), position.getY().intValue() + (walker.getHalfWalkerSize().intValue()));
                 }
 
                 if(this.showWalkerCoordinates) {

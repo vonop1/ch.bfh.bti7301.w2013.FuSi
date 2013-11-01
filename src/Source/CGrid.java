@@ -70,8 +70,8 @@ public class CGrid {
      */
     boolean unsubscribeWalker (CWalker walker)
     {
-        Integer gridColumn = walker.getPosition().getY().intValue() / gridSizeC;
-        Integer gridRow = walker.getPosition().getX().intValue() / gridSizeC;
+        Integer gridColumn = walker.getDesiredNextPosition().getY().intValue() / gridSizeC;
+        Integer gridRow = walker.getDesiredNextPosition().getX().intValue() / gridSizeC;
 
         Map<Integer, Vector<CWalker>> gridRowMap;
         Vector<CWalker> walkerInCell;
