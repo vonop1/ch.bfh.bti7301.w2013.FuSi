@@ -2,8 +2,9 @@ package Source;
 
 import Util.CPosition;
 
+import java.util.Collection;
 import java.util.LinkedList;
-
+import java.util.Vector;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,7 +31,7 @@ public class CWalker {
    protected Double stepSize = 2.0;
 
    protected LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
-   protected LinkedList<CWalker> blockedWith = new LinkedList<CWalker>();
+   protected LinkedList<CWalker> collisionWith = new LinkedList<CWalker>();
 
 
    public CWalker(CPosition start, CPosition target) {
@@ -58,8 +59,8 @@ public class CWalker {
        return halfWalkerSize;
    }
 
-    public Boolean isBlocked() {
-        return this.blockedWith.size() > 0;
+    public Boolean hasCollisions() {
+        return this.collisionWith.size() > 0;
     }
 
     public void setDesiredPath(LinkedList<CPosition> vertexes) {
@@ -80,28 +81,40 @@ public class CWalker {
     }
 
     public void resetBlockedOn() {
-        this.blockedWith = new LinkedList<CWalker>();
+        this.collisionWith = new LinkedList<CWalker>();
     }
 
-    public LinkedList<CWalker> getBlockedWith() {
-        return this.blockedWith;
+    public LinkedList<CWalker> getCollisionWith() {
+        return this.collisionWith;
     }
 
     /**
-     * checks if the walker has a collision with the desiredNextPosition of another walker
+     * checks if the walker has a collision with the desiredNextPosition of another walker and remembers the collision
      * @param other the walker
      * @return true if we have a collision or false if not
      */
-    public boolean checkCollisionWith(CWalker other) {
+    public boolean checkAndRememberCollisionWith(CWalker other) {
 
         if(this.equals(other) || this.getDesiredNextPosition() == null || other.getDesiredNextPosition() == null) {
             return false;
         }
 
         boolean hasCollision = this.getDesiredNextPosition().getDistanceTo(other.getDesiredNextPosition()) < this.getHalfWalkerSize() + other.getHalfWalkerSize();
-
         if(hasCollision) {
-            this.blockedWith.add(other);
+            this.collisionWith.add(other);
+        }
+
+        if( !this.hasCollisions() && !other.hasCollisions() ) { // case 1: none of both walker have a collision until now
+
+        }
+        else if( this.hasCollisions() && !other.hasCollisions() ) { // case 2: walker A has a collision, walker B not
+
+        }
+        else if( !this.hasCollisions() && other.hasCollisions() ) { // case 3: walker B has a collision, walker A not
+
+        }
+        else { // case 4: both walkers have a collision until now
+
         }
 
         return hasCollision;
@@ -142,7 +155,7 @@ public class CWalker {
                 this.desiredNextPosition = this.currentPosition;
 
                 /* boolean minOneIsBlocked = false;
-                for(CWalker blockedWalker : this.blockedWith) {
+                for(CWalker blockedWalker : this.collisionWith) {
                     minOneIsBlocked = minOneIsBlocked || blockedWalker.isBlocked();
                 }
 

@@ -241,6 +241,9 @@ public class CWorld {
 
     }
 
+    public Boolean calculateBlockedWalkers() {
+
+    }
 
     /**
      * calculates the next simulation step
@@ -265,14 +268,16 @@ public class CWorld {
                 grid.subscribeWalker(walker, true);
             }
 
-            // check
+            // reset all detected collsions
+            for( CWalker walker : this.aoWalkers.values()) {
+                walker.resetBlockedOn();
+            }
+
+            // check all walkers with neighbours for collisions
             for( CWalker walker : this.aoWalkers.values()) {
                 for( CWalker neighbourWalker : grid.getNeighbours(walker, true)) {
-                    hasBlockedWalkers = walker.checkCollisionWith(neighbourWalker); // if one collision return true, the the while loop must run once again
-                    if(hasBlockedWalkers) { break; }
+                    hasBlockedWalkers |= walker.checkAndRememberCollisionWith(neighbourWalker); // if one collision return true, the the while loop must run once again
                 }
-
-                if(hasBlockedWalkers) { break; }
             }
         }
 
