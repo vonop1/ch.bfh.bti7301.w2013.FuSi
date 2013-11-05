@@ -45,7 +45,7 @@ public class CWalkerStand extends CWalker {
             return false;
         }
         else {
-            if( this.isBlocked() ) {
+            if( this.hasCollisions() ) {
                 this.desiredNextPosition = this.currentPosition;
 
                 /* boolean minOneIsBlocked = false;
