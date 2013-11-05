@@ -241,10 +241,6 @@ public class CWorld {
 
     }
 
-    public Boolean calculateBlockedWalkers() {
-
-    }
-
     /**
      * calculates the next simulation step
      */
