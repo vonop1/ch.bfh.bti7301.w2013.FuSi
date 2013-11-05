@@ -266,7 +266,7 @@ public class CWorld {
 
             // reset all detected collsions
             for( CWalker walker : this.aoWalkers.values()) {
-                walker.resetBlockedOn();
+                walker.resetCollisions();
             }
 
             // check all walkers with neighbours for collisions

@@ -31,8 +31,8 @@ public abstract class CWalker {
    protected Double stepSize = 2.0;
 
    protected LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
-   protected LinkedList<CWalker> collisionWith = new LinkedList<CWalker>();
-
+   protected CCollisionList collisionWith = null;
+   protected boolean hasCollisionHandled = false;
 
    public CWalker(CPosition start, CPosition target) {
        this.startPosition = start;
@@ -60,7 +60,7 @@ public abstract class CWalker {
    }
 
     public Boolean hasCollisions() {
-        return this.collisionWith.size() > 0;
+        return this.collisionWith != null && this.collisionWith.hasCollisions();
     }
 
     public void setDesiredPath(LinkedList<CPosition> vertexes) {
@@ -80,12 +80,19 @@ public abstract class CWalker {
         return this.desiredPath;
     }
 
-    public void resetBlockedOn() {
-        this.collisionWith = new LinkedList<CWalker>();
+    public void resetCollisions() {
+        if(this.collisionWith != null) {
+            this.collisionWith.clear();
+        }
+        hasCollisionHandled = false;
     }
 
-    public LinkedList<CWalker> getCollisionWith() {
+    public CCollisionList getCollisionWith() {
         return this.collisionWith;
+    }
+
+    public void setCollisionWith(CCollisionList list) {
+        this.collisionWith = list;
     }
 
     /**
@@ -100,21 +107,29 @@ public abstract class CWalker {
         }
 
         boolean hasCollision = this.getDesiredNextPosition().getDistanceTo(other.getDesiredNextPosition()) < this.getHalfWalkerSize() + other.getHalfWalkerSize();
+
+
         if(hasCollision) {
-            this.collisionWith.add(other);
-        }
 
-        if( !this.hasCollisions() && !other.hasCollisions() ) { // case 1: none of both walker have a collision until now
+            CCollisionList newList;
+            if( !this.hasCollisions() && !other.hasCollisions() ) { // case 1: none of both walker have a collision until now
+                newList = new CCollisionList();
+            }
+            else if( this.hasCollisions() && !other.hasCollisions() ) { // case 2: walker A has a collision, walker B not
+                newList = this.getCollisionWith();
+            }
+            else if( !this.hasCollisions() && other.hasCollisions() ) { // case 3: walker B has a collision, walker A not
+                newList = other.getCollisionWith();
+            }
+            else { // case 4: both walkers have a collision until now
+                newList = this.getCollisionWith();
+                newList.merge(other.getCollisionWith());
+            }
 
-        }
-        else if( this.hasCollisions() && !other.hasCollisions() ) { // case 2: walker A has a collision, walker B not
+            newList.addCollision(this, other);
 
-        }
-        else if( !this.hasCollisions() && other.hasCollisions() ) { // case 3: walker B has a collision, walker A not
-
-        }
-        else { // case 4: both walkers have a collision until now
-
+            this.setCollisionWith(newList);
+            other.setCollisionWith(newList);
         }
 
         return hasCollision;

@@ -45,18 +45,13 @@ public class CWalkerStand extends CWalker {
             return false;
         }
         else {
+
             if( this.hasCollisions() ) {
+
+                // stand still and remove us from the collision object
                 this.desiredNextPosition = this.currentPosition;
 
-                /* boolean minOneIsBlocked = false;
-                for(CWalker blockedWalker : this.blockedWith) {
-                    minOneIsBlocked = minOneIsBlocked || blockedWalker.isBlocked();
-                }
-
-                if(minOneIsBlocked) {
-                    // if minimum one other is blocked, then we stand still and remove the blockation
-                    this.desiredNextPosition = this.currentPosition;
-                } */
+                //this.getCollisionWith().remove(this);
             }
         }
 
