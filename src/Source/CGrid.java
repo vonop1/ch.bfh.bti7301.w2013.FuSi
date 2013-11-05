@@ -112,12 +112,13 @@ public class CGrid {
      * @param walker the walker
      * @return neighbours of the Walker
      */
-    Vector<CWalker> getNeighbours (CWalker walker)
+    public Vector<CWalker> getNeighbours(CWalker walker, boolean NextDesiredPos)
     {
         Vector<CWalker> neighbours = new Vector<CWalker>();
 
-        Integer gridColumn = walker.getDesiredNextPosition().getY().intValue() / gridSizeC;
-        Integer gridRow = walker.getDesiredNextPosition().getX().intValue() / gridSizeC;
+        CPosition pos = NextDesiredPos ? walker.getDesiredNextPosition() : walker.getPosition();
+        Integer gridColumn = pos.getY().intValue() / gridSizeC;
+        Integer gridRow = pos.getX().intValue() / gridSizeC;
 
         Map<Integer, Vector<CWalker>> gridRowMap;
         for (int i = gridColumn - 1; i < gridColumn + 2; i++)
@@ -289,5 +290,40 @@ public class CGrid {
             obstacleInCell.add(obstacle);
         }
 
+    }
+
+    /**
+     * Get Neighbours of a Walker
+     * @param walker the walker
+     * @return neighbours of the Walker
+     */
+    Vector<CObstacle> getNearObstacles (CWalker walker, boolean NextDesiredPos)
+    {
+        Vector<CObstacle> nearObstacles = new Vector<CObstacle>();
+
+        CPosition pos = NextDesiredPos ? walker.getDesiredNextPosition() : walker.getPosition();
+        Integer gridColumn = pos.getY().intValue() / gridSizeC;
+        Integer gridRow = pos.getX().intValue() / gridSizeC;
+
+        Map<Integer, Vector<CObstacle>> gridRowMap;
+        for (int i = gridColumn - 1; i < gridColumn + 2; i++)
+        {
+            if (walkerGrid.containsKey(i))
+            {
+                gridRowMap = obstacleGrid.get(gridColumn);
+
+                for (int j = gridRow -1; j < gridRow + 2; j++)
+                {
+                    if (gridRowMap.containsKey(j))
+                    {
+                        nearObstacles.addAll(gridRowMap.get(j));
+                    }
+                }
+            }
+        }
+
+        nearObstacles.remove(walker);
+
+        return nearObstacles;
     }
 }
