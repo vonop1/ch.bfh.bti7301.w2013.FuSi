@@ -30,10 +30,11 @@ public class CGrid {
     /**
      * Subscribe Walker Position in Grid
      */
-    void subscribeWalker (CWalker walker)
+    void subscribeWalker (CWalker walker, boolean NextDesiredPos)
     {
-        Integer gridColumn = walker.getDesiredNextPosition().getY().intValue() / gridSizeC;
-        Integer gridRow = walker.getDesiredNextPosition().getX().intValue() / gridSizeC;
+        CPosition pos = NextDesiredPos ? walker.getDesiredNextPosition() : walker.getPosition();
+        Integer gridColumn = pos.getY().intValue() / gridSizeC;
+        Integer gridRow = pos.getX().intValue() / gridSizeC;
 
         Map<Integer, Vector<CWalker>> gridRowMap;
         Vector<CWalker> walkerInCell;
@@ -321,8 +322,6 @@ public class CGrid {
                 }
             }
         }
-
-        nearObstacles.remove(walker);
 
         return nearObstacles;
     }

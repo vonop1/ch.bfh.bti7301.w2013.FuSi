@@ -267,9 +267,9 @@ public class CWorld {
 
             // check
             for( CWalker walker : this.aoWalkers.values()) {
-                for( CWalker neighbourWalker : grid.getNeighbours(walker)) {
-                    hasBlockedWalkers = hasBlockedWalkers || walker.checkCollisionWith(neighbourWalker); // if one collision return true, the the while loop must run once again
-                    break;
+                for( CWalker neighbourWalker : grid.getNeighbours(walker, true)) {
+                    hasBlockedWalkers = walker.checkCollisionWith(neighbourWalker); // if one collision return true, the the while loop must run once again
+                    if(hasBlockedWalkers) { break; }
                 }
 
                 if(hasBlockedWalkers) { break; }
