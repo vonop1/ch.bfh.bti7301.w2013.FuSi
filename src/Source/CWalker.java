@@ -2,9 +2,8 @@ package Source;
 
 import Util.CPosition;
 
-import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Vector;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,19 +20,17 @@ public class CWalker {
     }
 
 
-   private Integer id;
-   private CPosition currentPosition;
-   private CPosition targetPosition;
-   private CPosition startPosition;
-   private CPosition desiredNextPosition;
-   private Double nextStepDeltaX;
-   private Double nextStepDeltaY;
+   protected Integer id;
+   protected CPosition currentPosition;
+   protected CPosition targetPosition;
+   protected CPosition startPosition;
+   protected CPosition desiredNextPosition;
 
-   private Double halfWalkerSize = 5.0;
-   private Double stepSize = 2.0;
+   protected Double halfWalkerSize = 5.0;
+   protected Double stepSize = 2.0;
 
-   private LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
-   private LinkedList<CWalker> blockedWith = new LinkedList<CWalker>();
+   protected LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
+   protected LinkedList<CWalker> blockedWith = new LinkedList<CWalker>();
 
 
    public CWalker(CPosition start, CPosition target) {
@@ -110,27 +107,6 @@ public class CWalker {
         return hasCollision;
     }
 
-
-    public boolean isSomeoneInFrontOf(Collection<CWalker> others) {
-        if(this.desiredNextPosition == null) {
-            return false;
-        }
-        // show if the collision is in the walk direction of the walker
-        CPosition frontPosition = new CPosition(this.desiredNextPosition.getX() + this.nextStepDeltaX, this.desiredNextPosition.getY() + this.nextStepDeltaY);
-
-        for(CWalker other : others) {
-            if(other.getDesiredNextPosition() != null && frontPosition.getDistanceTo(other.getDesiredNextPosition()) < (this.getHalfWalkerSize() + other.getHalfWalkerSize()) ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * calculates the next position and saves the result to the nextDesiredPosition member var
-     * if there is no next position, desiredNextPosition is set to NULL
-     */
     /**
      * calculates the next position and saves the result to the nextDesiredPosition member var
      * @param roundCount the calculation round count
@@ -154,8 +130,8 @@ public class CWalker {
                 dAngle = Math.atan( Math.abs(yDelta) / Math.abs(xDelta) );
             }
 
-            this.nextStepDeltaX = Math.cos(dAngle) * stepSize * ( xDelta > 0 ? 1 : -1 );
-            this.nextStepDeltaY = Math.sin(dAngle) * stepSize * ( yDelta > 0 ? 1 : -1 );
+            double nextStepDeltaX = Math.cos(dAngle) * stepSize * ( xDelta > 0 ? 1 : -1 );
+            double nextStepDeltaY = Math.sin(dAngle) * stepSize * ( yDelta > 0 ? 1 : -1 );
 
             this.desiredNextPosition = new CPosition(currentPosition.getX() + nextStepDeltaX, currentPosition.getY() + nextStepDeltaY);
 
@@ -177,7 +153,6 @@ public class CWalker {
             }
         }
 
-        this.resetBlockedOn();
         return false;
     }
 
