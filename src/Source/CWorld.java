@@ -259,7 +259,7 @@ public class CWorld {
 
             for( CWalker walker : this.aoWalkers.values()) {
                 if(calculationRoundCount != 1) {
-                    grid.unsubscribeWalker(walker);
+                    grid.unsubscribeWalker(walker, true);
                 }
                 walker.calcNextDesiredPosition(calculationRoundCount);
                 grid.subscribeWalker(walker);
@@ -275,10 +275,9 @@ public class CWorld {
         Iterator<CWalker> iter = this.aoWalkers.values().iterator();
         while(iter.hasNext()){
             CWalker walker = iter.next();
-            grid.unsubscribeWalker(walker);
+            grid.unsubscribeWalker(walker, false);
             if( walker.walkToNextDesiredPosition() ) {
                 // Walker has reached target, remove the guy
-                grid.unsubscribeWalker(walker);
                 iter.remove();
             }
         }

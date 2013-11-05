@@ -1,6 +1,5 @@
 package Source;
 
-import Util.CEdge;
 import Util.CMathFunctions;
 import Util.CPosition;
 
@@ -68,10 +67,11 @@ public class CGrid {
     /**
      * unsubscribe Walker Position in Grid
      */
-    boolean unsubscribeWalker (CWalker walker)
+    public boolean unsubscribeWalker(CWalker walker, boolean NextDesiredPos)
     {
-        Integer gridColumn = walker.getDesiredNextPosition().getY().intValue() / gridSizeC;
-        Integer gridRow = walker.getDesiredNextPosition().getX().intValue() / gridSizeC;
+        CPosition pos = NextDesiredPos ? walker.getDesiredNextPosition() : walker.getPosition();
+        Integer gridColumn = pos.getY().intValue() / gridSizeC;
+        Integer gridRow = pos.getX().intValue() / gridSizeC;
 
         Map<Integer, Vector<CWalker>> gridRowMap;
         Vector<CWalker> walkerInCell;
@@ -110,7 +110,7 @@ public class CGrid {
     /**
      * Get Neighbours of a Walker
      * @param walker the walker
-     * @return
+     * @return neighbours of the Walker
      */
     Vector<CWalker> getNeighbours (CWalker walker)
     {
@@ -143,6 +143,7 @@ public class CGrid {
 
     /**
      * Subscribe Obstacle Positions in Grid
+     * @param obstacles to subscribe
      */
     void subscribeObstacle (Vector<CObstacle> obstacles)
     {
@@ -193,9 +194,9 @@ public class CGrid {
                {
                    //calc intersection points from edge with x-grid-lines
                    CPosition intersectPoint = CMathFunctions.calcIntersectionPoint2(point1Start, point1End,
-                                                                                   new CPosition(0, y),
-                                                                                   new CPosition(gridSizeC,y),
-                                                                                   false, true);
+                           new CPosition(0, y),
+                           new CPosition(gridSizeC, y),
+                           false, true);
 
                    if (intersectPoint != null)
                    {
@@ -248,6 +249,12 @@ public class CGrid {
         return cellHasObject;
     }
 
+    /**
+     * Add a obstacle to the Grid
+     * @param obstacle to add
+     * @param gridColumn of the obstacle to add
+     * @param gridRow of the obstacle to add
+     */
     private void addObstacleToGrid (CObstacle obstacle, int gridColumn, int gridRow)
     {
 

@@ -80,10 +80,6 @@ public class CMathFunctions {
       */
     public static CPosition calcIntersectionPoint2(CPosition line1StartPos, CPosition line1EndPos, CPosition line2StartPos, CPosition line2EndPos, Boolean isLine1Infinite, Boolean isLine2Infinite)
     {
-        // -----------------------------------------------------------------------------------------
-        // METHODE FUNKTIONIERT NOCH NICHT WIE GEWüNSCHT!
-        // -----------------------------------------------------------------------------------------
-
         // inspired by http://stackoverflow.com/questions/385305/efficient-maths-algorithm-to-calculate-intersections
         Double dx_cx = line2EndPos.getX() - line2StartPos.getX();
         Double dy_cy = line2EndPos.getY() - line2StartPos.getY();
