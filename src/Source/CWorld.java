@@ -21,7 +21,7 @@ public class CWorld {
     private Map<Integer, CWalker> aoWalkers = new HashMap<Integer, CWalker>();
 
     //private CGraph oGraph;
-
+    private Integer maxCalculationCount = 10000;
     private Integer worldWidth = 800;
     private Integer worldHeight = 580;
 
@@ -253,8 +253,8 @@ public class CWorld {
             hasBlockedWalkers = false;
             calculationRoundCount += 1;
 
-            if(calculationRoundCount > 10000) {
-                throw new IllegalArgumentException("Deadlock in CWorld.stepSimulation erkannt: calculationRoundCount > 10000");
+            if(calculationRoundCount > maxCalculationCount) {
+                throw new IllegalArgumentException("Mischt, could not resolve blocked situation in CWorld.stepSimulation in " + maxCalculationCount.toString() + " calculation rounds");
             }
 
             for( CWalker walker : this.aoWalkers.values()) {
@@ -262,11 +262,17 @@ public class CWorld {
                     grid.unsubscribeWalker(walker, true);
                 }
                 walker.calcNextDesiredPosition(calculationRoundCount);
-                grid.subscribeWalker(walker);
+                grid.subscribeWalker(walker, true);
+            }
 
+            // check
+            for( CWalker walker : this.aoWalkers.values()) {
                 for( CWalker neighbourWalker : grid.getNeighbours(walker)) {
                     hasBlockedWalkers = hasBlockedWalkers || walker.checkCollisionWith(neighbourWalker); // if one collision return true, the the while loop must run once again
+                    break;
                 }
+
+                if(hasBlockedWalkers) { break; }
             }
         }
 
