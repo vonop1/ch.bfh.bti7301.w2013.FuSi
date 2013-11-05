@@ -160,7 +160,7 @@ public class CWorld {
 
                     CPosition destination = new CPosition(dX, dY);
 
-                    addWalker(new CWalker(source, destination));
+                    addWalker(new CWalkerStand(source, destination));
                 }
 
             }

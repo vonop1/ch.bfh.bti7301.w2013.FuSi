@@ -12,7 +12,7 @@ import java.util.Vector;
  * Date: 27.09.13
  * Time: 14:09
  */
-public class CWalker {
+public abstract class CWalker {
    static Integer idCounter = 0;
 
     static Integer getNextId()
@@ -125,49 +125,7 @@ public class CWalker {
      * @param roundCount the calculation round count
      * @return true if the new position has no collision with others
      */
-    public boolean calcNextDesiredPosition(Integer roundCount) {
-        if(this.desiredPath.size() < 1) {
-            this.desiredNextPosition = null;
-            return false;
-        }
-
-        if(roundCount == 1) {
-            CPosition nextCheckPoint = this.desiredPath.getFirst();
-
-            Double xDelta = nextCheckPoint.getX() - this.currentPosition.getX();
-            Double yDelta = nextCheckPoint.getY() - this.currentPosition.getY();
-
-            Double dAngle = 0.0;
-            if (xDelta != 0.0)
-            {
-                dAngle = Math.atan( Math.abs(yDelta) / Math.abs(xDelta) );
-            }
-
-            double nextStepDeltaX = Math.cos(dAngle) * stepSize * ( xDelta > 0 ? 1 : -1 );
-            double nextStepDeltaY = Math.sin(dAngle) * stepSize * ( yDelta > 0 ? 1 : -1 );
-
-            this.desiredNextPosition = new CPosition(currentPosition.getX() + nextStepDeltaX, currentPosition.getY() + nextStepDeltaY);
-
-            return false;
-        }
-        else {
-            if( this.isBlocked() ) {
-                this.desiredNextPosition = this.currentPosition;
-
-                /* boolean minOneIsBlocked = false;
-                for(CWalker blockedWalker : this.collisionWith) {
-                    minOneIsBlocked = minOneIsBlocked || blockedWalker.isBlocked();
-                }
-
-                if(minOneIsBlocked) {
-                    // if minimum one other is blocked, then we stand still and remove the blockation
-                    this.desiredNextPosition = this.currentPosition;
-                } */
-            }
-        }
-
-        return false;
-    }
+    public abstract boolean calcNextDesiredPosition(Integer roundCount);
 
     /**
      * walks a step to the next desired Position and resets desiredNextPosition member variable to NULL
@@ -175,7 +133,7 @@ public class CWalker {
      */
     public boolean walkToNextDesiredPosition() {
 
-        if(this.isBlocked()) {
+        if(this.hasCollisions()) {
             throw new IllegalArgumentException("The Walker must no be blocked!");
         }
 
