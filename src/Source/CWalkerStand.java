@@ -51,7 +51,7 @@ public class CWalkerStand extends CWalker {
                 // stand still and remove us from the collision object
                 this.desiredNextPosition = this.currentPosition;
 
-                //this.getCollisionWith().remove(this);
+                this.getCollisionWith().remove(this);
             }
         }
 

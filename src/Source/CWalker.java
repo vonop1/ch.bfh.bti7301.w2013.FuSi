@@ -52,7 +52,12 @@ public abstract class CWalker {
    }
 
    public CPosition getDesiredNextPosition() {
-       return desiredNextPosition;
+       if( desiredNextPosition == null) {
+           return currentPosition;
+       }
+       else {
+           return desiredNextPosition;
+       }
    }
 
    public Double getHalfWalkerSize() {
@@ -102,12 +107,11 @@ public abstract class CWalker {
      */
     public boolean checkAndRememberCollisionWith(CWalker other) {
 
-        if(this.equals(other) || this.getDesiredNextPosition() == null || other.getDesiredNextPosition() == null) {
+        if(this.equals(other)) {
             return false;
         }
 
-        boolean hasCollision = this.getDesiredNextPosition().getDistanceTo(other.getDesiredNextPosition()) < this.getHalfWalkerSize() + other.getHalfWalkerSize();
-
+        boolean hasCollision = this.getDesiredNextPosition().getDistanceTo(other.getDesiredNextPosition()) < this.getHalfWalkerSize() + other.getHalfWalkerSize() + 1;
 
         if(hasCollision) {
 

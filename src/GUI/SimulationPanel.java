@@ -29,6 +29,8 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
      * Holds the informaticon if the simulation is running
      */
     //protected boolean isRunning = false;
+    protected Vector<CDrawObject> settings = new Vector<CDrawObject>();
+
     protected boolean showGraph = true;
     protected boolean showGrid = false;
     protected boolean showWalkerCoordinates = false;
@@ -289,7 +291,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
              }
 
 
-            for(CWalker walker : simulationWorld.getWalkers().values()) {
+            for(CWalker walker : simulationWorld.getWalkers()) {
                 CPosition position = walker.getPosition();
 
                 g2d.setColor(( walker.hasCollisions() ? Color.RED : Color.ORANGE) );

@@ -18,7 +18,7 @@ import org.w3c.dom.*;
  * Time: 14:30
  */
 public class CWorld {
-    private Map<Integer, CWalker> aoWalkers = new HashMap<Integer, CWalker>();
+    private Vector<CWalker> walkers = new Vector<CWalker>();
 
     //private CGraph oGraph;
     private Integer maxCalculationCount = 10000;
@@ -46,16 +46,12 @@ public class CWorld {
         return this.grid;
     }
 
-    public Map<Integer, CWalker> getWalkers() {
-        return aoWalkers;
+    public Vector<CWalker> getWalkers() {
+        return walkers;
     }
 
     public Vector<CObstacle> getObstacles() {
         return aoObstacles;
-    }
-
-    public void addWalker(CWalker walker) {
-        this.aoWalkers.put(walker.getId(), walker);
     }
 
     public void addObstacle(CObstacle obstacle) {
@@ -160,7 +156,7 @@ public class CWorld {
 
                     CPosition destination = new CPosition(dX, dY);
 
-                    addWalker(new CWalkerStand(source, destination));
+                    this.walkers.add(new CWalkerStand(source, destination));
                 }
 
             }
@@ -221,7 +217,7 @@ public class CWorld {
             }
         }
 
-        for(CWalker walker : this.aoWalkers.values()) {
+        for(CWalker walker : this.walkers) {
             this.oGraph.addWayPointEdge(walker.getPosition(), walker.getTarget());
 
             for(CObstacle obstacle : this.aoObstacles) {
@@ -256,7 +252,7 @@ public class CWorld {
                 throw new IllegalArgumentException("Mischt, could not resolve blocked situation in CWorld.stepSimulation in " + maxCalculationCount.toString() + " calculation rounds");
             }
 
-            for( CWalker walker : this.aoWalkers.values()) {
+            for( CWalker walker : this.walkers) {
                 if(calculationRoundCount != 1) {
                     grid.unsubscribeWalker(walker, true);
                 }
@@ -265,21 +261,23 @@ public class CWorld {
             }
 
             // reset all detected collsions
-            for( CWalker walker : this.aoWalkers.values()) {
+            for( CWalker walker : this.walkers) {
                 walker.resetCollisions();
             }
 
             // check all walkers with neighbours for collisions
-            for( CWalker walker : this.aoWalkers.values()) {
+            for( CWalker walker : this.walkers) {
                 for( CWalker neighbourWalker : grid.getNeighbours(walker, true)) {
                     hasBlockedWalkers |= walker.checkAndRememberCollisionWith(neighbourWalker); // if one collision return true, the the while loop must run once again
                 }
             }
+
+            Collections.shuffle(this.walkers);
         }
 
         // step 2: make the step for each walker and remove walkers that reached their target
         // we have to use iterators because we modify the walker list while we iterate over it
-        Iterator<CWalker> iter = this.aoWalkers.values().iterator();
+        Iterator<CWalker> iter = this.walkers.iterator();
         while(iter.hasNext()){
             CWalker walker = iter.next();
             grid.unsubscribeWalker(walker, false);
