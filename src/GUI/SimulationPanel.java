@@ -25,17 +25,11 @@ import java.util.Vector;
  */
 public class SimulationPanel extends JPanel implements ActionListener, KeyListener {
 
+    protected Vector<CDrawObject> drawSimulationObjects = new Vector<CDrawObject>();
+
     /**
-     * Holds the informaticon if the simulation is running
+     * the timer triggers the simulation steps
      */
-    //protected boolean isRunning = false;
-    protected Vector<CDrawObject> drawObjects = new Vector<CDrawObject>();
-
-    protected boolean showGraph = true;
-    protected boolean showGrid = false;
-    protected boolean showWalkerCoordinates = false;
-    protected boolean showWalkerIDs = false;
-
     protected Timer timer = null;
 
     protected Vector<File> files = new Vector<File>();
@@ -60,7 +54,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
     private void initDrawingObjects() {
 
         // draw the grid
-        drawObjects.add(new CDrawObject(false, KeyEvent.VK_H) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_H) {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.LIGHT_GRAY);
@@ -91,7 +85,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the objects
-        drawObjects.add(new CDrawObject(true, KeyEvent.VK_O) {
+        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_O) {
             @Override
             public void doDrawing(Graphics2D g2d) {
 
@@ -114,7 +108,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the waypoints
-        drawObjects.add(new CDrawObject(false, KeyEvent.VK_W) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_W) {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.YELLOW);
@@ -137,7 +131,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the graph edges
-        drawObjects.add(new CDrawObject(true, KeyEvent.VK_G) {
+        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_G) {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.GREEN);
@@ -148,7 +142,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the graph trash edges
-        drawObjects.add(new CDrawObject(false, KeyEvent.VK_T) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_T) {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.RED);
@@ -159,7 +153,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the walkers
-        drawObjects.add(new CDrawObject(true, KeyEvent.VK_L) {
+        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_L) {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 for (CWalker walker : simulationWorld.getWalkers()) {
@@ -185,7 +179,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the walker ids
-        drawObjects.add(new CDrawObject(false, KeyEvent.VK_I) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_I) {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 for (CWalker walker : simulationWorld.getWalkers()) {
@@ -199,7 +193,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the walker coordinates
-        drawObjects.add(new CDrawObject(false, KeyEvent.VK_J) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_J) {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 for (CWalker walker : simulationWorld.getWalkers()) {
@@ -213,15 +207,13 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the walker next desired path position
-        drawObjects.add(new CDrawObject(false, KeyEvent.VK_D) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_D) {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 for (CWalker walker : simulationWorld.getWalkers()) {
                     if (walker.getDesiredPath().size() > 0) {
-                        CPosition position = walker.getPosition();
 
                         DecimalFormat df = new DecimalFormat("#.00");
-
                         g2d.setColor(Color.CYAN);
                         g2d.drawString("x" + df.format(walker.getDesiredPath().getFirst().getX()) + "/y" + df.format(walker.getDesiredPath().getFirst().getY()), ((Double) (walker.getDesiredPath().getFirst().getX() + 100.0)).intValue(), walker.getDesiredPath().getFirst().getY().intValue());
                     }
@@ -336,7 +328,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         }
 
         // give the event to the drawobject
-        for(CDrawObject drawObject : this.drawObjects) {
+        for(CDrawObject drawObject : this.drawSimulationObjects) {
             drawObject.keyPressed(e);
         }
 
@@ -393,7 +385,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
         }
         else {
-            for(CDrawObject drawObject : this.drawObjects) {
+            for(CDrawObject drawObject : this.drawSimulationObjects) {
                 drawObject.draw(g2d);
             }
         }
