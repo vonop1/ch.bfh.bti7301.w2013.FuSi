@@ -29,7 +29,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
      * Holds the informaticon if the simulation is running
      */
     //protected boolean isRunning = false;
-    protected Vector<CDrawObject> settings = new Vector<CDrawObject>();
+    protected Vector<CDrawObject> drawObjects = new Vector<CDrawObject>();
 
     protected boolean showGraph = true;
     protected boolean showGrid = false;
@@ -48,11 +48,186 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         // We want to positionate our Elements with x und y coordinates
         setLayout(null);
 
+        initDrawingObjects();
+
         reloadConfigfiles();
 
         this.timer = new Timer(20, this);
 
         this.repaint();
+    }
+
+    private void initDrawingObjects() {
+
+        // draw the grid
+        drawObjects.add(new CDrawObject(false, KeyEvent.VK_H) {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                g2d.setColor(Color.LIGHT_GRAY);
+
+                // draw vertical and horizontal lines
+                int i = 1;
+                int max = Math.max(getWidth(), getHeight());
+                while (i < max) {
+                    i += simulationWorld.getGridSize();
+
+                    // the vertical line
+                    g2d.drawLine(i, 0, i, getHeight());
+
+                    // the horizontal line
+                    g2d.drawLine(0, i, getWidth(), i);
+                }
+
+                int max_x = getWidth() / simulationWorld.getGridSize();
+                int max_y = getHeight() / simulationWorld.getGridSize();
+                for (int x = 0; x < max_x; x++) {
+                    for (int y = 0; y < max_y; y++) {
+                        if (simulationWorld.getGrid().hasCellObject(x, y)) {
+                            g2d.fillRect(x * simulationWorld.getGridSize() + 3, y * simulationWorld.getGridSize() + 3, simulationWorld.getGridSize() - 3, simulationWorld.getGridSize() - 3);
+                        }
+                    }
+                }
+            }
+        });
+
+        // draw the objects
+        drawObjects.add(new CDrawObject(true, KeyEvent.VK_O) {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+
+                g2d.setColor(Color.WHITE);
+                for (CObstacle obstacle : simulationWorld.getObstacles()) {
+                    Vector<CPosition> positions = obstacle.getPositions();
+                    int[] xCoordinates = new int[positions.size()];
+                    int[] yCoordinates = new int[positions.size()];
+
+                    int i = 0;
+                    for (CPosition position : positions) {
+                        xCoordinates[i] = position.getX().intValue();
+                        yCoordinates[i] = position.getY().intValue();
+                        i += 1;
+                    }
+
+                    g2d.fillPolygon(xCoordinates, yCoordinates, positions.size());
+                }
+            }
+        });
+
+        // draw the waypoints
+        drawObjects.add(new CDrawObject(false, KeyEvent.VK_W) {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                g2d.setColor(Color.YELLOW);
+                for (CObstacle obstacle : simulationWorld.getObstacles()) {
+                    Vector<CPosition> positions = obstacle.getWaypoints();
+                    int[] xCoordinates2 = new int[positions.size()];
+                    int[] yCoordinates2 = new int[positions.size()];
+
+                    int j = 0;
+                    for (CPosition position : positions) {
+                        xCoordinates2[j] = position.getX().intValue();
+                        yCoordinates2[j] = position.getY().intValue();
+                        j += 1;
+                    }
+
+                    g2d.setColor(Color.GREEN);
+                    g2d.drawPolygon(xCoordinates2, yCoordinates2, positions.size());
+                }
+            }
+        });
+
+        // draw the graph edges
+        drawObjects.add(new CDrawObject(true, KeyEvent.VK_G) {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                g2d.setColor(Color.GREEN);
+                for (CEdge edge : simulationWorld.getGraph().getEdges()) {
+                    g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
+                }
+            }
+        });
+
+        // draw the graph trash edges
+        drawObjects.add(new CDrawObject(false, KeyEvent.VK_T) {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                g2d.setColor(Color.RED);
+                for (CEdge edge : simulationWorld.getGraph().getTrashEdges()) {
+                    g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
+                }
+            }
+        });
+
+        // draw the walkers
+        drawObjects.add(new CDrawObject(true, KeyEvent.VK_L) {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                for (CWalker walker : simulationWorld.getWalkers()) {
+                    CPosition position = walker.getPosition();
+
+                    g2d.setColor((walker.hasCollisions() ? Color.RED : Color.ORANGE));
+                    g2d.fillOval(((Double) (position.getX() - walker.getHalfWalkerSize())).intValue(),
+                            ((Double) (position.getY() - walker.getHalfWalkerSize())).intValue(),
+                            ((Double) (walker.getHalfWalkerSize() * 2)).intValue(),
+                            ((Double) (walker.getHalfWalkerSize() * 2)).intValue());
+
+
+                    // draw the target as x, because the X marks the point =)
+                    g2d.setColor(Color.ORANGE);
+                    int upperleftX = ((Double) (walker.getTarget().getX() - walker.getHalfWalkerSize())).intValue();
+                    int upperleftY = ((Double) (walker.getTarget().getY() - walker.getHalfWalkerSize())).intValue();
+                    int width = ((Double) (walker.getHalfWalkerSize() * 2)).intValue();
+                    int height = ((Double) (walker.getHalfWalkerSize() * 2)).intValue();
+                    g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
+                    g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
+                }
+            }
+        });
+
+        // draw the walker ids
+        drawObjects.add(new CDrawObject(false, KeyEvent.VK_I) {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                for (CWalker walker : simulationWorld.getWalkers()) {
+                    CPosition position = walker.getPosition();
+
+                    g2d.setColor(Color.BLACK);
+                    g2d.setFont(new Font("Serif", Font.BOLD, 9));
+                    g2d.drawString(walker.getId().toString(), position.getX().intValue() - (walker.getHalfWalkerSize().intValue() / 2), position.getY().intValue() + (walker.getHalfWalkerSize().intValue()));
+                }
+            }
+        });
+
+        // draw the walker coordinates
+        drawObjects.add(new CDrawObject(false, KeyEvent.VK_J) {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                for (CWalker walker : simulationWorld.getWalkers()) {
+                    CPosition position = walker.getPosition();
+
+                    DecimalFormat df = new DecimalFormat("#.00");
+                    g2d.setColor(Color.CYAN);
+                    g2d.drawString("x" + df.format(walker.getPosition().getX()) + "/y" + df.format(walker.getPosition().getY()), position.getX().intValue() + ((Double) (walker.getHalfWalkerSize() * 2)).intValue() + 10, position.getY().intValue());
+                }
+            }
+        });
+
+        // draw the walker next desired path position
+        drawObjects.add(new CDrawObject(false, KeyEvent.VK_D) {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                for (CWalker walker : simulationWorld.getWalkers()) {
+                    if (walker.getDesiredPath().size() > 0) {
+                        CPosition position = walker.getPosition();
+
+                        DecimalFormat df = new DecimalFormat("#.00");
+
+                        g2d.setColor(Color.CYAN);
+                        g2d.drawString("x" + df.format(walker.getDesiredPath().getFirst().getX()) + "/y" + df.format(walker.getDesiredPath().getFirst().getY()), ((Double) (walker.getDesiredPath().getFirst().getX() + 100.0)).intValue(), walker.getDesiredPath().getFirst().getY().intValue());
+                    }
+                }
+            }
+        });
     }
 
     public void reloadConfigfiles() {
@@ -118,6 +293,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 final JFileChooser fc = new JFileChooser();
                 fc.showOpenDialog(this);
                 fileToLoad = fc.getSelectedFile();
+                e.consume();
                 break;
 
             case KeyEvent.VK_1:
@@ -135,29 +311,17 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 catch(ArrayIndexOutOfBoundsException ex) {
                     //System.out.println(ex);
                 }
+                e.consume();
                 break;
 
             case KeyEvent.VK_P:
                 this.toggleRunningState();
+                e.consume();
                 break;
 
             case KeyEvent.VK_RIGHT:
                 this.runOneStep();
-                break;
-
-            case KeyEvent.VK_G:
-                this.toggleShowGraph();
-                break;
-
-            case KeyEvent.VK_H:
-                this.toggleShowGrid();
-                break;
-
-            case KeyEvent.VK_J:
-                this.toggleShowWalkerCoordinates();
-                break;
-            case KeyEvent.VK_I:
-                this.toggleShowWalkerIDs();
+                e.consume();
                 break;
 
             case KeyEvent.VK_ESCAPE:
@@ -167,11 +331,22 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 else {
                     this.setupWorld(null);
                 }
+                e.consume();
                 break;
+        }
+
+        // give the event to the drawobject
+        for(CDrawObject drawObject : this.drawObjects) {
+            drawObject.keyPressed(e);
         }
 
         if(fileToLoad != null ) {
             this.setupWorld(fileToLoad);
+        }
+
+        // if the timer is not running, fire a repaint event
+        if(!this.timer.isRunning() && e.isConsumed()) {
+            this.repaint();
         }
     }
 
@@ -218,139 +393,11 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
         }
         else {
-           if(this.showGrid) {
-
-               g2d.setColor(Color.LIGHT_GRAY);
-
-               // draw vertical and horizontal lines
-               int i = 1;
-               int max = Math.max(this.getWidth(), this.getHeight());
-               while(i < max) {
-                   i += this.simulationWorld.getGridSize();
-
-                   // the vertical line
-                   g2d.drawLine(i, 0, i, this.getHeight());
-
-                   // the horizontal line
-                   g2d.drawLine(0, i, this.getWidth(), i);
-               }
-
-               int max_x = this.getWidth() / this.simulationWorld.getGridSize();
-               int max_y = this.getHeight() / this.simulationWorld.getGridSize();
-               for(int x = 0; x < max_x; x++) {
-                   for(int y = 0; y < max_y; y++) {
-                       if( this.simulationWorld.getGrid().hasCellObject(x,y) ) {
-                           g2d.fillRect(x * this.simulationWorld.getGridSize() + 3, y * this.simulationWorld.getGridSize() + 3, this.simulationWorld.getGridSize() - 3, this.simulationWorld.getGridSize() - 3);
-                       }
-                   }
-               }
-           }
-
-           //draw the obstacles
-           g2d.setColor(Color.WHITE);
-           for(CObstacle obstacle : simulationWorld.getObstacles()) {
-               Vector<CPosition> positions = obstacle.getPositions();
-               int[] xCoordinates = new int[positions.size()];
-               int[] yCoordinates = new int[positions.size()];
-
-               int i = 0;
-               for(CPosition position : positions) {
-                   xCoordinates[i] = position.getX().intValue();
-                   yCoordinates[i] = position.getY().intValue();
-                   i += 1;
-               }
-
-               g2d.fillPolygon(xCoordinates, yCoordinates, positions.size());
-           }
-//               Vector<CPosition> positions2 = obstacle.getWaypoints();
-//               int[] xCoordinates2 = new int[positions.size()];
-//               int[] yCoordinates2 = new int[positions.size()];
-//
-//               int j = 0;
-//               for(CPosition position : positions2) {
-//                   xCoordinates2[j] = position.getX().intValue();
-//                   yCoordinates2[j] = position.getY().intValue();
-//                   j += 1;
-//               }
-//
-//               g.setColor(Color.GREEN);
-//               g.drawPolygon(xCoordinates2, yCoordinates2, positions2.size());
-
-             if(this.showGraph) {
-                 g2d.setColor(Color.GREEN);
-                 for(CEdge edge : this.simulationWorld.getGraph().getEdges()) {
-                     g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
-                     //this.drawArrowLine(g2d, edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
-                 }
-
-//                 g2d.setColor(Color.RED);
-//                 for(CEdge edge : this.simulationWorld.getGraph().getTrashEdges()) {
-//                     g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
-//                     this.drawArrowLine((Graphics2D)g, edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
-//                 }
-             }
-
-
-            for(CWalker walker : simulationWorld.getWalkers()) {
-                CPosition position = walker.getPosition();
-
-                g2d.setColor(( walker.hasCollisions() ? Color.RED : Color.ORANGE) );
-                g2d.fillOval(((Double)(position.getX() - walker.getHalfWalkerSize())).intValue(),
-                             ((Double)(position.getY() - walker.getHalfWalkerSize())).intValue(),
-                             ((Double)(walker.getHalfWalkerSize() * 2)).intValue(),
-                             ((Double)(walker.getHalfWalkerSize() * 2)).intValue());
-
-
-                // draw the target as x, because the X marks the point =)
-                g2d.setColor(Color.ORANGE);
-                int upperleftX = ((Double)(walker.getTarget().getX() - walker.getHalfWalkerSize())).intValue();
-                int upperleftY = ((Double)(walker.getTarget().getY() - walker.getHalfWalkerSize())).intValue();
-                int width = ((Double)(walker.getHalfWalkerSize() * 2)).intValue();
-                int height = ((Double)(walker.getHalfWalkerSize() * 2)).intValue();
-                g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
-                g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
-
-                if(this.showWalkerIDs) {
-                    g2d.setColor(Color.BLACK);
-                    g2d.setFont(new Font("Serif", Font.BOLD, 9));
-                    g2d.drawString(walker.getId().toString(), position.getX().intValue() - (walker.getHalfWalkerSize().intValue() / 2), position.getY().intValue() + (walker.getHalfWalkerSize().intValue()));
-                }
-
-                if(this.showWalkerCoordinates) {
-                    DecimalFormat df = new DecimalFormat("#.00");
-                    g2d.setColor(Color.CYAN);
-                    g2d.drawString("x" + df.format(walker.getPosition().getX()) + "/y" + df.format(walker.getPosition().getY()), position.getX().intValue() + width + 10, position.getY().intValue() );
-
-                    //if(walker.getDesiredPath().size() > 0 ) {
-                    //    g2d.drawString("x" + df.format(walker.getDesiredPath().getFirst().getX()) + "/y" + df.format(walker.getDesiredPath().getFirst().getY()), ((Double)(walker.getDesiredPath().getFirst().getX() + 100.0)).intValue(), walker.getDesiredPath().getFirst().getY().intValue());
-                    //}
-                }
+            for(CDrawObject drawObject : this.drawObjects) {
+                drawObject.draw(g2d);
             }
         }
     }
-
-    /*
-    private void drawArrowLine(Graphics2D g2d, int x1, int y1, int x2, int y2) {
-
-        AffineTransform tx = new AffineTransform();
-        Line2D.Double line = new Line2D.Double(x1,y1,x2,y2);
-
-        Polygon arrowHead = new Polygon();
-        arrowHead.addPoint( 0,0);
-        arrowHead.addPoint( -5, -10);
-        arrowHead.addPoint( 5,-10);
-
-        tx.setToIdentity();
-        double angle = Math.atan2(line.y2-line.y1, line.x2-line.x1);
-        tx.translate(line.x2, line.y2);
-        tx.rotate((angle-Math.PI/2d));
-
-        Graphics2D g = (Graphics2D) g2d.create();
-        g.setTransform(tx);
-        g.fill(arrowHead);
-        g.dispose();
-        //g.drawLine(x1,y1,x2,y2);
-    }  */
 
     public void runOneStep() {
         if(this.simulationWorld != null) {
@@ -369,50 +416,6 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
             }
             else {
                 this.timer.start();
-            }
-        }
-    }
-
-    public void toggleShowGraph() {
-        if(this.simulationWorld != null) {
-            this.showGraph = !this.showGraph;
-
-            // if the timer is not running, fire a repaint event
-            if(!this.timer.isRunning()) {
-                this.repaint();
-            }
-        }
-    }
-
-    public void toggleShowGrid() {
-        if(this.simulationWorld != null) {
-            this.showGrid = !this.showGrid;
-
-            // if the timer is not running, fire a repaint event
-            if(!this.timer.isRunning()) {
-                this.repaint();
-            }
-        }
-    }
-
-    public void toggleShowWalkerCoordinates() {
-        if(this.simulationWorld != null) {
-            this.showWalkerCoordinates = !this.showWalkerCoordinates;
-
-            // if the timer is not running, fire a repaint event
-            if(!this.timer.isRunning()) {
-                this.repaint();
-            }
-        }
-    }
-
-    public void toggleShowWalkerIDs() {
-        if(this.simulationWorld != null) {
-            this.showWalkerIDs = !this.showWalkerIDs;
-
-            // if the timer is not running, fire a repaint event
-            if(!this.timer.isRunning()) {
-                this.repaint();
             }
         }
     }
