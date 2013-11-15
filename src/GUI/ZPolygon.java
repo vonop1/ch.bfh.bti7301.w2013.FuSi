@@ -41,6 +41,15 @@ public class ZPolygon extends Polygon {
             return false;
         }
     }
+
+    public void resizeXY(int x, int y, int npoint) {
+        for(int i=0; i<npoints; i++){
+            if(i==npoint){
+               xpoints[i]+= x;
+               ypoints[i]+= y;
+            }
+        }
+    }
     public void translateXY (int x, int y) {
         translate(x, y);
     }
@@ -95,4 +104,5 @@ public class ZPolygon extends Polygon {
         ypoints = ry;
 
     }
+
 }
