@@ -54,4 +54,20 @@ public class CMathFunctions {
 
         return new CPosition(px, py);
     }
+
+    public static Double angleBetween2Lines(CPosition startLine1, CPosition endLine1, CPosition startLine2, CPosition endLine2) {
+
+        double angle1 = Math.atan2(startLine1.getY() - endLine1.getY(), startLine1.getX() - endLine1.getX());
+
+        double angle2 = Math.atan2(startLine2.getY() - endLine2.getY(), startLine2.getX() - endLine2.getX());
+
+        return angle1-angle2;
+    }
+
+    /*
+    public CPosition rotateAround(CPosition point, CPosition center, double angle) {
+        x = center.x + (Math.cos(Math.toRadians(angle)) * (x - center.x) - Math.sin(Math.toRadians(angle)) * (y - center.y));
+        y = center.y + (Math.sin(Math.toRadians(angle)) * (x - center.x) + Math.cos(Math.toRadians(angle)) * (y - center.y));
+    }
+    */
 }

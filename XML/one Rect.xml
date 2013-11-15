@@ -6,6 +6,7 @@
       <point x="210" y="70"/>
       <point x="410" y="70"/>
       <point x="410" y="110"/>
+      <!-- <point x="310" y="210"/> -->
       <point x="210" y="110"/>
     </obj>
   </objList>

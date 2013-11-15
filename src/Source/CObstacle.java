@@ -171,6 +171,143 @@ public class CObstacle implements Comparable<CObstacle> {
         }
     }
 
+
+    private CPosition getWaypoint2(int edgeNumber) {
+
+        CPosition edgePoint = aoPosition.elementAt(edgeNumber);
+        CPosition prePoint = aoPosition.elementAt((edgeNumber - 1 < 0 ? aoPosition.size() - 1 : edgeNumber - 1));
+        CPosition postPoint = aoPosition.elementAt((edgeNumber + 1 >= aoPosition.size() ? 0 : edgeNumber + 1));
+
+        assert(edgePoint != null);
+        assert(prePoint != null);
+        assert(postPoint != null);
+
+        Double alpha = CMathFunctions.angleBetween2Lines(prePoint, edgePoint, edgePoint, postPoint);
+        Double beta = CMathFunctions.angleBetween2Lines(prePoint, edgePoint, edgePoint, new CPosition(edgePoint.getX() + 10, edgePoint.getY()));
+        Double gamma = beta - alpha / 2;
+        Double delta = Math.PI - gamma;
+
+        CPosition directionVector = this.getDirectionVectorOfCenter(edgePoint);
+        CPosition center = this.getCenter();
+
+        Double xDiff = edgePoint.getX() - center.getX();
+        Double yDiff = edgePoint.getY() - center.getY();
+
+        //if(delta > Math.PI) {
+        //    delta = (Math.PI * 2) - delta;
+        //}
+
+        Double distanceToLine = center.getDistanceToLine(prePoint, postPoint, true);
+        Double distanceToEdge = center.getDistanceTo(edgePoint);
+
+        boolean isStumpf = distanceToEdge < distanceToLine;
+
+
+        Double xDelta = Math.cos(delta) * this.dDistToEdgeC; //* (xDiff > 0 ? 1 : -1);
+        Double yDelta = Math.sin(delta) * this.dDistToEdgeC; //* (yDiff > 0 ? 1 : -1);
+
+        return new CPosition(edgePoint.getX() + xDelta, edgePoint.getY() + yDelta);
+
+
+        /*
+        CPosition center = this.getCenter();
+
+        CPosition pos1 = new CPosition(edgePoint.getX() + xDelta, edgePoint.getY() + yDelta);
+        CPosition pos2 = new CPosition(edgePoint.getX() - xDelta, edgePoint.getY() - yDelta);
+        CPosition pos3 = new CPosition(edgePoint.getX() + xDelta, edgePoint.getY() - yDelta);
+        CPosition pos4 = new CPosition(edgePoint.getX() - xDelta, edgePoint.getY() + yDelta);
+
+        Double distance1 = pos1.getDistanceTo(center);
+        Double distance2 = pos2.getDistanceTo(center);
+        Double distance3 = pos3.getDistanceTo(center);
+        Double distance4 = pos4.getDistanceTo(center);
+
+        CPosition resultPos = pos1;
+        Double resultDistance = distance1;
+
+        if(distance2 > resultDistance) {
+            resultPos = pos2;
+            resultDistance = distance2;
+        }
+
+        if(distance3 > resultDistance) {
+            resultPos = pos3;
+            resultDistance = distance3;
+        }
+
+        if(distance4 > resultDistance) {
+            resultPos = pos4;
+            resultDistance = distance4;
+        }
+
+        return resultPos;
+        */
+
+
+
+
+//        Double xDelta = Math.cos(delta) * this.dDistToEdgeC * (delta < Math.PI / 2 || delta > (Math.PI * 3) / 2 ? -1 : 1 );
+//        Double yDelta = Math.sin(delta) * this.dDistToEdgeC * (delta > Math.PI ? 1 : -1 );
+
+//        return new CPosition(edgePoint.getX() + xDelta, edgePoint.getY() + yDelta);
+
+    }
+
+
+    private CPosition getDirectionVectorOfCenter(CPosition edge) {
+        double dXAverage = 0;
+        double dYAverage = 0;
+        double dXSum = 0;
+        double dYSum = 0;
+
+        for (CPosition oPos:aoPosition)
+        {
+            dXSum += oPos.getX();
+            dYSum += oPos.getY();
+        }
+
+        if (aoPosition.size() != 1)
+        {
+            //Division with Zero not possible
+            dXAverage = (dXSum - edge.getX()) / (aoPosition.size() - 1);
+            dYAverage = (dYSum - edge.getY()) / (aoPosition.size() - 1);
+        }
+
+        double dXDiff = edge.getX() - dXAverage;
+        double dYDiff = edge.getY() - dYAverage;
+
+        return new CPosition(dXDiff, dYDiff);
+    }
+
+
+    /**
+     * finds the center of a polygon
+     * @return the center of the polygon
+     */
+    public CPosition getCenter() {
+
+        double cx = 0, cy = 0, area = 0, factor = 0;
+        int j = 0;
+        for (int i = 0; i < this.aoPosition.size(); i++) {
+            j = (i + 1) % this.aoPosition.size();
+            area += this.aoPosition.get(i).getX() * this.aoPosition.get(j).getY();
+            area -= this.aoPosition.get(i).getY() * this.aoPosition.get(j).getX();
+
+            factor = (this.aoPosition.get(i).getX() * this.aoPosition.get(j).getY() - this.aoPosition.get(j).getX() * this.aoPosition.get(i).getY());
+            cx += (this.aoPosition.get(i).getX() + this.aoPosition.get(j).getX()) * factor;
+            cy += (this.aoPosition.get(i).getY() + this.aoPosition.get(j).getY()) * factor;
+        }
+
+        area = Math.abs(area / 2);
+        factor = 1.0 / (6.0 * area);
+
+        cx *= factor;
+        cy *= factor;
+
+        return new CPosition(Math.abs(cx), Math.abs(cy));
+    }
+
+
     /**
      * Calculate the Waypoint for one Edge of the obstacle
      * @return Point for travers the obstacle
