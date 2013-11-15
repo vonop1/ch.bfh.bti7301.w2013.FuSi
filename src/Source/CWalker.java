@@ -70,7 +70,7 @@ public abstract class CWalker {
 
     public void setDesiredPath(LinkedList<CPosition> vertexes) {
         if(vertexes == null || vertexes.size() == 0) {
-            throw new IllegalArgumentException("Der desiredPath darf nicht Null oder leer sein --> vermutlich Dijsktra kam zu keinem Ergebnis!");
+            throw new IllegalArgumentException("Der desiredPath darf nicht Null oder leer sein --> vermutlich kam Dijsktra zu keinem Ergebnis!");
         }
 
         this.desiredPath = vertexes;
@@ -105,7 +105,7 @@ public abstract class CWalker {
      * @param other the walker
      * @return true if we have a collision or false if not
      */
-    public boolean checkAndRememberCollisionWith(CWalker other) {
+    public boolean checkCollisionWith(CWalker other, boolean rememberCollision) {
 
         if(this.equals(other)) {
             return false;
@@ -113,7 +113,7 @@ public abstract class CWalker {
 
         boolean hasCollision = this.getDesiredNextPosition().getDistanceTo(other.getDesiredNextPosition()) < this.getHalfWalkerSize() + other.getHalfWalkerSize() + 1;
 
-        if(hasCollision) {
+        if(hasCollision && rememberCollision) {
 
             CCollisionList newList;
             if( !this.hasCollisions() && !other.hasCollisions() ) { // case 1: none of both walker have a collision until now

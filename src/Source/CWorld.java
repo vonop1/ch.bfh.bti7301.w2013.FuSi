@@ -19,6 +19,7 @@ import org.w3c.dom.*;
  */
 public class CWorld {
     private Vector<CWalker> walkers = new Vector<CWalker>();
+    //private Map<CWalker, Integer> walkerWaitingQueue = new HashMap<CWalker, Integer>();
 
     //private CGraph oGraph;
     private Integer maxCalculationCount = 10000;
@@ -156,7 +157,31 @@ public class CWorld {
 
                     CPosition destination = new CPosition(dX, dY);
 
-                    this.walkers.add(new CWalkerStand(source, destination));
+                    CWalker walkerToAdd = new CWalkerStand(source, destination);
+                    Boolean positionOccupied = false;
+                    for(CWalker existingWalker : this.walkers) {
+                        if(existingWalker.checkCollisionWith(walkerToAdd, false)) {
+                            positionOccupied = true;
+                            break;
+                        }
+                    }
+
+                    if(positionOccupied) {
+//                        Boolean allreadyInWaitingQueue = false;
+//                        for ( Map.Entry<CWalker, Integer> entry : this.walkerWaitingQueue.entrySet() ) {
+//                            if(entry.getKey().checkCollisionWith(walkerToAdd, false)) {
+//                                entry.setValue(entry.getValue() + 1);
+//                                allreadyInWaitingQueue = true;
+//                            }
+//                        }
+//
+//                        if(!allreadyInWaitingQueue) {
+//                            this.walkerWaitingQueue.put(walkerToAdd, 1);
+//                        }
+                    }
+                    else {
+                        this.walkers.add(walkerToAdd);
+                    }
                 }
 
             }
@@ -266,11 +291,13 @@ public class CWorld {
             // check all walkers with neighbours for collisions
             for( CWalker walker : this.walkers) {
                 for( CWalker neighbourWalker : grid.getNeighbours(walker, true)) {
-                    hasBlockedWalkers |= walker.checkAndRememberCollisionWith(neighbourWalker); // if one collision return true, the the while loop must run once again
+                    hasBlockedWalkers |= walker.checkCollisionWith(neighbourWalker, true); // if one collision return true, the the while loop must run once again
                 }
             }
 
-            Collections.shuffle(this.walkers);
+            if( hasBlockedWalkers ) {
+                Collections.shuffle(this.walkers);
+            }
         }
 
         // step 2: make the step for each walker and remove walkers that reached their target
