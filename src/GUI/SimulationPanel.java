@@ -54,7 +54,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
     private void initDrawingObjects() {
 
         // draw the grid
-        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_H) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_H, "H - Zeige das Grid an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.LIGHT_GRAY);
@@ -85,7 +85,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the objects
-        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_O) {
+        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_O, "O - Zeige Obstacles an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
 
@@ -107,8 +107,35 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
             }
         });
 
+        // draw the shortcut help info
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_F1, "F1 - Zeigt diese Hilfe an") {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                g2d.setColor(Color.WHITE);
+
+                int x = simulationWorld.getWorldWidth() - 250;
+                int y = 20;
+
+                for(CDrawObject drawObject : drawSimulationObjects) {
+                    if(drawObject.getVisibleShortcutKey() != null && drawObject.getDescription() != null && !drawObject.getDescription().isEmpty()) {
+                        y += 20;
+                        g2d.drawString(drawObject.getDescription(), x, y);
+                    }
+                }
+
+                y += 20;
+                g2d.drawString("P - Pausiere Simulation", x, y);
+                y += 20;
+                g2d.drawString("RECHTS - Mache 1 Simulationsschritt", x, y);
+                y += 20;
+                g2d.drawString("0-9 - Lade andere Simulation", x, y);
+                y += 20;
+                g2d.drawString("ESC - Beende Simulation", x, y);
+            }
+        });
+
         // draw the waypoints
-        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_W) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_W, "W - Zeige Waypoints an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.YELLOW);
@@ -131,7 +158,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the graph edges
-        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_G) {
+        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_G, "G - Zeige Graph-Kanten an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.GREEN);
@@ -142,7 +169,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the graph trash edges
-        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_T) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_T, "T - Zeige gelöschte Graph-Kanten an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.RED);
@@ -153,7 +180,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the walkers
-        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_L) {
+        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_L, "L - Zeige die Walkers an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 for (CWalker walker : simulationWorld.getWalkers()) {
@@ -179,7 +206,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the walker ids
-        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_I) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_I, "I - Zeige Walker IDs an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 for (CWalker walker : simulationWorld.getWalkers()) {
@@ -193,7 +220,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the walker coordinates
-        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_J) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_J, "J - Zeige Walker Koordinaten an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 for (CWalker walker : simulationWorld.getWalkers()) {
@@ -207,7 +234,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         });
 
         // draw the walker next desired path position
-        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_D) {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_D, "D - Zeige desiredPosition Koord. an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 for (CWalker walker : simulationWorld.getWalkers()) {

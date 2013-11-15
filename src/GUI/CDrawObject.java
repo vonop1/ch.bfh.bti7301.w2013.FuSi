@@ -14,10 +14,20 @@ public abstract class CDrawObject implements KeyListener {
 
     private Integer visibleShortcutKey = null;
     private Boolean isVisible = false;
+    private String description = "";
 
-    public CDrawObject(Boolean isVisible, Integer visibleShortcutKey) {
+    public CDrawObject(Boolean isVisible, Integer visibleShortcutKey, String description) {
         this.isVisible = isVisible;
         this.visibleShortcutKey = visibleShortcutKey;
+        this.description = description;
+    }
+
+    public Integer getVisibleShortcutKey() {
+        return visibleShortcutKey;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
