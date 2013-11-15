@@ -2,9 +2,7 @@ package Source;
 
 import Util.CPosition;
 
-import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Vector;
 
 /**
  * Created with IntelliJ IDEA.
