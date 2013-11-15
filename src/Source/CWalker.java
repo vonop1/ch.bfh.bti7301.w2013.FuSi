@@ -165,9 +165,8 @@ public abstract class CWalker {
     /**
      * calculates the next position and saves the result to the nextDesiredPosition member var
      * @param roundCount the calculation round count
-     * @return true if the new position has no collision with others
      */
-    public abstract boolean calcNextDesiredPosition(Integer roundCount);
+    public abstract void calcNextDesiredPosition(Integer roundCount);
 
     /**
      * walks a step to the next desired Position and resets desiredNextPosition member variable to NULL

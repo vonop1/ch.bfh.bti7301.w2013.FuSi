@@ -15,14 +15,12 @@ public class CWalkerStand extends CWalker {
     /**
      * calculates the next position and saves the result to the nextDesiredPosition member var
      * @param roundCount the calculation round count
-     * @return true if the new position has no collision with others
      */
 
     @Override
-    public boolean calcNextDesiredPosition(Integer roundCount) {
+    public void calcNextDesiredPosition(Integer roundCount) {
         if(this.desiredPath.size() < 1) {
             this.desiredNextPosition = null;
-            return false;
         }
 
         if(roundCount == 1) {
@@ -42,7 +40,6 @@ public class CWalkerStand extends CWalker {
 
             this.desiredNextPosition = new CPosition(currentPosition.getX() + nextStepDeltaX, currentPosition.getY() + nextStepDeltaY);
 
-            return false;
         }
         else {
 
@@ -55,6 +52,5 @@ public class CWalkerStand extends CWalker {
             }
         }
 
-        return false;
     }
 }
