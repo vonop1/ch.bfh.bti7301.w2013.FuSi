@@ -148,7 +148,7 @@ public abstract class CWalker {
      */
     public boolean checkCollisionWith(CObstacle obstacle, boolean rememberCollision) {
 
-        boolean hasCollision = obstacle.getDistanceTo(this.getDesiredNextPosition()) < this.getHalfWalkerSize() + 1;
+        boolean hasCollision = obstacle.getDistanceTo(this.getDesiredNextPosition()) < this.getHalfWalkerSize() + 0.1;
 
         if(hasCollision && rememberCollision) {
 

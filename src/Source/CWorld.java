@@ -295,6 +295,10 @@ public class CWorld {
                 for( CWalker neighbourWalker : grid.getNeighbours(walker, true)) {
                     hasBlockedWalkers |= walker.checkCollisionWith(neighbourWalker, true); // if one collision return true, the the while loop must run once again
                 }
+
+                for( CObstacle neighbourObstacle : grid.getNearObstacles(walker, true)) {
+                    hasBlockedWalkers |= walker.checkCollisionWith(neighbourObstacle, true);
+                }
             }
 
             if( hasBlockedWalkers ) {
