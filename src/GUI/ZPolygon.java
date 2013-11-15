@@ -15,26 +15,40 @@ import java.awt.geom.Point2D;
  */
 public class ZPolygon extends Polygon {
 
+    //position and size of a new regular polygon
     private static int X_POS = 75;
     private static int Y_POS = 75;
     private static int RADIUS = 50;
 
+    /**
+     * Constructor for a regular polygon
+     * @param n: the total number of points
+     */
     public ZPolygon(int n){
-
         for (int i=0; i<n; i++) {
-
             addPoint((int) (X_POS + RADIUS * Math.cos(i * 2 * Math.PI / n)), (int) (Y_POS + RADIUS * Math.sin(i * 2 * Math.PI / n)));
         }
     }
 
-    public ZPolygon(int[] xp, int[] yp, int np){
-
-        xpoints = xp;
-        ypoints = yp;
-        npoints = np;
+    /**
+     * Constructor for a variable polygon
+     * @param xpoints: the array of X coordinates
+     * @param ypoints: the array of Y coordinates
+     * @param npoints: the total number of points
+     */
+    public ZPolygon(int[] xpoints, int[] ypoints, int npoints){
+        this.xpoints = xpoints;
+        this.ypoints = ypoints;
+        this.npoints = npoints;
     }
 
-    public boolean isHit(float x, float y) {
+    /**
+     * Tests if the specified coordinates are inside the polygon
+     * @param x: the X coordinate
+     * @param y: the Y coordinate
+     * @return: true if polygon is hit, false if not
+     */
+    public boolean isHit(double x, double y) {
         if (contains(x, y)) {
             return true;
         } else {
@@ -42,7 +56,13 @@ public class ZPolygon extends Polygon {
         }
     }
 
-    public void resizeXY(int x, int y, int npoint) {
+    /**
+     * Adds value to a given point of the polygon
+     * @param x: the value to add to the X coordinate
+     * @param y: the value to add to the Y coordinate
+     * @param npoint: the point to add the values to
+     */
+    public void addXY(int x, int y, int npoint) {
         for(int i=0; i<npoints; i++){
             if(i==npoint){
                xpoints[i]+= x;
@@ -50,13 +70,19 @@ public class ZPolygon extends Polygon {
             }
         }
     }
+
+    /**
+     * Translates the vertices of the Polygon by deltaX along the x axis and by deltaY along the y axis.
+     * @param x: the amount to translate along the X axis
+     * @param y: the amount to translate along the Y axis
+     */
     public void translateXY (int x, int y) {
         translate(x, y);
     }
 
     /**
      * finds the center of a polygon
-     * @return the center of the polygon
+     * @return Point with the center of the polygon
      */
     public Point getCenter() {
 
@@ -88,6 +114,11 @@ public class ZPolygon extends Polygon {
         return new Point((int) Math.abs(Math.round(cx)), (int) Math.abs(Math.round(cy)));
     }
 
+    /**
+     *
+     * @param deltaTheta
+     * @param centerPt
+     */
     public void transform (double deltaTheta, Point centerPt) {
         AffineTransform rotateTransform = AffineTransform.getRotateInstance(deltaTheta, centerPt.x, centerPt.y);
 
