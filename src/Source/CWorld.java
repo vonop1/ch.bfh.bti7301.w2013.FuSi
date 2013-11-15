@@ -210,7 +210,7 @@ public class CWorld {
 
         // add obstacle lines
         for(CObstacle obstacle : this.aoObstacles) {
-            Vector<CPosition> positions = obstacle.getPositions();
+            Vector<CPosition> positions = obstacle.getVertexPoints();
             for(int i = 0; i < positions.size(); i++) {
                 for (int j = 0; j< positions.size(); j++) {
                     this.oGraph.addObstacleEdge(positions.elementAt(j), positions.elementAt(i));
@@ -294,6 +294,10 @@ public class CWorld {
             for( CWalker walker : this.walkers) {
                 for( CWalker neighbourWalker : grid.getNeighbours(walker, true)) {
                     hasBlockedWalkers |= walker.checkCollisionWith(neighbourWalker, true); // if one collision return true, the the while loop must run once again
+                }
+
+                for( CObstacle neighbourObstacle : grid.getNearObstacles(walker, true)) {
+                    hasBlockedWalkers |= walker.checkCollisionWith(neighbourObstacle, true);
                 }
             }
 

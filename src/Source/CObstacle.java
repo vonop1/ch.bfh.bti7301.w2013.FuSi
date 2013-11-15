@@ -73,6 +73,105 @@ public class CObstacle implements Comparable<CObstacle> {
     }
 
     /**
+     * Calculate the Waypoints for a the obstacle
+     * @return vector with Points for travers the obstacle
+     */
+    public Vector<CPosition> getVertexPoints()
+    {
+        Vector<CPosition> oResult = new Vector<CPosition>();
+
+        for (int i = 0; i < aoPosition.size(); i++)
+        {
+            oResult.add(getVertexpoint(i));
+        }
+
+        return oResult;
+    }
+
+    /**
+     * Calculate the Waypoint for one Edge of the obstacle
+     * @return Point for travers the obstacle
+     */
+    private CPosition getVertexpoint(int iEdgeNummber)
+    {
+        double distanceToVertex = 6;
+        double dXPoint = aoPosition.elementAt(iEdgeNummber).getX();
+        double dYPoint = aoPosition.elementAt(iEdgeNummber).getY();
+        double dXAverage = 0;
+        double dYAverage = 0;
+        double dXSum = 0;
+        double dYSum = 0;
+
+        for (CPosition oPos:aoPosition)
+        {
+            dXSum += oPos.getX();
+            dYSum += oPos.getY();
+        }
+
+        if (aoPosition.size() != 1)
+        {
+            //Division with Zero not possible
+            dXAverage = (dXSum - dXPoint) / (aoPosition.size() - 1);
+            dYAverage = (dYSum - dYPoint) / (aoPosition.size() - 1);
+        }
+
+        double dXDiff = dXPoint - dXAverage;
+        double dYDiff = dYPoint - dYAverage;
+
+        if ( (dXDiff > 0) && (dYDiff > 0) )
+        {
+            // First Quadrant
+            double dLengthDiagonal = Math.sqrt(Math.pow(dXDiff, 2.0) + Math.pow(dYDiff, 2.0));
+            double dAngle = Math.atan(dYDiff/dXDiff);
+
+            double dXWaypoint = (Math.cos(dAngle) * (dLengthDiagonal + distanceToVertex)) + dXAverage;
+            double dYWaypoint = (Math.sin(dAngle) * (dLengthDiagonal + distanceToVertex)) + dYAverage;
+
+            return new CPosition(dXWaypoint, dYWaypoint);
+        }
+        else if ( (dXDiff <= 0) && (dYDiff > 0) )
+        {
+            // Second Quadrant
+            double dXDiffAbs = Math.abs(dXDiff);
+
+            double dLengthDiagonal = Math.sqrt(Math.pow(dXDiffAbs, 2.0) + Math.pow(dYDiff, 2.0));
+            double dAngle = Math.atan(dYDiff/dXDiffAbs);
+
+            double dXWaypoint = dXAverage - (Math.cos(dAngle) * (dLengthDiagonal + distanceToVertex));
+            double dYWaypoint = dYAverage + (Math.sin(dAngle) * (dLengthDiagonal + distanceToVertex));
+
+            return new CPosition(dXWaypoint, dYWaypoint);
+        }
+        else if ( (dXDiff <= 0) && (dYDiff <= 0) )
+        {
+            // Third Quadrant
+            double dXDiffAbs = Math.abs(dXDiff);
+            double dYDiffAbs = Math.abs(dYDiff);
+
+            double dLengthDiagonal = Math.sqrt(Math.pow(dXDiffAbs, 2.0) + Math.pow(dYDiffAbs, 2.0));
+            double dAngle = Math.atan(dYDiffAbs/dXDiffAbs);
+
+            double dXWaypoint = dXAverage - (Math.cos(dAngle) * (dLengthDiagonal + distanceToVertex));
+            double dYWaypoint = dYAverage - (Math.sin(dAngle) * (dLengthDiagonal + distanceToVertex));
+
+            return new CPosition(dXWaypoint, dYWaypoint);
+        }
+        else
+        {
+            // Fourth Quadrant
+            double dYDiffAbs = Math.abs(dYDiff);
+
+            double dLengthDiagonal = Math.sqrt(Math.pow(dXDiff, 2.0) + Math.pow(dYDiffAbs, 2.0));
+            double dAngle = Math.atan(dYDiffAbs/dXDiff);
+
+            double dXWaypoint = dXAverage + (Math.cos(dAngle) * (dLengthDiagonal + distanceToVertex));
+            double dYWaypoint = dYAverage - (Math.sin(dAngle) * (dLengthDiagonal + distanceToVertex));
+
+            return new CPosition(dXWaypoint, dYWaypoint);
+        }
+    }
+
+    /**
      * Calculate the Waypoint for one Edge of the obstacle
      * @return Point for travers the obstacle
      */

@@ -311,7 +311,7 @@ public class CGrid {
         {
             if (walkerGrid.containsKey(i))
             {
-                gridRowMap = obstacleGrid.get(gridColumn);
+                gridRowMap = obstacleGrid.get(i);
 
                 for (int j = gridRow -1; j < gridRow + 2; j++)
                 {

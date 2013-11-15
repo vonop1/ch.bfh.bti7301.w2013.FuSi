@@ -91,7 +91,7 @@ public class CPosition implements Comparable<CPosition> {
      * @return the distance as Double
      */
     public Double getDistanceToLine(CPosition lineStartPos, CPosition lineEndPos, Boolean isInfiniteLine) {
-        return calcLineToPointDistance(lineStartPos, lineEndPos, this, true);
+        return calcLineToPointDistance(lineStartPos, lineEndPos, this, isInfiniteLine);
     }
 
     /**
