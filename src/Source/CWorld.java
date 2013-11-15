@@ -210,7 +210,7 @@ public class CWorld {
 
         // add obstacle lines
         for(CObstacle obstacle : this.aoObstacles) {
-            Vector<CPosition> positions = obstacle.getPositions();
+            Vector<CPosition> positions = obstacle.getVertexPoints();
             for(int i = 0; i < positions.size(); i++) {
                 for (int j = 0; j< positions.size(); j++) {
                     this.oGraph.addObstacleEdge(positions.elementAt(j), positions.elementAt(i));
