@@ -103,6 +103,7 @@ public abstract class CWalker {
     /**
      * checks if the walker has a collision with the desiredNextPosition of another walker and remembers the collision
      * @param other the walker
+     * @param rememberCollision true if the walker should remember this collision
      * @return true if we have a collision or false if not
      */
     public boolean checkCollisionWith(CWalker other, boolean rememberCollision) {
@@ -134,6 +135,28 @@ public abstract class CWalker {
 
             this.setCollisionWith(newList);
             other.setCollisionWith(newList);
+        }
+
+        return hasCollision;
+    }
+
+    /**
+     * checks if the walker has a collision with an obstacle and remembers the collision
+     * @param obstacle the obstacle
+     * @param rememberCollision true if the walker should remember this collision
+     * @return true if we have a collision or false if not
+     */
+    public boolean checkCollisionWith(CObstacle obstacle, boolean rememberCollision) {
+
+        boolean hasCollision = obstacle.getDistanceTo(this.getDesiredNextPosition()) < this.getHalfWalkerSize() + 1;
+
+        if(hasCollision && rememberCollision) {
+
+            if(this.collisionWith == null) {
+                this.collisionWith = new CCollisionList();
+            }
+
+            this.collisionWith.addCollision(obstacle, this);
         }
 
         return hasCollision;

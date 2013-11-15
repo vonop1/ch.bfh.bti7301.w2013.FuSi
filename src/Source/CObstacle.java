@@ -1,6 +1,7 @@
 package Source;
 
 import Util.CGraph;
+import Util.CMathFunctions;
 import Util.CPosition;
 
 import java.util.Vector;
@@ -35,6 +36,26 @@ public class CObstacle implements Comparable<CObstacle> {
     public Integer getId() {
         return this.iId;
     }
+
+    /**
+     * get the minimal distance of a point to the obstacle
+     * @param point the point
+     * @return the distance as double
+     */
+    public Double getDistanceTo(CPosition point) {
+
+        Double minDistance = null;
+
+        for(int i = 0; i < this.aoPosition.size(); i++) {
+            Double distance = point.getDistanceToLine(this.aoPosition.get(i), this.aoPosition.get((i+1 >= this.aoPosition.size() ? 0 : i+1)), false);
+            if(minDistance == null || distance < minDistance) {
+                minDistance = distance;
+            }
+        }
+
+        return minDistance;
+    }
+
     /**
      * Calculate the Waypoints for a the obstacle
      * @return vector with Points for travers the obstacle

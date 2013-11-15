@@ -21,6 +21,8 @@ public class CWorld {
     private Vector<CWalker> walkers = new Vector<CWalker>();
     //private Map<CWalker, Integer> walkerWaitingQueue = new HashMap<CWalker, Integer>();
 
+    public static final Random randomGenerator = new Random();
+
     //private CGraph oGraph;
     private Integer maxCalculationCount = 10000;
     private Integer worldWidth = 800;
