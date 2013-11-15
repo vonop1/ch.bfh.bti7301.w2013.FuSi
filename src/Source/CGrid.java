@@ -175,9 +175,9 @@ public class CGrid {
                {
                    //calc intersection points from edge with x-grid-lines
                    CPosition intersectPoint = CMathFunctions.calcIntersectionPoint(point1Start, point1End,
-                                                                                    new CPosition(x, 0),
-                                                                                    new CPosition(x, gridSizeC),
-                                                                                    false, true);
+                           new CPosition(x, 0),
+                           new CPosition(x, gridSizeC),
+                           false, true);
                    if (intersectPoint != null)
                    {
                        int gridColumn = intersectPoint.getY().intValue() / gridSizeC;
@@ -195,7 +195,7 @@ public class CGrid {
                for (int y = 0; y < worldHigh; y += gridSizeC)
                {
                    //calc intersection points from edge with x-grid-lines
-                   CPosition intersectPoint = CMathFunctions.calcIntersectionPoint2(point1Start, point1End,
+                   CPosition intersectPoint = CMathFunctions.calcIntersectionPoint(point1Start, point1End,
                            new CPosition(0, y),
                            new CPosition(gridSizeC, y),
                            false, true);
