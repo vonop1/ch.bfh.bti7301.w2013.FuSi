@@ -1,5 +1,6 @@
 package Util;
 
+import java.text.DecimalFormat;
 import java.util.Comparator;
 
 /**
@@ -28,6 +29,11 @@ public class CPosition implements Comparable<CPosition> {
     {
         this.dX = pos.getX();
         this.dY = pos.getY();
+    }
+
+    public CPosition(CPosition pointA, CPosition pointB) {
+        this.dX = pointB.getX() - pointA.getX();
+        this.dY = pointB.getY() - pointA.getY();
     }
 
     public Double getX() {
@@ -173,6 +179,52 @@ public class CPosition implements Comparable<CPosition> {
             }
         }
         return Math.abs(dist);
+    }
+
+    public void resizeToAbsoluteValue(double absoluteValue) {
+
+        /*
+        Double dAngle = 0.0;
+        if (this.getX() != 0.0)
+        {
+            dAngle = Math.atan( Math.abs(this.getY()) / Math.abs(this.getX()) );
+        }
+
+        this.dX = Math.cos(dAngle) * absoluteValue * ( this.getX() > 0 ? 1 : -1 );
+        this.dY = Math.sin(dAngle) * absoluteValue * ( this.getY() > 0 ? 1 : -1 ); */
+
+        double d = ( this.dX != 0 ? this.dY / this.dX : 0 );
+
+        this.dX = absoluteValue / Math.sqrt(1 + (d * d)) * ( this.dX > 0 ? 1 : -1 );
+        this.dY = d * dY;
+    }
+
+    public double calcAbsoluteValue() {
+        return Math.sqrt(this.getX() * this.getX() + this.getY() * this.getY());
+    }
+
+    public CPosition add(CPosition add) {
+        this.dX += add.getX();
+        this.dY += add.getY();
+
+        return this;
+    }
+
+    public CPosition subtract(CPosition add) {
+        this.dX -= add.getX();
+        this.dY -= add.getY();
+
+        return this;
+    }
+
+    /**
+     * Intended only for debugging.
+     */
+    @Override
+    public String toString() {
+        DecimalFormat df = new DecimalFormat("#.####");
+        //this.getClass().getName() +
+        return "(" + df.format(this.getX()) + "|" + df.format(this.getY()) + ")";
     }
 
 }
