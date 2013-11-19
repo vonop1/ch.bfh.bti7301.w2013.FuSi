@@ -87,9 +87,10 @@ public class Application extends JFrame implements WindowListener, KeyListener {
      */
     public void loadSimulationPanel() {
 
-        // check if JMenu Add is present and if yes remove it
-        for(int m = 0; m < menuBar.getMenuCount(); ++m) {
-            if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Add")){
+        // check if JMenus from WorldEditor are present and if yes remove them
+        for(int m = 0; m < menuBar.getMenuCount(); m++) {
+            String accessibleName = menuBar.getMenu(m).getAccessibleContext().getAccessibleName();
+            if(accessibleName.equals("Add") || accessibleName.equals("Load File") || accessibleName.equals("Save File")) {
                 menuBar.remove(menuBar.getMenu(m));
             }
         }
@@ -147,9 +148,13 @@ public class Application extends JFrame implements WindowListener, KeyListener {
                 String input = JOptionPane.showInputDialog(Application.INSTANCE, "Wieviele Ecken?" , "Anzahl Polygon-Ecken", JOptionPane.QUESTION_MESSAGE);
                 try {
                     edges = Integer.parseInt(input);
-                    worldEditor.addPolygon(edges);
+                    if (edges >= 3 && edges <= 10){
+                        worldEditor.addPolygon(edges);
+                    } else {
+                        throw new NumberFormatException();
+                    }
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(Application.INSTANCE, "Bitte eine Zahl eingeben", "Falsches Format", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(Application.INSTANCE, "Bitte eine Zahl zwischen 3-10 eingeben", "Falsches Format", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -164,20 +169,47 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         });
 
         // JMenu Add
-        JMenu menu = new JMenu("Add");
+        JMenu menuAdd = new JMenu("Add");
         for(JMenuItem item : items) {
-            menu.add(item);
+            menuAdd.add(item);
         }
 
-        //check if menuAdd already is present, if not add it to the menuBar
-        boolean menuAdd = false;
+        // JMenu Load File
+        JMenu menuLoad = new JMenu("Load File");
+        menuLoad.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+        // JMenu Save File
+        JMenu menuSave = new JMenu("Save File");
+        menuSave.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+
+        //check if menus already are present, if not add it to the menuBar
+        boolean add = false, save = false, load = false;
         for(int m = 0; m < menuBar.getMenuCount(); ++m) {
             if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Add")){
-                menuAdd = true;
+                add = true;
+            }else if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Load File")){
+                load = true;
+            }else if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Save File")){
+                save = true;
             }
         }
-        if(!menuAdd) {
-            menuBar.add(menu);
+        if(!load){
+            menuBar.add(menuLoad);
+        }
+        if(!save){
+            menuBar.add(menuSave);
+        }
+        if(!add) {
+            menuBar.add(menuAdd);
         }
 
         /*  - set the panel size
