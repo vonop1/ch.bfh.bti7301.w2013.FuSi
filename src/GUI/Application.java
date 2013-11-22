@@ -87,10 +87,10 @@ public class Application extends JFrame implements WindowListener, KeyListener {
      */
     public void loadSimulationPanel() {
 
-        // check if JMenus from WorldEditor are present and if yes remove them
+        // check if JMenu from WorldEditor is present and if yes remove it
         for(int m = 0; m < menuBar.getMenuCount(); m++) {
             String accessibleName = menuBar.getMenu(m).getAccessibleContext().getAccessibleName();
-            if(accessibleName.equals("Add") || accessibleName.equals("Load File") || accessibleName.equals("Save File")) {
+            if(accessibleName.equals("World Editor")) {
                 menuBar.remove(menuBar.getMenu(m));
             }
         }
@@ -109,38 +109,30 @@ public class Application extends JFrame implements WindowListener, KeyListener {
     public void loadWorldEditor() {
 
         // ArrayList with all menu items for the world editor
+        ArrayList<JMenuItem> itemsAdd = new ArrayList<JMenuItem>();
         ArrayList<JMenuItem> items = new ArrayList<JMenuItem>();
-
-        // JMenuItem Rectangle
-        JMenuItem itemRectangle = new JMenuItem("Rectangle");
-        items.add(itemRectangle);
-        itemRectangle.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                worldEditor.addRectangle();
-            }
-        });
 
         // JMenuItem Triangle
         JMenuItem itemTriangle = new JMenuItem("Triangle");
-        items.add(itemTriangle);
+        itemsAdd.add(itemTriangle);
         itemTriangle.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
             }
         });
 
-        // JMenuItem Ellipse
-        JMenuItem itemEllipse = new JMenuItem("Ellipse");
-        items.add(itemEllipse);
-        itemEllipse.addActionListener(new ActionListener() {
+        // JMenuItem Rectangle
+        JMenuItem itemRectangle = new JMenuItem("Rectangle");
+        itemsAdd.add(itemRectangle);
+        itemRectangle.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                worldEditor.addRectangle();
             }
         });
 
         // JMenuItem Polygon
         JMenuItem itemPolygon = new JMenuItem("Polygon");
-        items.add(itemPolygon);
+        itemsAdd.add(itemPolygon);
         itemPolygon.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
@@ -159,57 +151,65 @@ public class Application extends JFrame implements WindowListener, KeyListener {
             }
         });
 
+        // JMenuItem Ellipse
+        JMenuItem itemEllipse = new JMenuItem("Ellipse");
+        itemsAdd.add(itemEllipse);
+        itemEllipse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
         // JMenuItem Walker
         JMenuItem itemWalker = new JMenuItem("Walker");
-        items.add(itemWalker);
+        itemsAdd.add(itemWalker);
         itemWalker.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
             }
         });
 
-        // JMenu Add
+        // JMenuItem Add
         JMenu menuAdd = new JMenu("Add");
-        for(JMenuItem item : items) {
+        for(JMenuItem item : itemsAdd) {
             menuAdd.add(item);
         }
 
-        // JMenu Load File
-        JMenu menuLoad = new JMenu("Load File");
+        // JMenuItem Load File
+        JMenuItem menuLoad = new JMenuItem("Load File");
         menuLoad.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         });
+        items.add(menuLoad);
 
         // JMenu Save File
-        JMenu menuSave = new JMenu("Save File");
+        JMenuItem menuSave = new JMenuItem("Save File");
         menuSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                worldEditor.saveWorld();
+                System.out.println("Save File");
             }
         });
+        items.add(menuSave);
 
+        // JMenu WorldEditor
+        JMenu menu = new JMenu("World Editor");
+        for(JMenuItem item : items) {
+            menu.add(item);
+        }
+        menu.add(menuAdd);
 
         //check if menus already are present, if not add it to the menuBar
-        boolean add = false, save = false, load = false;
+        boolean world = false;
         for(int m = 0; m < menuBar.getMenuCount(); ++m) {
-            if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Add")){
-                add = true;
-            }else if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Load File")){
-                load = true;
-            }else if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("Save File")){
-                save = true;
+            if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("World Editor")){
+                world = true;
             }
         }
-        if(!load){
-            menuBar.add(menuLoad);
-        }
-        if(!save){
-            menuBar.add(menuSave);
-        }
-        if(!add) {
-            menuBar.add(menuAdd);
+        if(!world){
+            menuBar.add(menu);
         }
 
         /*  - set the panel size

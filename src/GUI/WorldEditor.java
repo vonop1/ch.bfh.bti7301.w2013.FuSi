@@ -102,6 +102,10 @@ public class WorldEditor extends JPanel{
         repaint();
     }
 
+    public void saveWorld(){
+        CXMLFunctions.saveXMLFile(zpolys);
+    }
+
     private class MovingAdapter extends MouseAdapter {
 
         private Point pressPt, centerPt;
