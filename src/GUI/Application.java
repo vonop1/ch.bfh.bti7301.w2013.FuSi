@@ -179,7 +179,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         JMenuItem menuLoad = new JMenuItem("Load File");
         menuLoad.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                worldEditor.loadWorld();
             }
         });
         items.add(menuLoad);
@@ -189,7 +189,6 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         menuSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 worldEditor.saveWorld();
-                System.out.println("Save File");
             }
         });
         items.add(menuSave);
