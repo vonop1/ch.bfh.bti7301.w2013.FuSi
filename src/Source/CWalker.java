@@ -25,6 +25,8 @@ public abstract class CWalker {
    protected CPosition startPosition;
    protected CPosition desiredNextPosition;
 
+   protected CWorld worldReference;
+
    public static Double halfWalkerSize = 5.0;
    protected Double stepSize = 2.0;
 
@@ -32,10 +34,11 @@ public abstract class CWalker {
    protected CCollisionList collisionWith = null;
    protected boolean hasCollisionHandled = false;
 
-   public CWalker(CPosition start, CPosition target) {
+   public CWalker(CPosition start, CPosition target, CWorld worldReference) {
        this.startPosition = start;
        this.currentPosition = start;
        this.targetPosition = target;
+       this.worldReference = worldReference;
        this.id = getNextId();
    }
 

@@ -23,10 +23,11 @@ public class CWorld {
 
     public static final Random randomGenerator = new Random();
 
-    //private CGraph oGraph;
     private Integer maxCalculationCount = 10000;
     private Integer worldWidth = 800;
     private Integer worldHeight = 580;
+
+    private CGraph oGraph = null;
 
     private Vector<CObstacle> aoObstacles = new Vector<CObstacle>();
     private CGrid grid = new CGrid(worldWidth, worldHeight);
@@ -161,11 +162,11 @@ public class CWorld {
                     CWalker walkerToAdd;
                     if (randomGenerator.nextBoolean())
                     {
-                        walkerToAdd = new CWalkerRightLeft(source, destination);
+                        walkerToAdd = new CWalkerRightLeft(source, destination, this);
                     }
                     else
                     {
-                        walkerToAdd = new CWalkerStand(source, destination);
+                        walkerToAdd = new CWalkerStand(source, destination, this);
                     }
                     Boolean positionOccupied = false;
                     for(CWalker existingWalker : this.walkers) {
@@ -203,7 +204,12 @@ public class CWorld {
         return this.aoObstacles;
     }
 
-    private CGraph oGraph = null;
+    public Boolean isPointInWorld(CPosition point) {
+        if(0 <= point.getX() && point.getX() <= this.worldWidth && 0 <= point.getY() && point.getY() <= this.worldHeight) {
+            return true;
+        }
+        return false;
+    }
 
     public CGraph getGraph() {
         return oGraph;
@@ -213,17 +219,7 @@ public class CWorld {
 
         CGraph.resetId();
 
-        this.oGraph = new CGraph(this.getWorldWidth(), this.getWorldHeight());
-
-        // add obstacle lines
-        for(CObstacle obstacle : this.aoObstacles) {
-            Vector<CPosition> positions = obstacle.getVertexPoints();
-            for(int i = 0; i < positions.size(); i++) {
-                for (int j = 0; j< positions.size(); j++) {
-                    this.oGraph.addObstacleEdge(positions.elementAt(j), positions.elementAt(i));
-                }
-            }
-        }
+        this.oGraph = new CGraph(this);
 
         // add basic lines
         for(CObstacle obstacle : this.aoObstacles) {
@@ -231,7 +227,6 @@ public class CWorld {
             for(int i = 0; i < wayPoints.size(); i++) {
                 for (int j = 0; j< wayPoints.size(); j++) {
                     this.oGraph.addWayPointEdge(wayPoints.elementAt(j), wayPoints.elementAt(i));
-                    //this.oGraph.addWayPointEdge(wayPoints.elementAt(i), wayPoints.elementAt(j));
                 }
             }
         }

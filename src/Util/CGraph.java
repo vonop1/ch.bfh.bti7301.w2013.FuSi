@@ -1,6 +1,7 @@
 package Util;
 
 import Source.CObstacle;
+import Source.CWorld;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,9 +19,10 @@ public class CGraph {
     private final List<CPosition> vertexes;
     private final List<CEdge> edges;
     private final List<CEdge> trashEdges;
-    private final List<CEdge> obstacleEdges;
-    private Integer maxWidth;
-    private Integer maxHeight;
+    //private final List<CEdge> obstacleEdges;
+    //private Integer maxWidth;
+    //private Integer maxHeight;
+    private final CWorld worldReference;
 
     public static int incrementId() {
         CGraph.lastId += 1;
@@ -34,13 +36,14 @@ public class CGraph {
     /**
      * Creates an empty graph
      */
-    public CGraph(Integer maxWidth, Integer maxHeight) {
+    public CGraph(CWorld worldReference) {
         this.vertexes = new LinkedList<CPosition>();
         this.edges = new LinkedList<CEdge>();
         this.trashEdges = new LinkedList<CEdge>();
-        this.obstacleEdges = new LinkedList<CEdge>();
-        this.maxWidth = maxWidth;
-        this.maxHeight = maxHeight;
+        this.worldReference = worldReference;
+        //this.obstacleEdges = new LinkedList<CEdge>();
+        //this.maxWidth = maxWidth;
+        //this.maxHeight = maxHeight;
     }
 
     /**
@@ -48,13 +51,11 @@ public class CGraph {
      * @param vertexes the vertexes
      * @param edges the edges
      */
-    public CGraph(List<CPosition> vertexes, List<CEdge> edges, List<CEdge> obstacleEdges, Integer maxWidth, Integer maxHeight) {
+    public CGraph(List<CPosition> vertexes, List<CEdge> edges, List<CEdge> obstacleEdges, CWorld worldReference) {
         this.vertexes = vertexes;
         this.edges = edges;
         this.trashEdges = new LinkedList<CEdge>();
-        this.obstacleEdges = obstacleEdges;
-        this.maxWidth = maxWidth;
-        this.maxHeight = maxHeight;
+        this.worldReference = worldReference;
     }
 
     public List<CPosition> getVertexes() {
@@ -80,23 +81,6 @@ public class CGraph {
         return null;
     }
 
-    public Boolean isPointInWorld(CPosition point) {
-        if(0 <= point.getX() && point.getX() <= this.maxWidth && 0 <= point.getY() && point.getY() <= this.maxHeight) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * adds an obstacle edge. an obstacle edge is only relevant to the addWayPointEdge Method to check if a Waypoint
-     * intersects with an obstacle
-     * @param source
-     * @param destination
-     */
-    public void addObstacleEdge(CPosition source, CPosition destination) {
-        this.obstacleEdges.add(new CEdge(source, destination, null));
-    }
-
     /**
      * adds a Waypoint edge to the graph if it does not intersect with an obstacle edge
      * @param source
@@ -110,7 +94,8 @@ public class CGraph {
             throw new IllegalArgumentException("Die Punkte einer Edge dürfen nicht NULL sein!");
         }
 
-        if(!isPointInWorld(source) || !isPointInWorld(destination)) {
+
+        if(worldReference != null && (!worldReference.isPointInWorld(source) || !worldReference.isPointInWorld(destination))) {
             // one point is not in the world, refuse to add the edge
             return false;
         }
@@ -156,10 +141,12 @@ public class CGraph {
 
         // Check if the edge crosses an existing objectedge
         // obstacle edges will be added everytime
-        for(CEdge e : this.obstacleEdges) {
-            if( e.hasIntersectionWith(newEdge)) {
-                this.trashEdges.add(newEdge);
-                return false;
+        if(worldReference != null) {
+            for(CObstacle obstacle : worldReference.getObstacles()) {
+                if(obstacle.hasIntersectionWithEdge(newEdge.getSource(), newEdge.getDestination())) {
+                    this.trashEdges.add(newEdge);
+                    return false;
+                }
             }
         }
 

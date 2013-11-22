@@ -1,5 +1,6 @@
 package Source;
 
+import Util.CEdge;
 import Util.CGraph;
 import Util.CMathFunctions;
 import Util.CPosition;
@@ -20,6 +21,7 @@ public class CObstacle implements Comparable<CObstacle> {
     Integer iId;
     double dDistToEdgeC = 13.0;
     protected Vector<CPosition> aoPosition;
+    protected Vector<CEdge> edges = null;
 
     /**
      * get edges of the obstacle
@@ -38,6 +40,22 @@ public class CObstacle implements Comparable<CObstacle> {
 
     public Integer getId() {
         return this.iId;
+    }
+
+    /**
+     * returns true if the edge intersects with an obstacle edge
+     * @param edgePointStart start point of the edge
+     * @param edgePointEnd end point of the edge
+     * @return true if there is an intersection or false if not
+     */
+    public boolean hasIntersectionWithEdge(CPosition edgePointStart, CPosition edgePointEnd) {
+        for(int i = 0; i < this.aoPosition.size(); i++) {
+            if(CMathFunctions.calcIntersectionPoint(this.aoPosition.get(i), this.aoPosition.get((i+1 >= this.aoPosition.size() ? 0 : i+1)), edgePointStart, edgePointEnd, false, false) != null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

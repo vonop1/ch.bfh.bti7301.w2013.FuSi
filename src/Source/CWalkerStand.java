@@ -9,8 +9,8 @@ import Util.CPosition;
  */
 public class CWalkerStand extends CWalker {
 
-    public CWalkerStand(CPosition start, CPosition target) {
-        super(start, target);
+    public CWalkerStand(CPosition start, CPosition target, CWorld worldReference) {
+        super(start, target, worldReference);
     }
     /**
      * calculates the next position and saves the result to the nextDesiredPosition member var
