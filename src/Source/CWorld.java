@@ -323,6 +323,9 @@ public class CWorld {
                 grid.unsubscribeWalker(walker, false);
                 iter.remove();
             }
+            else {
+                walker.recalcDesiredPath();
+            }
         }
     }
 

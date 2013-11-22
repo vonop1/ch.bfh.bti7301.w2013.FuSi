@@ -233,7 +233,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
             }
         });
 
-        // draw the walker next desired path position
+        /* draw the walker next desired path position
         drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_D, "D - Zeige desiredPosition Koord. an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
@@ -247,6 +247,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 }
             }
         });
+        */
     }
 
     public void reloadConfigfiles() {

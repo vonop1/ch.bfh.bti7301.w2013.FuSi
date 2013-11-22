@@ -1,8 +1,12 @@
 package Source;
 
+import Util.CDijkstra;
+import Util.CGraph;
 import Util.CPosition;
 
+import java.text.DecimalFormat;
 import java.util.LinkedList;
+import java.util.Vector;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,6 +28,7 @@ public abstract class CWalker {
    protected CPosition targetPosition;
    protected CPosition startPosition;
    protected CPosition desiredNextPosition;
+   protected boolean modusStriktNachDesiredPath = true;
 
    protected CWorld worldReference;
 
@@ -31,6 +36,8 @@ public abstract class CWalker {
    protected Double stepSize = 2.0;
 
    protected LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
+   protected CGraph walkerGraph;
+
    protected CCollisionList collisionWith = null;
    protected boolean hasCollisionHandled = false;
 
@@ -74,17 +81,84 @@ public abstract class CWalker {
             throw new IllegalArgumentException("Der desiredPath darf nicht Null oder leer sein --> vermutlich kam Dijsktra zu keinem Ergebnis!");
         }
 
+        if(currentPosition.isNearBy(vertexes.getFirst(), stepSize / 0.5)) {
+            // the first checkpoint is the current position, remove it from our list
+            vertexes.removeFirst();
+        }
+
+        if(this.desiredPath != null) {
+            boolean isEqual = this.desiredPath.size() == vertexes.size();
+            if(isEqual) {
+                for(int i = 0; i < this.desiredPath.size(); i++) {
+                    if(this.desiredPath.get(i).compareTo(vertexes.get(i)) != 0) {
+                        isEqual = false;
+                        break;
+                    }
+                }
+            }
+
+            if(!isEqual) {
+                System.out.println("Walker" + this + " changed the desired Path!");
+            }
+        }
+
         this.desiredPath = vertexes;
 
-        if(currentPosition.isNearBy(this.desiredPath.getFirst(), stepSize / 0.5)) {
-            // the first checkpoint is the current position, remove it from our list
-            this.desiredPath.removeFirst();
+        // Beim ersten Mal vom desired Path einen Graph für den Walker erstellen
+        if(this.walkerGraph == null) {
+            this.walkerGraph = new CGraph(worldReference);
+
+            for(int i = 1; i < this.desiredPath.size(); i++) {
+                this.walkerGraph.addWayPointEdge(this.desiredPath.get(i-1), this.desiredPath.get(i));
+            }
         }
     }
 
+    public void recalcDesiredPath() {
+
+        if(!modusStriktNachDesiredPath) {
+            if(this.walkerGraph == null) {
+                return;
+            }
+
+            for(int i = 0; i < this.desiredPath.size(); i++) {
+                this.walkerGraph.addWayPointEdge(this.currentPosition, this.desiredPath.get(i));
+            }
+
+            CDijkstra dijkstra = new CDijkstra(this.walkerGraph);
+
+            LinkedList<CPosition> newPath = dijkstra.getShortestPath(this.currentPosition, this.targetPosition);
+
+            if(newPath == null) {
+
+                boolean test = true;
+            }
+
+            this.walkerGraph.removeVertex(this.currentPosition);
+
+
+
+            if(newPath != null) {
+                this.setDesiredPath(newPath);
+                return;
+            }
+        }
+
+        // bisheriges statement
+        if(this.desiredPath.size() > 0) {
+            if(this.getDesiredNextPosition().isNearBy(this.desiredPath.getFirst(), stepSize / 0.5)) {
+                // Yes, we reached a checkpoint, remove it from our list
+                this.desiredPath.removeFirst();
+                System.out.println("Walker" + this + " changed the desired Path due to checkpoint match!");
+            }
+        }
+    }
+
+    /*
     public LinkedList<CPosition> getDesiredPath() {
         return this.desiredPath;
     }
+    */
 
     public void resetCollisions() {
         if(this.collisionWith != null) {
@@ -183,17 +257,11 @@ public abstract class CWalker {
             throw new IllegalArgumentException("this.desiredNextPosition must not be NULL!");
         }
 
-        if(this.desiredPath.size() > 0) {
-            if(this.desiredNextPosition.isNearBy(this.desiredPath.getFirst(), stepSize / 0.5)) {
-                // Yes, we reached a checkpoint, remove it from our list
-                this.desiredPath.removeFirst();
-            }
-
-            this.currentPosition = this.desiredNextPosition;
-        }
+        this.currentPosition = this.desiredNextPosition;
 
         this.desiredNextPosition = null;
-        return this.desiredPath.size() == 0;
+
+        return this.targetPosition.isNearBy(this.currentPosition, stepSize / 0.5);
     }
 
     /**
@@ -208,5 +276,14 @@ public abstract class CWalker {
     @Override
     public boolean equals (Object obj) {
         return obj.getClass() == this.getClass() && ((CWalker)obj).getId().equals(this.getId());
+    }
+
+    /**
+     * Intended only for debugging.
+     */
+    @Override
+    public String toString() {
+
+        return "Walker" + id + currentPosition + (desiredNextPosition != null ? "->" + desiredNextPosition : "<>");
     }
 }
