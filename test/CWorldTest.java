@@ -34,7 +34,7 @@ public class CWorldTest {
         aoPos.add(new CPosition(110,50));
         aoPos.add(new CPosition(110,100));
         aoPos.add(new CPosition(10,100));
-        CObstacle oTestObj = new CObstacle(aoPos);
+        CObstacle oTestObj = new CObstacle(aoPos, null);
 
         Vector<CPosition> aoWaypoint = oTestObj.getWaypoints();
 
