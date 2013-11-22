@@ -10,8 +10,8 @@ import Util.CPosition;
  */
 
 public class CWalkerRightLeft extends CWalker {
-    public CWalkerRightLeft(CPosition start, CPosition target) {
-        super(start, target);
+    public CWalkerRightLeft(CPosition start, CPosition target, CWorld worldReference) {
+        super(start, target, worldReference);
     }
     /**
      * calculates the next position and saves the result to the nextDesiredPosition member var
