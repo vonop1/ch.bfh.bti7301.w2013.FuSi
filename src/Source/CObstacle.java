@@ -23,6 +23,7 @@ public class CObstacle implements Comparable<CObstacle> {
     protected Vector<CPosition> aoPosition;
     protected Vector<CEdge> edges = null;
     protected Vector<CPosition> vertexPointCache = null;
+    protected Vector<CPosition> waypointCache = null;
 
     /**
      * get edges of the obstacle
@@ -86,16 +87,17 @@ public class CObstacle implements Comparable<CObstacle> {
      */
     public Vector<CPosition> getWaypoints()
     {
-        //return getWayPoint4();
+        if(waypointCache == null) {
 
-        Vector<CPosition> oResult = new Vector<CPosition>();
+            waypointCache = new Vector<CPosition>();
 
-        for (int i = 0; i < aoPosition.size(); i++)
-        {
-           oResult.add(getWaypoint(i, dDistToEdgeC));
+            for (int i = 0; i < aoPosition.size(); i++)
+            {
+                waypointCache.add(getWaypoint(i, dDistToEdgeC));
+            }
         }
 
-        return oResult;
+        return waypointCache;
     }
 
     /**
