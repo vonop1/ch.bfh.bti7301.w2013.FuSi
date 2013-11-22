@@ -25,7 +25,7 @@ public abstract class CWalker {
    protected CPosition startPosition;
    protected CPosition desiredNextPosition;
 
-   protected Double halfWalkerSize = 5.0;
+   public static Double halfWalkerSize = 5.0;
    protected Double stepSize = 2.0;
 
    protected LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
