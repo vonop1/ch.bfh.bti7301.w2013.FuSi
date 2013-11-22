@@ -158,8 +158,15 @@ public class CWorld {
                     dY = Integer.parseInt(pointAttributes.getNamedItem("y").getNodeValue());
 
                     CPosition destination = new CPosition(dX, dY);
-
-                    CWalker walkerToAdd = new CWalkerStand(source, destination);
+                    CWalker walkerToAdd;
+                    if (randomGenerator.nextBoolean())
+                    {
+                        walkerToAdd = new CWalkerRightLeft(source, destination);
+                    }
+                    else
+                    {
+                        walkerToAdd = new CWalkerStand(source, destination);
+                    }
                     Boolean positionOccupied = false;
                     for(CWalker existingWalker : this.walkers) {
                         if(existingWalker.checkCollisionWith(walkerToAdd, false)) {
@@ -280,9 +287,14 @@ public class CWorld {
             }
 
             for( CWalker walker : this.walkers) {
-                grid.unsubscribeWalker(walker, true);
-                walker.calcNextDesiredPosition(calculationRoundCount);
-                grid.subscribeWalker(walker, true);
+                if (walker.hasCollisions() || (calculationRoundCount == 1) )
+                {
+                    // First round calc next Position for all Walkers,
+                    // from second round calc only Walkers with collision
+                    grid.unsubscribeWalker(walker, true);
+                    walker.calcNextDesiredPosition(calculationRoundCount);
+                    grid.subscribeWalker(walker, true);
+                }
             }
 
             // reset all detected collsions
