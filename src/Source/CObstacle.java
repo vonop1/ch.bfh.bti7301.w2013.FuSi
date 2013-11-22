@@ -22,6 +22,7 @@ public class CObstacle implements Comparable<CObstacle> {
     double dDistToEdgeC = 13.0;
     protected Vector<CPosition> aoPosition;
     protected Vector<CEdge> edges = null;
+    protected Vector<CPosition> vertexPointCache = null;
 
     /**
      * get edges of the obstacle
@@ -49,8 +50,10 @@ public class CObstacle implements Comparable<CObstacle> {
      * @return true if there is an intersection or false if not
      */
     public boolean hasIntersectionWithEdge(CPosition edgePointStart, CPosition edgePointEnd) {
-        for(int i = 0; i < this.aoPosition.size(); i++) {
-            if(CMathFunctions.calcIntersectionPoint(this.aoPosition.get(i), this.aoPosition.get((i+1 >= this.aoPosition.size() ? 0 : i+1)), edgePointStart, edgePointEnd, false, false) != null) {
+        Vector<CPosition> vertexes = this.getVertexPoints();
+
+        for(int i = 0; i < vertexes.size(); i++) {
+            if(CMathFunctions.calcIntersectionPoint(vertexes.get(i), vertexes.get((i+1 >= vertexes.size() ? 0 : i+1)), edgePointStart, edgePointEnd, false, false) != null) {
                 return true;
             }
         }
@@ -101,14 +104,17 @@ public class CObstacle implements Comparable<CObstacle> {
      */
     public Vector<CPosition> getVertexPoints()
     {
-        Vector<CPosition> oResult = new Vector<CPosition>();
+        if(vertexPointCache == null) {
+            vertexPointCache = new Vector<CPosition>();
 
-        for (int i = 0; i < aoPosition.size(); i++)
-        {
-            oResult.add(getWaypoint(i, CWalker.halfWalkerSize));
+
+            for (int i = 0; i < aoPosition.size(); i++)
+            {
+                vertexPointCache.add(getWaypoint(i, CWalker.halfWalkerSize));
+            }
         }
 
-        return oResult;
+        return vertexPointCache;
     }
 
     /**
