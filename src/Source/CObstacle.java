@@ -106,8 +106,8 @@ public class CObstacle implements Comparable<CObstacle> {
     public Vector<CPosition> getVertexPoints() {
         if (vertexPointCache == null) {
             vertexPointCache = new Vector<CPosition>();
-
-            Double distance = (worldReference != null ? worldReference.getGreatestHalfWalkerSize() + 0.1 : dDistToEdgeC / 3);
+                                                   //
+            Double distance = (worldReference != null ? worldReference.getGreatestHalfWalkerSize() + 1 : dDistToEdgeC / 3);
 
             for (int i = 0; i < aoPosition.size(); i++) {
                 vertexPointCache.add(getWaypoint(i, distance));

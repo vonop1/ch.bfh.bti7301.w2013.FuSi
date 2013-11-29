@@ -162,11 +162,11 @@ public class CWorld {
 
                     CPosition destination = new CPosition(dX, dY);
                     CWalker walkerToAdd;
-                    if (randomGenerator.nextBoolean()) {
+                    //if (randomGenerator.nextBoolean()) {
                         walkerToAdd = new CWalkerRightLeft(source, destination, this);
-                    } else {
-                        walkerToAdd = new CWalkerStand(source, destination, this);
-                    }
+                    //} else {
+                    //    walkerToAdd = new CWalkerStand(source, destination, this);
+                    //}
                     Boolean positionOccupied = false;
                     for (CWalker existingWalker : this.walkers) {
                         if (existingWalker.checkCollisionWith(walkerToAdd, false)) {

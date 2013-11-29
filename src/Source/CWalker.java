@@ -25,7 +25,7 @@ public abstract class CWalker {
     protected CPosition targetPosition;
     protected CPosition startPosition;
     protected CPosition desiredNextPosition;
-    protected boolean modusStriktNachDesiredPath = true;
+    protected boolean modusStriktNachDesiredPath = false;
 
     protected CWorld worldReference;
 
@@ -33,6 +33,7 @@ public abstract class CWalker {
     protected Double stepSize = 2.0;
 
     protected LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
+    protected LinkedList<CPosition> orginalDesiredPath = new LinkedList<CPosition>();
     protected CGraph walkerGraph;
 
     protected CCollisionList collisionWith = null;
@@ -102,8 +103,12 @@ public abstract class CWalker {
         if (this.walkerGraph == null) {
             this.walkerGraph = new CGraph(worldReference);
 
-            for (int i = 1; i < this.desiredPath.size(); i++) {
-                this.walkerGraph.addWayPointEdge(this.desiredPath.get(i - 1), this.desiredPath.get(i));
+            for(CPosition pos : this.desiredPath) {
+                this.orginalDesiredPath.add(pos);
+            }
+
+            for (int i = 1; i < this.orginalDesiredPath.size(); i++) {
+                this.walkerGraph.addWayPointEdge(this.orginalDesiredPath.get(i - 1), this.orginalDesiredPath.get(i));
             }
         }
     }
@@ -115,18 +120,19 @@ public abstract class CWalker {
                 return;
             }
 
-            for (int i = 0; i < this.desiredPath.size(); i++) {
-                this.walkerGraph.addWayPointEdge(this.currentPosition, this.desiredPath.get(i));
+            for (int i = 0; i < this.orginalDesiredPath.size(); i++) {
+                this.walkerGraph.addWayPointEdge(this.currentPosition, this.orginalDesiredPath.get(i));
             }
 
             CDijkstra dijkstra = new CDijkstra(this.walkerGraph);
 
-            LinkedList<CPosition> newPath = dijkstra.getShortestPath(this.currentPosition, this.targetPosition);
+            CPosition position = this.walkerGraph.getVertexByPosition(this.currentPosition);
+            CPosition target = this.walkerGraph.getVertexByPosition(this.targetPosition);
 
-            if (newPath == null) {
+            assert(position != null);
+            assert(target != null);
 
-                boolean test = true;
-            }
+            LinkedList<CPosition> newPath = dijkstra.getShortestPath(position, target);
 
             this.walkerGraph.removeVertex(this.currentPosition);
 
