@@ -5,7 +5,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.*;
 import java.util.ArrayList;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,23 +49,26 @@ public class WorldEditor extends JPanel{
 
         //create new white polygons with small black translate/resizing ellipses
         //paint the active polygon grey
-        for(ZPolygon zpoly : zpolys){
-            if (!zpoly.equals(activePolygon)) {
-                g2d.setColor(Color.WHITE);
-                g2d.fill(zpoly);
-            }
-            else {
-                g2d.setColor(Color.LIGHT_GRAY);
-                g2d.fill(zpoly);
-            }
-            g2d.setColor(Color.BLACK);
-            Ellipse2D.Double ellipse = new Ellipse2D.Double((int)zpoly.getCenter().getX() - SIZE / 2, (int) zpoly.getCenter().getY()- SIZE / 2, SIZE, SIZE);
-            g2d.fill(ellipse);
-            for(int i=0; i<zpoly.npoints; i++){
-                ellipse = new Ellipse2D.Double(zpoly.xpoints[i] - SIZE / 2, zpoly.ypoints[i] - SIZE / 2, SIZE, SIZE);
+        if (zpolys!=null){
+            for(ZPolygon zpoly : zpolys){
+                if (!zpoly.equals(activePolygon)) {
+                    g2d.setColor(Color.WHITE);
+                    g2d.fill(zpoly);
+                }
+                else {
+                    g2d.setColor(Color.LIGHT_GRAY);
+                    g2d.fill(zpoly);
+                }
+                g2d.setColor(Color.BLACK);
+                Ellipse2D.Double ellipse = new Ellipse2D.Double((int)zpoly.getCenter().getX() - SIZE / 2, (int) zpoly.getCenter().getY()- SIZE / 2, SIZE, SIZE);
                 g2d.fill(ellipse);
+                for(int i=0; i<zpoly.npoints; i++){
+                    ellipse = new Ellipse2D.Double(zpoly.xpoints[i] - SIZE / 2, zpoly.ypoints[i] - SIZE / 2, SIZE, SIZE);
+                    g2d.fill(ellipse);
+                }
             }
         }
+
 
         //create new white rectangles with small black sizing rectangle
         for(ZRectangle zrect : zrects){
@@ -103,11 +106,14 @@ public class WorldEditor extends JPanel{
     }
 
     public void saveWorld(){
-        CXMLFunctions.saveXMLFile(zpolys);
+        CXMLFunctions xml = new CXMLFunctions();
+        xml.saveXMLFile(zpolys);
     }
 
     public void loadWorld(){
-        CXMLFunctions.loadXMLFile();
+        CXMLFunctions xml = new CXMLFunctions();
+        zpolys = xml.loadXMLFile();
+        repaint();
     }
 
     private class MovingAdapter extends MouseAdapter {
