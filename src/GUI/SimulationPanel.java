@@ -255,11 +255,24 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                     y += 20;
 
                     int i = 0;
+                    g2d.setColor(Color.CYAN);
                     for(CPosition position : selectedWalker.getDesiredPath()) {
+
                         g2d.drawString("DesiredPath " + i + ": " + position, x, y);
                         i += 1;
                         y += 20;
+
+                        // draw the position as x
+                        int upperleftX = ((Double) (position.getX() - selectedWalker.getHalfWalkerSize())).intValue();
+                        int upperleftY = ((Double) (position.getY() - selectedWalker.getHalfWalkerSize())).intValue();
+                        int width = ((Double) (selectedWalker.getHalfWalkerSize() * 2)).intValue();
+                        int height = ((Double) (selectedWalker.getHalfWalkerSize() * 2)).intValue();
+                        g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
+                        g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
+
                     }
+
+
 
                 }
             }
