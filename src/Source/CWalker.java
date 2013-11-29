@@ -165,12 +165,6 @@ public class CWalker {
         }
     }
 
-    /*
-    public LinkedList<CPosition> getDesiredPath() {
-        return this.desiredPath;
-    }
-    */
-
     public void resetCollisions() {
         if (this.collisionWith != null) {
             this.collisionWith.clear();

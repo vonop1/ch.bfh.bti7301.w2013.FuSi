@@ -301,6 +301,8 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
     public void setupWorld(File configFile) {
         if(configFile != null ) {
+
+            this.selectedWalker = null;
             this.simulationWorld = new CWorld();
 
             this.simulationWorld.loadConfig(configFile);
@@ -314,6 +316,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         else {
             this.timer.stop();
             this.simulationWorld = null;
+            this.selectedWalker = null;
             this.setBounds(0,0, Application.INSTANCE.getWidth(),  Application.INSTANCE.getHeight());
 
             this.repaint();
