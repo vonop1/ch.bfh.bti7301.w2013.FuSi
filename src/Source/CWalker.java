@@ -67,6 +67,10 @@ public class CWalker {
         }
     }
 
+    public LinkedList<CPosition> getDesiredPath() {
+        return desiredPath;
+    }
+
     public Double getHalfWalkerSize() {
         return halfWalkerSize;
     }

@@ -253,7 +253,14 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                     y += 30;
                     g2d.drawString("CurrentPos: " + selectedWalker.getPosition(), x, y);
                     y += 20;
-                    g2d.drawString("DesiredNextPos: " + selectedWalker.getDesiredNextPosition(), x, y);
+
+                    int i = 0;
+                    for(CPosition position : selectedWalker.getDesiredPath()) {
+                        g2d.drawString("DesiredPath " + i + ": " + position, x, y);
+                        i += 1;
+                        y += 20;
+                    }
+
                 }
             }
         });
