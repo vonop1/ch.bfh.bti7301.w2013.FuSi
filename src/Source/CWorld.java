@@ -34,6 +34,7 @@ public class CWorld {
 
     private Double greatestHalfWalkerSize = 0.0;
 
+    private Map<CPosition, LinkedList<CWalker>> waitingQueue = new HashMap<CPosition, LinkedList<CWalker>>();
 
     public CWorld() {
 
@@ -176,28 +177,33 @@ public class CWorld {
                     }
 
                     if (positionOccupied) {
-//                        Boolean allreadyInWaitingQueue = false;
-//                        for ( Map.Entry<CWalker, Integer> entry : this.walkerWaitingQueue.entrySet() ) {
-//                            if(entry.getKey().checkCollisionWith(walkerToAdd, false)) {
-//                                entry.setValue(entry.getValue() + 1);
-//                                allreadyInWaitingQueue = true;
-//                            }
-//                        }
-//
-//                        if(!allreadyInWaitingQueue) {
-//                            this.walkerWaitingQueue.put(walkerToAdd, 1);
-//                        }
+                        addWalkerToWaitingQueue(walkerToAdd);
                     } else {
                         addWalker(walkerToAdd);
                     }
                 }
-
             }
 
         } catch (Exception e) {
             System.out.print(e);
         }
         return this.aoObstacles;
+    }
+
+    public void addWalkerToWaitingQueue(CWalker walker) {
+        for ( Map.Entry<CPosition, LinkedList<CWalker>> entry : this.waitingQueue.entrySet() ) {
+            if(walker.checkCollisionWith(entry.getKey())) {
+
+                LinkedList<CWalker> list = entry.getValue();
+                list.add(walker);
+                entry.setValue(list);
+                return;
+            }
+        }
+
+        LinkedList<CWalker> newList = new LinkedList<CWalker>();
+        newList.add(walker);
+        this.waitingQueue.put(walker.getPosition(), newList);
     }
 
     public Boolean isPointInWorld(CPosition point) {
@@ -321,6 +327,10 @@ public class CWorld {
                 walker.recalcDesiredPath();
             }
         }
+
+        // step 3: add a walker from the waiting queue if the position is free now
+
+        // TODO
     }
 
 

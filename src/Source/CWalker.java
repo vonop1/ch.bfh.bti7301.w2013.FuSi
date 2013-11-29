@@ -219,6 +219,21 @@ public class CWalker {
     }
 
     /**
+     * checks if the walker has a collision with a position
+     *
+     * @param position             the position
+     * @return true if we have a collision or false if not
+     */
+    public boolean checkCollisionWith(CPosition position) {
+
+        if (position == null) {
+            return false;
+        }
+
+        return this.getDesiredNextPosition().getDistanceTo(position) < this.getHalfWalkerSize() + 1;
+    }
+
+    /**
      * checks if the walker has a collision with an obstacle and remembers the collision
      *
      * @param obstacle          the obstacle
