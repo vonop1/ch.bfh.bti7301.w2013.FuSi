@@ -8,10 +8,7 @@ import Util.CPosition;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.DecimalFormat;
@@ -23,7 +20,7 @@ import java.util.Vector;
  * Date: 04.10.13
  * Time: 10:30
  */
-public class SimulationPanel extends JPanel implements ActionListener, KeyListener {
+public class SimulationPanel extends JPanel implements ActionListener, KeyListener, MouseListener {
 
     protected Vector<CDrawObject> drawSimulationObjects = new Vector<CDrawObject>();
 
@@ -35,6 +32,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
     protected Vector<File> files = new Vector<File>();
 
     protected CWorld simulationWorld = null;
+    protected CWalker selectedWalker = null;
 
     public SimulationPanel() {
         super();
@@ -49,6 +47,8 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         this.timer = new Timer(20, this);
 
         this.repaint();
+
+        addMouseListener(this);
     }
 
     private void initDrawingObjects() {
@@ -186,12 +186,19 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 for (CWalker walker : simulationWorld.getWalkers()) {
                     CPosition position = walker.getPosition();
 
+                    if(selectedWalker != null && walker.equals(selectedWalker)) {
+                        g2d.setColor(Color.YELLOW);
+                        g2d.fillOval(((Double) (position.getX() - walker.getHalfWalkerSize())).intValue() - 1,
+                                ((Double) (position.getY() - walker.getHalfWalkerSize())).intValue() - 1,
+                                ((Double) (walker.getHalfWalkerSize() * 2)).intValue() + 2,
+                                ((Double) (walker.getHalfWalkerSize() * 2)).intValue() + 2);
+                    }
+
                     g2d.setColor((walker.hasCollisions() ? Color.RED : Color.ORANGE));
                     g2d.fillOval(((Double) (position.getX() - walker.getHalfWalkerSize())).intValue(),
                             ((Double) (position.getY() - walker.getHalfWalkerSize())).intValue(),
                             ((Double) (walker.getHalfWalkerSize() * 2)).intValue(),
                             ((Double) (walker.getHalfWalkerSize() * 2)).intValue());
-
 
                     // draw the target as x, because the X marks the point =)
                     g2d.setColor(Color.ORANGE);
@@ -233,17 +240,40 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
             }
         });
 
-        // draw the walker next desired path position
-        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_D, "D - Zeige desiredPosition Koord. an") {
+        // draw the details of a walker
+        drawSimulationObjects.add(new CDrawObject(true, null, "") {
             @Override
             public void doDrawing(Graphics2D g2d) {
-                for (CWalker walker : simulationWorld.getWalkers()) {
-                    if (walker.getDesiredPath().size() > 0) {
+                if(selectedWalker != null) {
+                    g2d.setColor(Color.WHITE);
 
-                        DecimalFormat df = new DecimalFormat("#.00");
-                        g2d.setColor(Color.CYAN);
-                        g2d.drawString("x" + df.format(walker.getDesiredPath().getFirst().getX()) + "/y" + df.format(walker.getDesiredPath().getFirst().getY()), ((Double) (walker.getDesiredPath().getFirst().getX() + 100.0)).intValue(), walker.getDesiredPath().getFirst().getY().intValue());
+                    int x = simulationWorld.getWorldWidth() - 250;
+                    int y = 20;
+                    g2d.drawString("Details Walker Id " + selectedWalker.getId(), x, y);
+                    y += 30;
+                    g2d.drawString("CurrentPos: " + selectedWalker.getPosition(), x, y);
+                    y += 20;
+
+                    int i = 0;
+                    g2d.setColor(Color.CYAN);
+                    for(CPosition position : selectedWalker.getDesiredPath()) {
+
+                        g2d.drawString("DesiredPath " + i + ": " + position, x, y);
+                        i += 1;
+                        y += 20;
+
+                        // draw the position as x
+                        int upperleftX = ((Double) (position.getX() - selectedWalker.getHalfWalkerSize())).intValue();
+                        int upperleftY = ((Double) (position.getY() - selectedWalker.getHalfWalkerSize())).intValue();
+                        int width = ((Double) (selectedWalker.getHalfWalkerSize() * 2)).intValue();
+                        int height = ((Double) (selectedWalker.getHalfWalkerSize() * 2)).intValue();
+                        g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
+                        g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
+
                     }
+
+
+
                 }
             }
         });
@@ -271,6 +301,8 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
     public void setupWorld(File configFile) {
         if(configFile != null ) {
+
+            this.selectedWalker = null;
             this.simulationWorld = new CWorld();
 
             this.simulationWorld.loadConfig(configFile);
@@ -284,6 +316,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         else {
             this.timer.stop();
             this.simulationWorld = null;
+            this.selectedWalker = null;
             this.setBounds(0,0, Application.INSTANCE.getWidth(),  Application.INSTANCE.getHeight());
 
             this.repaint();
@@ -437,5 +470,45 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 this.timer.start();
             }
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if(this.simulationWorld != null ) {
+            CPosition clickedPos = new CPosition(e.getX(), e.getY());
+
+            this.selectedWalker = null;
+            for(CWalker walker : simulationWorld.getWalkers()) {
+                if(walker.getPosition().getDistanceTo(clickedPos) < walker.getHalfWalkerSize()) {
+                    this.selectedWalker = walker;
+                    break;
+                }
+            }
+
+            // if the timer is not running, fire a repaint event
+            if(!this.timer.isRunning()) {
+                this.repaint();
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

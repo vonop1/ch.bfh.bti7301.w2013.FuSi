@@ -3,6 +3,7 @@ package Util;
 import Source.CObstacle;
 import Source.CWorld;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -82,6 +83,52 @@ public class CGraph {
     }
 
     /**
+     * removes a vertex point from the graph
+     * @param position the vertex position
+     */
+    public void removeVertex(CPosition position) {
+
+        Iterator<CEdge> iterEdges = this.edges.iterator();
+        while(iterEdges.hasNext()){
+            CEdge edge = iterEdges.next();
+            if(edge.getSource().compareTo(position) == 0 || edge.getDestination().compareTo(position) == 0) {
+                iterEdges.remove();
+            }
+        }
+
+        Iterator<CEdge> iterTrash = this.trashEdges.iterator();
+        while(iterTrash.hasNext()){
+            CEdge edge = iterTrash.next();
+            if(edge.getSource().compareTo(position) == 0 || edge.getDestination().compareTo(position) == 0) {
+                iterTrash.remove();
+            }
+        }
+
+        Iterator<CPosition> iterVertexes = this.vertexes.iterator();
+        while(iterVertexes.hasNext()){
+            CPosition vertex = iterVertexes.next();
+            if(vertex.compareTo(position) == 0) {
+                iterVertexes.remove();
+            }
+        }
+    }
+
+    /*
+    public Boolean addWayPointLinkedToAll(CPosition position) {
+
+        Boolean returnValue = false;
+
+        Iterator<CPosition> iterVertexes = this.vertexes.iterator();
+        while(iterVertexes.hasNext()){
+            CPosition vertex = iterVertexes.next();
+            returnValue |= this.addWayPointEdge(position, vertex);
+        }
+
+        return returnValue;
+    } */
+
+
+    /**
      * adds a Waypoint edge to the graph if it does not intersect with an obstacle edge
      * @param source
      * @param destination
@@ -94,6 +141,9 @@ public class CGraph {
             throw new IllegalArgumentException("Die Punkte einer Edge dürfen nicht NULL sein!");
         }
 
+        if(source.compareTo(destination) == 0) {
+            return false;
+        }
 
         if(worldReference != null && (!worldReference.isPointInWorld(source) || !worldReference.isPointInWorld(destination))) {
             // one point is not in the world, refuse to add the edge

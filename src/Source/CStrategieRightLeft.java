@@ -9,25 +9,20 @@ import Util.CPosition;
  * Time: 14:33
  */
 
-public class CWalkerRightLeft extends CWalker {
-    public CWalkerRightLeft(CPosition start, CPosition target, CWorld worldReference) {
-        super(start, target, worldReference);
-    }
+public class CStrategieRightLeft implements CStrategie {
     /**
      * calculates the next position and saves the result to the nextDesiredPosition member var
      * @param roundCount the calculation round count
      */
-
-    @Override
-    public void calcNextDesiredPosition(Integer roundCount) {
-        if(this.desiredPath.size() < 1) {
-            this.desiredNextPosition = null;
+    public CPosition calcNextDesiredPosition(Integer roundCount, CWalker walker) {
+        if(walker.desiredPath.size() < 1) {
+            return null;
         }
 
-        CPosition nextCheckPoint = this.desiredPath.getFirst();
+        CPosition nextCheckPoint = walker.desiredPath.getFirst();
 
-        Double xDelta = nextCheckPoint.getX() - this.currentPosition.getX();
-        Double yDelta = nextCheckPoint.getY() - this.currentPosition.getY();
+        Double xDelta = nextCheckPoint.getX() - walker.getPosition().getX();
+        Double yDelta = nextCheckPoint.getY() - walker.getPosition().getY();
 
         Double dAngle = 0.0;
         if (xDelta != 0.0)
@@ -61,10 +56,10 @@ public class CWalkerRightLeft extends CWalker {
             dAngle = dAngle - 2 * Math.PI;
         }
 
-        double nextStepDeltaX = Math.cos(dAngle) * stepSize; // * ( xDelta > 0 ? 1 : -1 );
-        double nextStepDeltaY = Math.sin(dAngle) * stepSize; // * ( yDelta > 0 ? 1 : -1 );
+        double nextStepDeltaX = Math.cos(dAngle) * walker.stepSize; // * ( xDelta > 0 ? 1 : -1 );
+        double nextStepDeltaY = Math.sin(dAngle) * walker.stepSize; // * ( yDelta > 0 ? 1 : -1 );
 
-        this.desiredNextPosition = new CPosition(currentPosition.getX() + nextStepDeltaX, currentPosition.getY() + nextStepDeltaY);
+        return new CPosition(walker.getPosition().getX() + nextStepDeltaX, walker.getPosition().getY() + nextStepDeltaY);
 
     }
 }

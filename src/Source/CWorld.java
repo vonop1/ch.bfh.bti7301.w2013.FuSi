@@ -32,9 +32,10 @@ public class CWorld {
     private Vector<CObstacle> aoObstacles = new Vector<CObstacle>();
     private CGrid grid = new CGrid(worldWidth, worldHeight);
 
+    private Double greatestHalfWalkerSize = 0.0;
 
-    public CWorld ()
-    {
+
+    public CWorld() {
 
     }
 
@@ -62,19 +63,28 @@ public class CWorld {
         this.aoObstacles.add(obstacle);
     }
 
+    public void addWalker(CWalker walker) {
+        this.walkers.add(walker);
+        if (walker.getHalfWalkerSize() > greatestHalfWalkerSize) {
+            greatestHalfWalkerSize = walker.getHalfWalkerSize();
+        }
+    }
+
+    public Double getGreatestHalfWalkerSize() {
+        return greatestHalfWalkerSize;
+    }
+
     public int getGridSize() {
         return this.grid.gridSizeC;
     }
 
-    public Vector<CObstacle> loadConfig (File oConfigFile)
-    {
-        if(oConfigFile == null) {
+    public Vector<CObstacle> loadConfig(File oConfigFile) {
+        if (oConfigFile == null) {
             return null;
         }
 
         this.aoObstacles = new Vector<CObstacle>();
-        try
-        {
+        try {
             // load Config from File Config.xml
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -83,34 +93,30 @@ public class CWorld {
             // Get a List off all Obstacles
             NodeList aoObj = oConfigDoc.getElementsByTagName("obj");
 
-            for (int i = 0; i < aoObj.getLength(); i++)
-            {
-               Node oObj = aoObj.item(i);
-               Vector<CPosition> aoPosition = new Vector<CPosition>();
+            for (int i = 0; i < aoObj.getLength(); i++) {
+                Node oObj = aoObj.item(i);
+                Vector<CPosition> aoPosition = new Vector<CPosition>();
 
-               if (oObj.hasChildNodes())
-               {
-                   // Get a List off all Points of a Obstacle
-                   NodeList aoPoint = oObj.getChildNodes();
-                   for (int j = 0; j < aoPoint.getLength(); j++)
-                   {
-                       Node oPoint = aoPoint.item(j);
+                if (oObj.hasChildNodes()) {
+                    // Get a List off all Points of a Obstacle
+                    NodeList aoPoint = oObj.getChildNodes();
+                    for (int j = 0; j < aoPoint.getLength(); j++) {
+                        Node oPoint = aoPoint.item(j);
 
-                       if (oPoint.getNodeType() == Node.ELEMENT_NODE)
-                       {
-                           // Get Edge-points of the Obstacle
-                           NamedNodeMap oPointAttributes = oPoint.getAttributes();
+                        if (oPoint.getNodeType() == Node.ELEMENT_NODE) {
+                            // Get Edge-points of the Obstacle
+                            NamedNodeMap oPointAttributes = oPoint.getAttributes();
 
-                           double dX = Integer.parseInt(oPointAttributes.getNamedItem("x").getNodeValue());
-                           double dY = Integer.parseInt(oPointAttributes.getNamedItem("y").getNodeValue());
-                           aoPosition.add(new CPosition(dX, dY));
-                       }
+                            double dX = Integer.parseInt(oPointAttributes.getNamedItem("x").getNodeValue());
+                            double dY = Integer.parseInt(oPointAttributes.getNamedItem("y").getNodeValue());
+                            aoPosition.add(new CPosition(dX, dY));
+                        }
 
 
-                   }
+                    }
 
-                   addObstacle(new CObstacle(aoPosition));
-               }
+                    addObstacle(new CObstacle(aoPosition, this));
+                }
 
             }
 
@@ -120,18 +126,15 @@ public class CWorld {
             // Get a List off all Walkers
             NodeList walkers = oConfigDoc.getElementsByTagName("walker");
 
-            for (int i = 0; i < walkers.getLength(); i++)
-            {
+            for (int i = 0; i < walkers.getLength(); i++) {
                 Node walker = walkers.item(i);
 
-                if (walker.hasChildNodes())
-                {
+                if (walker.hasChildNodes()) {
                     // Get a List off all Points of a Obstacle
                     NodeList points = walker.getChildNodes();
 
                     Node point = points.item(0);
-                    while (point.getNodeType() != Node.ELEMENT_NODE)
-                    {
+                    while (point.getNodeType() != Node.ELEMENT_NODE) {
                         //remove empty elements
                         point = point.getNextSibling();
                     }
@@ -146,8 +149,7 @@ public class CWorld {
 
                     point = point.getNextSibling();
 
-                    while (point.getNodeType() != Node.ELEMENT_NODE)
-                    {
+                    while (point.getNodeType() != Node.ELEMENT_NODE) {
                         //remove empty elements
                         point = point.getNextSibling();
                     }
@@ -160,23 +162,20 @@ public class CWorld {
 
                     CPosition destination = new CPosition(dX, dY);
                     CWalker walkerToAdd;
-                    if (randomGenerator.nextBoolean())
-                    {
-                        walkerToAdd = new CWalkerRightLeft(source, destination, this);
-                    }
-                    else
-                    {
-                        walkerToAdd = new CWalkerStand(source, destination, this);
-                    }
+                    //if (randomGenerator.nextBoolean()) {
+                        walkerToAdd = new CWalker(source, destination, this);
+                    //} else {
+                    //    walkerToAdd = new CStrategieStand(source, destination, this);
+                    //}
                     Boolean positionOccupied = false;
-                    for(CWalker existingWalker : this.walkers) {
-                        if(existingWalker.checkCollisionWith(walkerToAdd, false)) {
+                    for (CWalker existingWalker : this.walkers) {
+                        if (existingWalker.checkCollisionWith(walkerToAdd, false)) {
                             positionOccupied = true;
                             break;
                         }
                     }
 
-                    if(positionOccupied) {
+                    if (positionOccupied) {
 //                        Boolean allreadyInWaitingQueue = false;
 //                        for ( Map.Entry<CWalker, Integer> entry : this.walkerWaitingQueue.entrySet() ) {
 //                            if(entry.getKey().checkCollisionWith(walkerToAdd, false)) {
@@ -188,24 +187,21 @@ public class CWorld {
 //                        if(!allreadyInWaitingQueue) {
 //                            this.walkerWaitingQueue.put(walkerToAdd, 1);
 //                        }
-                    }
-                    else {
-                        this.walkers.add(walkerToAdd);
+                    } else {
+                        addWalker(walkerToAdd);
                     }
                 }
 
             }
 
-        }
-        catch (Exception e)
-        {
-          System.out.print(e);
+        } catch (Exception e) {
+            System.out.print(e);
         }
         return this.aoObstacles;
     }
 
     public Boolean isPointInWorld(CPosition point) {
-        if(0 <= point.getX() && point.getX() <= this.worldWidth && 0 <= point.getY() && point.getY() <= this.worldHeight) {
+        if (0 <= point.getX() && point.getX() <= this.worldWidth && 0 <= point.getY() && point.getY() <= this.worldHeight) {
             return true;
         }
         return false;
@@ -222,35 +218,35 @@ public class CWorld {
         this.oGraph = new CGraph(this);
 
         // add basic lines
-        for(CObstacle obstacle : this.aoObstacles) {
+        for (CObstacle obstacle : this.aoObstacles) {
             Vector<CPosition> wayPoints = obstacle.getWaypoints();
-            for(int i = 0; i < wayPoints.size(); i++) {
-                for (int j = 0; j< wayPoints.size(); j++) {
+            for (int i = 0; i < wayPoints.size(); i++) {
+                for (int j = 0; j < wayPoints.size(); j++) {
                     this.oGraph.addWayPointEdge(wayPoints.elementAt(j), wayPoints.elementAt(i));
                 }
             }
         }
 
         // connect obstacles with others
-        for(CObstacle obstacle : this.aoObstacles) {
+        for (CObstacle obstacle : this.aoObstacles) {
             Vector<CPosition> wayPoints = obstacle.getWaypoints();
-            for(CPosition position : wayPoints) {
-                for(CObstacle innerObstacle : this.aoObstacles) {
-                    if(obstacle.compareTo(innerObstacle) != 0) { // if it is not the same obstacle
+            for (CPosition position : wayPoints) {
+                for (CObstacle innerObstacle : this.aoObstacles) {
+                    if (obstacle.compareTo(innerObstacle) != 0) { // if it is not the same obstacle
 
-                         for(CPosition innerPosition : innerObstacle.getWaypoints()) {
+                        for (CPosition innerPosition : innerObstacle.getWaypoints()) {
                             this.oGraph.addWayPointEdge(position, innerPosition);
-                         }
+                        }
                     }
                 }
             }
         }
 
-        for(CWalker walker : this.walkers) {
+        for (CWalker walker : this.walkers) {
             this.oGraph.addWayPointEdge(walker.getPosition(), walker.getTarget());
 
-            for(CObstacle obstacle : this.aoObstacles) {
-                for(CPosition position : obstacle.getWaypoints()) {
+            for (CObstacle obstacle : this.aoObstacles) {
+                for (CPosition position : obstacle.getWaypoints()) {
                     this.oGraph.addWayPointEdge(walker.getPosition(), position);
                     this.oGraph.addWayPointEdge(position, walker.getTarget());
                 }
@@ -273,17 +269,16 @@ public class CWorld {
         boolean hasBlockedWalkers = true;
         Integer calculationRoundCount = 0;
         // step 1: calculate the desired new position of each walker
-        while(hasBlockedWalkers) {
+        while (hasBlockedWalkers) {
             hasBlockedWalkers = false;
             calculationRoundCount += 1;
 
-            if(calculationRoundCount > maxCalculationCount) {
+            if (calculationRoundCount > maxCalculationCount) {
                 throw new IllegalArgumentException("Mischt, could not resolve blocked situation in CWorld.stepSimulation in " + maxCalculationCount.toString() + " calculation rounds");
             }
 
-            for( CWalker walker : this.walkers) {
-                if (walker.hasCollisions() || (calculationRoundCount == 1) )
-                {
+            for (CWalker walker : this.walkers) {
+                if (walker.hasCollisions() || (calculationRoundCount == 1)) {
                     // First round calc next Position for all Walkers,
                     // from second round calc only Walkers with collision
                     grid.unsubscribeWalker(walker, true);
@@ -293,22 +288,22 @@ public class CWorld {
             }
 
             // reset all detected collsions
-            for( CWalker walker : this.walkers) {
+            for (CWalker walker : this.walkers) {
                 walker.resetCollisions();
             }
 
             // check all walkers with neighbours for collisions
-            for( CWalker walker : this.walkers) {
-                for( CWalker neighbourWalker : grid.getNeighbours(walker, true)) {
+            for (CWalker walker : this.walkers) {
+                for (CWalker neighbourWalker : grid.getNeighbours(walker, true)) {
                     hasBlockedWalkers |= walker.checkCollisionWith(neighbourWalker, true); // if one collision return true, the the while loop must run once again
                 }
 
-                for( CObstacle neighbourObstacle : grid.getNearObstacles(walker, true)) {
+                for (CObstacle neighbourObstacle : grid.getNearObstacles(walker, true)) {
                     hasBlockedWalkers |= walker.checkCollisionWith(neighbourObstacle, true);
                 }
             }
 
-            if( hasBlockedWalkers ) {
+            if (hasBlockedWalkers) {
                 Collections.shuffle(this.walkers);
             }
         }
@@ -316,12 +311,14 @@ public class CWorld {
         // step 2: make the step for each walker and remove walkers that reached their target
         // we have to use iterators because we modify the walker list while we iterate over it
         Iterator<CWalker> iter = this.walkers.iterator();
-        while(iter.hasNext()){
+        while (iter.hasNext()) {
             CWalker walker = iter.next();
-            if( walker.walkToNextDesiredPosition() ) {
+            if (walker.walkToNextDesiredPosition()) {
                 // Walker has reached target, remove the guy
                 grid.unsubscribeWalker(walker, false);
                 iter.remove();
+            } else {
+                walker.recalcDesiredPath();
             }
         }
     }

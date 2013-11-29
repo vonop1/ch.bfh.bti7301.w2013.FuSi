@@ -309,7 +309,7 @@ public class CGrid {
         Map<Integer, Vector<CObstacle>> gridRowMap;
         for (int i = gridColumn - 1; i < gridColumn + 2; i++)
         {
-            if (walkerGrid.containsKey(i))
+            if (obstacleGrid.containsKey(i))
             {
                 gridRowMap = obstacleGrid.get(i);
 

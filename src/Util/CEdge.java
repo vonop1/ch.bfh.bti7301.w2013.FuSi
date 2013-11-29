@@ -1,5 +1,7 @@
 package Util;
 
+import java.text.DecimalFormat;
+
 /**
  * Created with IntelliJ IDEA.
  * User: bohnp1
@@ -62,5 +64,13 @@ public class CEdge {
         CPosition returnValue = CMathFunctions.calcIntersectionPoint(this.getSource(), this.getDestination(), other.getSource(), other.getDestination(), false, false);
 
         return returnValue != null;
+    }
+
+    /**
+     * Intended only for debugging.
+     */
+    @Override
+    public String toString() {
+        return "CEdge[" + oSource + "->" + oDestination + "]";
     }
 }

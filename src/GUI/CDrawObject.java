@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * Copyright 2013 blastbeat syndicate gmbh
  * Author: Roger Jaggi <roger.jaggi@blastbeatsyndicate.com>
  * Date: 08.11.13
  * Time: 13:39

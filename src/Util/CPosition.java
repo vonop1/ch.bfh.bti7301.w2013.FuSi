@@ -222,7 +222,7 @@ public class CPosition implements Comparable<CPosition> {
      */
     @Override
     public String toString() {
-        DecimalFormat df = new DecimalFormat("#.####");
+        DecimalFormat df = new DecimalFormat("#.###");
         //this.getClass().getName() +
         return "(" + df.format(this.getX()) + "|" + df.format(this.getY()) + ")";
     }
