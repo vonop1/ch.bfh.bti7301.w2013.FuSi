@@ -33,7 +33,7 @@ public class CWalker {
     protected Double stepSize = 2.0;
 
     protected LinkedList<CPosition> desiredPath = new LinkedList<CPosition>();
-    protected LinkedList<CPosition> orginalDesiredPath = new LinkedList<CPosition>();
+    protected LinkedList<CPosition> originalDesiredPath = new LinkedList<CPosition>();
     protected CGraph walkerGraph;
 
     protected CCollisionList collisionWith = null;
@@ -84,11 +84,18 @@ public class CWalker {
             throw new IllegalArgumentException("Der desiredPath darf nicht Null oder leer sein --> vermutlich kam Dijsktra zu keinem Ergebnis!");
         }
 
+        if(this.originalDesiredPath.size() == 0) {
+            for(CPosition pos : vertexes) {
+                this.originalDesiredPath.add(pos);
+            }
+        }
+
         if (currentPosition.isNearBy(vertexes.getFirst(), stepSize / 0.5)) {
             // the first checkpoint is the current position, remove it from our list
             vertexes.removeFirst();
         }
 
+        /*
         if (this.desiredPath != null) {
             boolean isEqual = this.desiredPath.size() == vertexes.size();
             if (isEqual) {
@@ -104,6 +111,7 @@ public class CWalker {
                 System.out.println("Walker" + this + " changed the desired Path!");
             }
         }
+        */
 
         this.desiredPath = vertexes;
 
@@ -111,12 +119,8 @@ public class CWalker {
         if (this.walkerGraph == null) {
             this.walkerGraph = new CGraph(worldReference);
 
-            for(CPosition pos : this.desiredPath) {
-                this.orginalDesiredPath.add(pos);
-            }
-
-            for (int i = 1; i < this.orginalDesiredPath.size(); i++) {
-                this.walkerGraph.addWayPointEdge(this.orginalDesiredPath.get(i - 1), this.orginalDesiredPath.get(i));
+            for (int i = 1; i < this.originalDesiredPath.size(); i++) {
+                this.walkerGraph.addWayPointEdge(this.originalDesiredPath.get(i - 1), this.originalDesiredPath.get(i));
             }
         }
     }
@@ -128,8 +132,8 @@ public class CWalker {
                 return;
             }
 
-            for (int i = 0; i < this.orginalDesiredPath.size(); i++) {
-                this.walkerGraph.addWayPointEdge(this.currentPosition, this.orginalDesiredPath.get(i));
+            for (int i = 0; i < this.originalDesiredPath.size(); i++) {
+                this.walkerGraph.addWayPointEdge(this.currentPosition, this.originalDesiredPath.get(i));
             }
 
             CDijkstra dijkstra = new CDijkstra(this.walkerGraph);
