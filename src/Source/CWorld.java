@@ -163,9 +163,9 @@ public class CWorld {
                     CPosition destination = new CPosition(dX, dY);
                     CWalker walkerToAdd;
                     //if (randomGenerator.nextBoolean()) {
-                        walkerToAdd = new CWalkerRightLeft(source, destination, this);
+                        walkerToAdd = new CWalker(source, destination, this);
                     //} else {
-                    //    walkerToAdd = new CWalkerStand(source, destination, this);
+                    //    walkerToAdd = new CStrategieStand(source, destination, this);
                     //}
                     Boolean positionOccupied = false;
                     for (CWalker existingWalker : this.walkers) {

@@ -7,12 +7,12 @@ import Util.CPosition;
 import java.util.LinkedList;
 
 /**
- * Created with IntelliJ IDEA.
+ * Created with IntelliJ IDEA
  * User: bohnp1
  * Date: 27.09.13
  * Time: 14:09
  */
-public abstract class CWalker {
+public class CWalker {
     static Integer idCounter = 0;
 
     static Integer getNextId() {
@@ -39,12 +39,16 @@ public abstract class CWalker {
     protected CCollisionList collisionWith = null;
     protected boolean hasCollisionHandled = false;
 
+    private CStrategie strategie = null;
+
     public CWalker(CPosition start, CPosition target, CWorld worldReference) {
         this.startPosition = start;
         this.currentPosition = start;
         this.targetPosition = target;
         this.worldReference = worldReference;
         this.id = getNextId();
+        this.strategie = new CStrategieRightLeft();
+
     }
 
     public CPosition getPosition() {
@@ -240,7 +244,10 @@ public abstract class CWalker {
      *
      * @param roundCount the calculation round count
      */
-    public abstract void calcNextDesiredPosition(Integer roundCount);
+    public void calcNextDesiredPosition(Integer roundCount)
+    {
+        desiredNextPosition = strategie.calcNextDesiredPosition(roundCount, this);
+    }
 
     /**
      * walks a step to the next desired Position and resets desiredNextPosition member variable to NULL
