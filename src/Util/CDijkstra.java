@@ -29,7 +29,7 @@ public class CDijkstra {
      * This method returns the path from the source to the selected target in the Graph and
      * NULL if no path exists
      */
-    public LinkedList<CPosition> getShortestPath(CPosition oSource, CPosition oTarget)
+    public LinkedList<CPosition> getShortestPath(CPosition oSource, CPosition oTarget) throws IllegalArgumentException
     {
         execute(oSource, oTarget);
         
@@ -56,7 +56,11 @@ public class CDijkstra {
      * @param oSource
      * @param oTarget
      */
-    private void execute(CPosition oSource, CPosition oTarget) {
+    private void execute(CPosition oSource, CPosition oTarget) throws IllegalArgumentException {
+        if(oSource == null || oTarget == null) {
+            throw new IllegalArgumentException("Huston, we have a problem. See CDijkstra.execute()");
+        }
+
         aoSettledNodes = new Vector<CPosition>();
         aoUnSettledNodes = new Vector<CPosition>();
         aoDistance = new HashMap<CPosition, Integer>();

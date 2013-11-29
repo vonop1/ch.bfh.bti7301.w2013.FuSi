@@ -12,6 +12,7 @@ public class CCollisionList {
 
     private Vector<CWalker> walkers = new Vector<CWalker>();
     private Vector<CObstacle> obstacles = new Vector<CObstacle>();
+    private CWorld world = null;
 
     public void addCollision(CObstacle obstacle, CWalker walker) {
         if(!this.walkers.contains(walker)) {
@@ -33,12 +34,24 @@ public class CCollisionList {
         }
     }
 
+    public void addCollision(CWorld world, CWalker walker) {
+        if(!this.walkers.contains(walker)) {
+            this.walkers.add(walker);
+        }
+
+        this.world = world;
+    }
+
     public Vector<CWalker> getWalkers() {
         return this.walkers;
     }
 
     public Vector<CObstacle> getObstacles() {
         return this.obstacles;
+    }
+
+    public CWorld getWorld() {
+        return this.world;
     }
 
     public void merge(CCollisionList other) {
@@ -55,6 +68,9 @@ public class CCollisionList {
             }
         }
 
+        if( this.world == null ) {
+            this.world = other.getWorld();
+        }
     }
 
     public void remove(CWalker walker) {
@@ -62,15 +78,16 @@ public class CCollisionList {
     }
 
     public Integer size() {
-        return walkers.size() + obstacles.size();
+        return walkers.size() + obstacles.size() + (this.world != null ? 1 : 0);
     }
 
     public void clear() {
         walkers.clear();
         obstacles.clear();
+        world = null;
     }
 
     public boolean hasCollisions() {
-        return walkers.size() + obstacles.size() > 1;
+        return this.size() > 1;
     }
 }

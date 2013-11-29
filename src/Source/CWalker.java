@@ -125,7 +125,7 @@ public class CWalker {
         }
     }
 
-    public void recalcDesiredPath() {
+    public void recalcDesiredPath() throws IllegalArgumentException {
 
         if (!modusStriktNachDesiredPath) {
             if (this.walkerGraph == null) {
@@ -141,8 +141,10 @@ public class CWalker {
             CPosition position = this.walkerGraph.getVertexByPosition(this.currentPosition);
             CPosition target = this.walkerGraph.getVertexByPosition(this.targetPosition);
 
-            assert(position != null);
-            assert(target != null);
+            if(position == null || target == null) {
+                // in this case, position or target are out of the world or on an object
+                throw new IllegalArgumentException("Huston, we have a problem! see CWalker.recalcDesiredPath()");
+            }
 
             LinkedList<CPosition> newPath = dijkstra.getShortestPath(position, target);
 
@@ -251,6 +253,29 @@ public class CWalker {
             }
 
             this.collisionWith.addCollision(obstacle, this);
+        }
+
+        return hasCollision;
+    }
+
+    /**
+     * checks if the walker has a collision with the world and remembers the collision
+     *
+     * @param world          the world
+     * @param rememberCollision true if the walker should remember this collision
+     * @return true if we have a collision or false if not
+     */
+    public boolean checkCollisionWith(CWorld world, boolean rememberCollision) {
+
+        boolean hasCollision = !world.isPointInWorld(this.getDesiredNextPosition());
+
+        if (hasCollision && rememberCollision) {
+
+            if (this.collisionWith == null) {
+                this.collisionWith = new CCollisionList();
+            }
+
+            this.collisionWith.addCollision(world, this);
         }
 
         return hasCollision;

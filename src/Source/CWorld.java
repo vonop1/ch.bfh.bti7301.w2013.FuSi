@@ -307,6 +307,8 @@ public class CWorld {
                 for (CObstacle neighbourObstacle : grid.getNearObstacles(walker, true)) {
                     hasBlockedWalkers |= walker.checkCollisionWith(neighbourObstacle, true);
                 }
+
+                hasBlockedWalkers |= walker.checkCollisionWith(this, true); // check if walker collide with world
             }
 
             if (hasBlockedWalkers) {
