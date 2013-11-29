@@ -219,7 +219,7 @@ public class CWorld {
 
     public void buildGraph() {
 
-        CGraph.resetId();
+        //CGraph.resetId();
 
         this.oGraph = new CGraph(this);
 
@@ -329,8 +329,44 @@ public class CWorld {
         }
 
         // step 3: add a walker from the waiting queue if the position is free now
+        for ( Map.Entry<CPosition, LinkedList<CWalker>> entry : this.waitingQueue.entrySet() ) {
 
-        // TODO
+            LinkedList<CWalker> list = entry.getValue();
+
+            if(list != null && list.size() > 0) {
+                Boolean isPositionBlocked = false;
+                CWalker firstWalker = list.getFirst();
+                for(CWalker neighbourWalker : grid.getNeighbours(list.getFirst(), false)) {
+                    isPositionBlocked = firstWalker.checkCollisionWith(neighbourWalker, false);
+                    if(isPositionBlocked) {
+                        break;
+                    }
+                }
+
+                if(!isPositionBlocked) {
+                    list.removeFirst();
+                    addWalker(firstWalker);
+                    entry.setValue(list);
+
+                    // add walker to the graph
+                    this.oGraph.addWayPointEdge(firstWalker.getPosition(), firstWalker.getTarget());
+
+                    for (CObstacle obstacle : this.aoObstacles) {
+                        for (CPosition position : obstacle.getWaypoints()) {
+                            this.oGraph.addWayPointEdge(firstWalker.getPosition(), position);
+                            this.oGraph.addWayPointEdge(position, firstWalker.getTarget());
+                        }
+                    }
+
+                    CDijkstra dijkstra = new CDijkstra(this.oGraph);
+
+                    CPosition position = this.oGraph.getVertexByPosition(firstWalker.getPosition());
+                    CPosition target = this.oGraph.getVertexByPosition(firstWalker.getTarget());
+                    firstWalker.setDesiredPath(dijkstra.getShortestPath(position, target));
+
+                }
+            }
+        }
     }
 
 
