@@ -117,7 +117,8 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         itemsAdd.add(itemTriangle);
         itemTriangle.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                int edges = 3;
+                worldEditor.addPolygon(edges);
             }
         });
 
@@ -126,7 +127,8 @@ public class Application extends JFrame implements WindowListener, KeyListener {
         itemsAdd.add(itemRectangle);
         itemRectangle.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                worldEditor.addRectangle();
+                int edges = 4;
+                worldEditor.addPolygon(edges);
             }
         });
 
@@ -151,21 +153,12 @@ public class Application extends JFrame implements WindowListener, KeyListener {
             }
         });
 
-        // JMenuItem Ellipse
-        JMenuItem itemEllipse = new JMenuItem("Ellipse");
-        itemsAdd.add(itemEllipse);
-        itemEllipse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-
         // JMenuItem Walker
         JMenuItem itemWalker = new JMenuItem("Walker");
         itemsAdd.add(itemWalker);
         itemWalker.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                worldEditor.addWalker();
             }
         });
 

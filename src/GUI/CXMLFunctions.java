@@ -32,9 +32,9 @@ public class CXMLFunctions{
      * loads a xml file into the world editor
      * @return returns an arraylist with the polygons from the xml file
      */
-    public ArrayList<ZPolygon> loadXMLFile(){
+    public ArrayList<CPolygon> loadXMLFile(){
 
-        ArrayList<ZPolygon> zpolys = new ArrayList<ZPolygon>();
+        ArrayList<CPolygon> zpolys = new ArrayList<CPolygon>();
 
         File XMLFile = getJFileChooserDialogFile("Open");
         if(XMLFile != null){
@@ -76,7 +76,7 @@ public class CXMLFunctions{
                         }
                     }
                     if(npoints > 0){
-                        ZPolygon zpoly = new ZPolygon(xpoints, ypoints, npoints);
+                        CPolygon zpoly = new CPolygon(xpoints, ypoints, npoints);
                         zpolys.add(zpoly);
                     }
                 }
@@ -93,7 +93,7 @@ public class CXMLFunctions{
      *  Saves the content of the world editor to a xml file
      * @param zpolys ArrayList with the polygons to save to the file
      */
-    public void saveXMLFile(ArrayList<ZPolygon> zpolys){
+    public void saveXMLFile(ArrayList<CPolygon> zpolys){
         File XMLFile = getJFileChooserDialogFile("Save");
         if(XMLFile != null){
             try {
@@ -114,7 +114,7 @@ public class CXMLFunctions{
                 config.appendChild(walkerList);
 
                 // world elements
-                for(ZPolygon zpoly : zpolys){
+                for(CPolygon zpoly : zpolys){
                     Element obj = doc.createElement("obj");
                     objList.appendChild(obj);
                     for(int i=0; i<zpoly.npoints; i++){

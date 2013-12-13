@@ -17,15 +17,15 @@ import javax.swing.*;
 
 public class WorldEditor extends JPanel{
 
-    //ArrayList with all resizable and movable rectangles
-    private ArrayList<ZRectangle> zrects = new ArrayList<ZRectangle>();
-
     //ArrayList with all resizable and movable polygons
-    private ArrayList<ZPolygon> zpolys = new ArrayList<ZPolygon>();
-    private ZPolygon activePolygon = null;
+    private ArrayList<CPolygon> zpolys = new ArrayList<CPolygon>();
+    private CPolygon activePolygon = null;
     private int polygonIndex = 0;
     private int npoint = 0;
     private int SIZE = 8;
+
+    //ArrayList with all walkers
+    private ArrayList<Point2D.Double[]> walkers = new ArrayList<Point2D.Double[]>();
 
     public WorldEditor() {
         super();
@@ -37,6 +37,9 @@ public class WorldEditor extends JPanel{
         addMouseListener(ma);
 
         setDoubleBuffered(true);
+        activePolygon = null;
+        npoint = 0;
+        polygonIndex=0;
     }
 
 
@@ -49,8 +52,8 @@ public class WorldEditor extends JPanel{
 
         //create new white polygons with small black translate/resizing ellipses
         //paint the active polygon grey
-        if (zpolys!=null){
-            for(ZPolygon zpoly : zpolys){
+        if (zpolys.size() > 0){
+            for(CPolygon zpoly : zpolys){
                 if (!zpoly.equals(activePolygon)) {
                     g2d.setColor(Color.WHITE);
                     g2d.fill(zpoly);
@@ -69,21 +72,14 @@ public class WorldEditor extends JPanel{
             }
         }
 
-
-        //create new white rectangles with small black sizing rectangle
-        for(ZRectangle zrect : zrects){
-
-            points = zrect.getPoints();
-            zrect.setFrameFromDiagonal(points[0], points[1]);
-            g2d.setColor(Color.WHITE);
-            g2d.fillRect((int)zrect.getX(), (int)zrect.getY(), (int)zrect.getWidth(),(int)zrect.getHeight());
-            //g2d.setColor(new Color(255, 255, 255));
-            //g2d.fill(zrect);
-            g2d.setColor(Color.BLACK);
-            //g2.fill(new Rectangle2D.Double(x, y, SIZE, SIZE));
-            x = zrect.getX() + zrect.getWidth() - SIZE / 2;
-            y = zrect.getY() + zrect.getHeight() - SIZE / 2;
-            g2d.fill(new Rectangle2D.Double(x, y, SIZE, SIZE));
+        //create new walkers
+        if (walkers.size() > 0){
+            for (Point2D.Double walker[] : walkers) {
+                g2d.setColor(Color.BLACK);
+                g2d.fillOval((int) walker[0].getX(), (int) walker[0].getY(), SIZE, SIZE);
+                g2d.fillOval((int) walker[1].getX(), (int) walker[1].getY(), SIZE, SIZE);
+                g2d.drawLine((int) walker[0].getX(), (int) walker[0].getY(), (int) walker[1].getX(), (int) walker[1].getY());
+            }
         }
 
     }
@@ -95,13 +91,16 @@ public class WorldEditor extends JPanel{
         doDrawing(g);
     }
 
-    public void addRectangle(){
-        zrects.add(new ZRectangle());
+    public void addPolygon(int edges){
+        zpolys.add(new CPolygon(edges));
         repaint();
     }
 
-    public void addPolygon(int edges){
-        zpolys.add(new ZPolygon(edges));
+    public void addWalker(){
+        Point2D.Double walker[] = new Point2D.Double[2];
+        walker[0] = new Point2D.Double(25,25);
+        walker[1] = new Point2D.Double(100,100);
+        walkers.add(walker);
         repaint();
     }
 
@@ -138,50 +137,37 @@ public class WorldEditor extends JPanel{
             polygonIndex = 0;
             int currentShape = 0;
 
-            for (int k = zpolys.size() - 1; k >= 0; k--) {
-                for (int i = 0; i < zpolys.get(k).npoints; i++) {
-                    ellipse = new Ellipse2D.Double(zpolys.get(k).xpoints[i] - SIZE / 2, zpolys.get(k).ypoints[i] - SIZE / 2, SIZE, SIZE);
+            if(zpolys.size()> 0){
+                for (int k = zpolys.size() - 1; k >= 0; k--) {
+                    for (int i = 0; i < zpolys.get(k).npoints; i++) {
+                        ellipse = new Ellipse2D.Double(zpolys.get(k).xpoints[i] - SIZE / 2, zpolys.get(k).ypoints[i] - SIZE / 2, SIZE, SIZE);
+                        if (ellipse.contains(pressPt)) {
+                            resize = true;
+                            npoint = i;
+                            polygonIndex = k;
+                            break;
+                        }
+                    }
+                    if(resize){
+                        break;
+                    }
+                    ellipse = new Ellipse2D.Double((int) zpolys.get(k).getCenter().getX() - SIZE / 2, (int) zpolys.get(k).getCenter().getY() - SIZE / 2, SIZE, SIZE);
                     if (ellipse.contains(pressPt)) {
-                        resize = true;
-                        npoint = i;
+                        translate = true;
+                    } else if (zpolys.get(k).contains(e.getPoint())) {
                         polygonIndex = k;
+                        polygon = zpolys.get(k);
+                        activePolygon = new CPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+                        zpolys.remove(k);
+                        zpolys.add(k, activePolygon);
+                        repaint();
+                        centerPt = activePolygon.getCenter();
+                        pressTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
                         break;
                     }
                 }
-                if(resize){
-                    break;
-                }
-                ellipse = new Ellipse2D.Double((int) zpolys.get(k).getCenter().getX() - SIZE / 2, (int) zpolys.get(k).getCenter().getY() - SIZE / 2, SIZE, SIZE);
-                if (ellipse.contains(pressPt)) {
-                    translate = true;
-                } else if (zpolys.get(k).contains(e.getPoint())) {
-                    polygonIndex = k;
-                    polygon = zpolys.get(k);
-                    activePolygon = new ZPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-                    zpolys.remove(k);
-                    zpolys.add(k, activePolygon);
-                    repaint();
-                    centerPt = activePolygon.getCenter();
-                    pressTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
-                    break;
-                }
-            }
-            activePolygon = null;
-            repaint();
-
-            for (ZRectangle zrect : zrects) {
-
-                double rx = zrect.getX() + zrect.getWidth() - SIZE / 2;
-                double ry = zrect.getY() + zrect.getHeight() - SIZE / 2;
-                Rectangle2D r = new Rectangle2D.Double(rx, ry, SIZE, SIZE);
-
-                if (r.contains(pressPt)) {
-                    resize = true;
-                    clickedShape = currentShape;
-                    return;
-                }
-                currentShape++;
-
+                activePolygon = null;
+                repaint();
             }
         }
 
@@ -204,48 +190,31 @@ public class WorldEditor extends JPanel{
             int dy = e.getY() - pressPtY;
             Point2D points[];
 
-            polygon = zpolys.get(polygonIndex);
-            for (ZPolygon zpoly : zpolys){
-                if(resize && zpoly == polygon){
-                    zpoly.addXY(dx, dy, npoint);
-                    repaint();
-                    break;
-                }else if(zpoly.isHit(pressPtX, pressPtY)){
-                    if(translate){
-                        zpoly.translateXY(dx, dy);
+            if(zpolys.size() > 0){
+                polygon = zpolys.get(polygonIndex);
+                for (CPolygon zpoly : zpolys){
+                    if(resize && zpoly == polygon){
+                        zpoly.addXY(dx, dy, npoint);
                         repaint();
                         break;
-                    } else {
-                        double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
-                        double deltaTheta = dragTheta - pressTheta;
-                        activePolygon = new ZPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-                        activePolygon.transform(deltaTheta, centerPt);
-                        zpolys.remove(polygonIndex);
-                        zpolys.add(polygonIndex, activePolygon);
-                        repaint();
-                        break;
+                    }else if(zpoly.isHit(pressPtX, pressPtY)){
+                        if(translate){
+                            zpoly.translateXY(dx, dy);
+                            repaint();
+                            break;
+                        } else {
+                            double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
+                            double deltaTheta = dragTheta - pressTheta;
+                            activePolygon = new CPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+                            activePolygon.transform(deltaTheta, centerPt);
+                            zpolys.remove(polygonIndex);
+                            zpolys.add(polygonIndex, activePolygon);
+                            repaint();
+                            break;
+                        }
                     }
                 }
             }
-
-
-
-            for (ZRectangle zrect : zrects) {
-                if (zrect.isHit(pressPtX, pressPtY)) {
-                    zrect.addXY(dx, dy);
-                    repaint();
-                }
-
-                if (resize && currentShape == clickedShape) {
-
-                    points = zrect.getPoints();
-                    points[1] = e.getPoint();
-                    zrect.setPoints(points);
-                    repaint();
-                }
-                currentShape++;
-            }
-
             pressPtX += dx;
             pressPtY += dy;
 

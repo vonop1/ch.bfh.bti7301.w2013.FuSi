@@ -13,7 +13,7 @@ import java.awt.geom.Point2D;
  * Time: 14:32
  * To change this template use File | Settings | File Templates.
  */
-public class ZPolygon extends Polygon {
+public class CPolygon extends Polygon {
 
     //position and size of a new regular polygon
     private static int X_POS = 75;
@@ -24,7 +24,7 @@ public class ZPolygon extends Polygon {
      * Constructor for a regular polygon
      * @param n: the total number of points
      */
-    public ZPolygon(int n){
+    public CPolygon(int n){
         for (int i=0; i<n; i++) {
             addPoint((int) (X_POS + RADIUS * Math.cos(i * 2 * Math.PI / n)), (int) (Y_POS + RADIUS * Math.sin(i * 2 * Math.PI / n)));
         }
@@ -36,7 +36,7 @@ public class ZPolygon extends Polygon {
      * @param ypoints: the array of Y coordinates
      * @param npoints: the total number of points
      */
-    public ZPolygon(int[] xpoints, int[] ypoints, int npoints){
+    public CPolygon(int[] xpoints, int[] ypoints, int npoints){
         this.xpoints = xpoints;
         this.ypoints = ypoints;
         this.npoints = npoints;
