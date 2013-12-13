@@ -12,13 +12,13 @@ import java.util.ArrayList;
  * @author vonop1, jaggr2
  * @version 1.0
  */
-public class Application extends JFrame implements WindowListener, KeyListener {
+public class CApplication extends JFrame implements WindowListener, KeyListener {
 
     // Singleton Pattern for our application
-    public static Application INSTANCE = new Application();
+    public static CApplication INSTANCE = new CApplication();
 
     // the main components
-    final SimulationPanel simulationPanel = new SimulationPanel();
+    final CSimulationPanel simulationPanel = new CSimulationPanel();
     final WorldEditor worldEditor = new WorldEditor();
     final JMenuBar menuBar = new JMenuBar();
 
@@ -28,13 +28,13 @@ public class Application extends JFrame implements WindowListener, KeyListener {
      */
     public static void main(String[] args) {
         // Let's go
-        Application.INSTANCE.setVisible(true);
+        CApplication.INSTANCE.setVisible(true);
     }
 
     /**
      * constructor for the application with the simulation panel
      */
-    private Application() {
+    private CApplication() {
         super("Passenger Simulation");
         initUI();
 
@@ -139,7 +139,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
             public void actionPerformed(ActionEvent e) {
 
                 int edges;
-                String input = JOptionPane.showInputDialog(Application.INSTANCE, "Wieviele Ecken?" , "Anzahl Polygon-Ecken", JOptionPane.QUESTION_MESSAGE);
+                String input = JOptionPane.showInputDialog(CApplication.INSTANCE, "Wieviele Ecken?" , "Anzahl Polygon-Ecken", JOptionPane.QUESTION_MESSAGE);
                 try {
                     edges = Integer.parseInt(input);
                     if (edges >= 3 && edges <= 10){
@@ -148,7 +148,7 @@ public class Application extends JFrame implements WindowListener, KeyListener {
                         throw new NumberFormatException();
                     }
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(Application.INSTANCE, "Bitte eine Zahl zwischen 3-10 eingeben", "Falsches Format", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(CApplication.INSTANCE, "Bitte eine Zahl zwischen 3-10 eingeben", "Falsches Format", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
