@@ -25,6 +25,8 @@ public class CPolygon extends Polygon {
      * @param n: the total number of points
      */
     public CPolygon(int n){
+
+        //calculate the points for the rectangle on a given radius
         for (int i=0; i<n; i++) {
             addPoint((int) (X_POS + RADIUS * Math.cos(i * 2 * Math.PI / n)), (int) (Y_POS + RADIUS * Math.sin(i * 2 * Math.PI / n)));
         }
@@ -115,7 +117,7 @@ public class CPolygon extends Polygon {
     }
 
     /**
-     *
+     * transforms the polygon along a given center point and an axis
      * @param deltaTheta
      * @param centerPt
      */
