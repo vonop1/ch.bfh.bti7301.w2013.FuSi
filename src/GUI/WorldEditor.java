@@ -1,5 +1,8 @@
 package GUI;
 
+import Source.CWalker;
+import Util.CPosition;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -25,7 +28,8 @@ public class WorldEditor extends JPanel{
     private int SIZE = 8;
 
     //ArrayList with all walkers
-    private ArrayList<Point2D.Double[]> walkers = new ArrayList<Point2D.Double[]>();
+    //private ArrayList<Point2D.Double[]> walkers = new ArrayList<Point2D.Double[]>();
+    private ArrayList<CWalker> walkers = new ArrayList<CWalker>();
 
     /**
      * constructor for the world editor
@@ -80,11 +84,14 @@ public class WorldEditor extends JPanel{
 
         //create new walkers
         if (walkers.size() > 0){
-            for (Point2D.Double walker[] : walkers) {
+            for (CWalker walker : walkers) {
                 g2d.setColor(Color.ORANGE);
-                g2d.fillOval((int) walker[0].getX(), (int) walker[0].getY(), SIZE, SIZE);
-                g2d.fillOval((int) walker[1].getX(), (int) walker[1].getY(), SIZE, SIZE);
-                g2d.drawLine((int) walker[0].getX(), (int) walker[0].getY(), (int) walker[1].getX(), (int) walker[1].getY());
+                //TODO: anpassen Malen mit SIZE / 2
+                g2d.fillOval(walker.getPosition().getX().intValue(), walker.getPosition().getY().intValue(), SIZE, SIZE);
+                g2d.fillOval(walker.getTarget().getX().intValue(), walker.getTarget().getY().intValue(), SIZE, SIZE);
+                g2d.drawLine(walker.getPosition().getX().intValue(), walker.getPosition().getY().intValue(), walker.getTarget().getX().intValue(), walker.getTarget().getY().intValue());
+                //g2d.fillOval((int) walker[1].getX(), (int) walker[1].getY(), SIZE, SIZE);
+                //g2d.drawLine((int) walker[0].getX(), (int) walker[0].getY(), (int) walker[1].getX(), (int) walker[1].getY());
             }
         }
 
@@ -110,9 +117,12 @@ public class WorldEditor extends JPanel{
      * add a new walker with a start point and an end point
      */
     public void addWalker(){
-        Point2D.Double walker[] = new Point2D.Double[2];
-        walker[0] = new Point2D.Double(25,25);
-        walker[1] = new Point2D.Double(100,100);
+        CPosition startPoint = new CPosition(25,25);
+        CPosition endPoint = new CPosition(100,100);
+        CWalker walker = new CWalker(startPoint, endPoint, null);
+        //Point2D.Double walker[] = new Point2D.Double[2];
+        //walker[0] = new Point2D.Double(25,25);
+        //walker[1] = new Point2D.Double(100,100);
         walkers.add(walker);
         repaint();
     }
@@ -167,7 +177,7 @@ public class WorldEditor extends JPanel{
             translatePolygon = false;
             resizePolygon = false;
             polygonIndex = 0;
-
+            /*
             if(walkers.size() > 0){
                 for(Point2D.Double walker[] : walkers){
                     ellipse = new Ellipse2D.Double(walker[0].getX() - SIZE / 2, walker[0].getY() - SIZE / 2, SIZE, SIZE);
@@ -180,7 +190,7 @@ public class WorldEditor extends JPanel{
                     }
                 }
             }
-
+            */
             //determine if we have some polygons and if the mouse was inside a polygon
             if(cPolys.size() > 0){
                 for (int k = cPolys.size() - 1; k >= 0; k--) {
