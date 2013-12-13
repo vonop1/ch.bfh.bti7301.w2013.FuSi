@@ -145,8 +145,6 @@ public class WorldEditor extends JPanel{
         private boolean resizePolygon, translatePolygon, moveWalkerStart, moveWalkerEnd;
         private Ellipse2D.Double ellipse;
 
-        //temporary polygon
-        private CPolygon polygon = null;
 
         @Override
         public void mousePressed(MouseEvent e) {
