@@ -20,7 +20,6 @@ public class WorldEditor extends JPanel{
     //ArrayList with all resizable and movable polygons
     private ArrayList<CPolygon> cPolys = new ArrayList<CPolygon>();
     private CPolygon activePolygon = null;
-    private int polygonIndex = 0;
     private int npoint = 0;
     private int SIZE = 8;
 
@@ -147,7 +146,7 @@ public class WorldEditor extends JPanel{
         private Ellipse2D.Double ellipse;
 
         //temporary polygon
-        private Polygon polygon = null;
+        private CPolygon polygon = null;
 
         @Override
         public void mousePressed(MouseEvent e) {
@@ -161,12 +160,10 @@ public class WorldEditor extends JPanel{
             //standard: don't move any walker points and no clicked walker at this moment
             moveWalkerEnd = false;
             moveWalkerStart = false;
-            //walkerIndex = 0;
 
             //standard: don't translate or resize and no clicked polygon at this moment
             translatePolygon = false;
             resizePolygon = false;
-            polygonIndex = 0;
 
             if(walkers.size() > 0){
                 for(Point2D.Double walker[] : walkers){
@@ -192,7 +189,7 @@ public class WorldEditor extends JPanel{
                         if (ellipse.contains(pressPt)) {
                             resizePolygon = true;
                             npoint = i;
-                            polygonIndex = k;
+                            activePolygon = cPolys.get(k);//polygonIndex = k;
                             break;
                         }
                     }
@@ -208,9 +205,7 @@ public class WorldEditor extends JPanel{
                     //else check if mouse was inside a polygon (needed to paint active polygon grey)
                     //calculate the axis between press point and center point of the polygon
                     } else if (cPolys.get(k).contains(e.getPoint())) {
-                        polygonIndex = k;
-                        polygon = cPolys.get(k);
-                        activePolygon = new CPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+                        activePolygon = cPolys.get(k);
                         cPolys.remove(k);
                         cPolys.add(k, activePolygon);
                         repaint();
@@ -219,7 +214,6 @@ public class WorldEditor extends JPanel{
                         break;
                     }
                 }
-                activePolygon = null;
                 repaint();
             }
         }
@@ -231,7 +225,6 @@ public class WorldEditor extends JPanel{
             activePolygon = null;
             polygon = null;
             npoint = 0;
-            polygonIndex=0;
             repaint();
         }
 
@@ -243,9 +236,8 @@ public class WorldEditor extends JPanel{
             int dy = e.getY() - pressPtY;
 
             if(cPolys.size() > 0){
-                polygon = cPolys.get(polygonIndex);
                 for (CPolygon cPoly : cPolys){
-                    if(resizePolygon && cPoly == polygon){
+                    if(resizePolygon && cPoly == activePolygon){
                         cPoly.addXY(dx, dy, npoint);
                         repaint();
                         break;
@@ -258,10 +250,7 @@ public class WorldEditor extends JPanel{
                             double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
                             double deltaTheta = dragTheta - lastTheta;
                             lastTheta = dragTheta;
-                            activePolygon = new CPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
                             activePolygon.transform(deltaTheta, centerPt);
-                            cPolys.remove(polygonIndex);
-                            cPolys.add(polygonIndex, activePolygon);
                             repaint();
                             break;
                         }
