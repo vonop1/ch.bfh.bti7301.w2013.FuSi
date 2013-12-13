@@ -27,10 +27,16 @@ public class WorldEditor extends JPanel{
     //ArrayList with all walkers
     private ArrayList<Point2D.Double[]> walkers = new ArrayList<Point2D.Double[]>();
 
+    /**
+     * constructor for the world editor
+     */
     public WorldEditor() {
         super();
     }
 
+    /**
+     * setup the editor with mouse listener and initialize variables
+     */
     public void setupEditor() {
         MovingAdapter ma = new MovingAdapter();
         addMouseMotionListener(ma);
@@ -42,13 +48,14 @@ public class WorldEditor extends JPanel{
         polygonIndex=0;
     }
 
-
+    /**
+     * draw the world editor objects
+     * @param g the Graphics object
+     */
     private void doDrawing(Graphics g) {
 
+        //convert our graphics object to graphics2D
         Graphics2D g2d = (Graphics2D) g;
-        Point2D points[];
-        double x;
-        double y;
 
         //create new white polygons with small black translate/resizing ellipses
         //paint the active polygon grey
@@ -91,11 +98,18 @@ public class WorldEditor extends JPanel{
         doDrawing(g);
     }
 
+    /**
+     * add a new polygon
+     * @param edges number of edges
+     */
     public void addPolygon(int edges){
         zpolys.add(new CPolygon(edges));
         repaint();
     }
 
+    /**
+     * add a new walker with a start point and an end point
+     */
     public void addWalker(){
         Point2D.Double walker[] = new Point2D.Double[2];
         walker[0] = new Point2D.Double(25,25);
@@ -104,17 +118,26 @@ public class WorldEditor extends JPanel{
         repaint();
     }
 
+    /**
+     * save the world into a xml file
+     */
     public void saveWorld(){
         CXMLFunctions xml = new CXMLFunctions();
         xml.saveXMLFile(zpolys);
     }
 
+    /**
+     * load the world from a xml file
+     */
     public void loadWorld(){
         CXMLFunctions xml = new CXMLFunctions();
         zpolys = xml.loadXMLFile();
         repaint();
     }
 
+    /**
+     *
+     */
     private class MovingAdapter extends MouseAdapter {
 
         private Point pressPt, centerPt;
