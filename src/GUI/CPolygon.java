@@ -2,9 +2,6 @@ package GUI;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Path2D;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
 
 /**
  * Created with IntelliJ IDEA.
@@ -51,11 +48,7 @@ public class CPolygon extends Polygon {
      * @return: true if polygon is hit, false if not
      */
     public boolean isHit(double x, double y) {
-        if (contains(x, y)) {
-            return true;
-        } else {
-            return false;
-        }
+        return contains(x, y);
     }
 
     /**
@@ -136,6 +129,13 @@ public class CPolygon extends Polygon {
         xpoints = rx;
         ypoints = ry;
 
+    }
+
+    @Override
+    public CPolygon clone () throws CloneNotSupportedException
+    {
+        super.clone();
+        return new CPolygon(this.xpoints.clone(), this.ypoints.clone(), this.npoints);
     }
 
 }

@@ -158,6 +158,8 @@ public class WorldEditor extends JPanel{
         private boolean resizePolygon, translatePolygon, moveWalkerStart, moveWalkerEnd;
         private Ellipse2D.Double ellipse;
 
+        private CPolygon originalPoly = null;
+
 
         @Override
         public void mousePressed(MouseEvent e) {
@@ -191,43 +193,41 @@ public class WorldEditor extends JPanel{
             }
             */
             //determine if we have some polygons and if the mouse was inside a polygon
-            if(cPolys.size() > 0){
-                for (int k = cPolys.size() - 1; k >= 0; k--) {
-                    //check if mouse was clicked on a small black resizing ellipse
-                    for (int i = 0; i < cPolys.get(k).npoints; i++) {
-                        ellipse = new Ellipse2D.Double(cPolys.get(k).xpoints[i] - SIZE / 2, cPolys.get(k).ypoints[i] - SIZE / 2, SIZE, SIZE);
-                        //mouse was inside our small black ellipse
-                        //break because we don't need to search further
-                        if (ellipse.contains(pressPt)) {
-                            resizePolygon = true;
-                            npoint = i;
-                            activePolygon = cPolys.get(k);//polygonIndex = k;
-                            break;
-                        }
-                    }
-                    //break we have to resize the polygon with index k
-                    if(resizePolygon){
-                        break;
-                    }
-
-                    //check if mouse was clicked on the small black center ellipse to translatePolygon the polygon
-                    ellipse = new Ellipse2D.Double((int) cPolys.get(k).getCenter().getX() - SIZE / 2, (int) cPolys.get(k).getCenter().getY() - SIZE / 2, SIZE, SIZE);
+            for (CPolygon cPoly : cPolys) {
+                //check if mouse was clicked on a small black resizing ellipse
+                for (int i = 0; i < cPoly.npoints; i++) {
+                    ellipse = new Ellipse2D.Double(cPoly.xpoints[i] - SIZE / 2, cPoly.ypoints[i] - SIZE / 2, SIZE, SIZE);
+                    //mouse was inside our small black ellipse
+                    //break because we don't need to search further
                     if (ellipse.contains(pressPt)) {
-                        translatePolygon = true;
-                    //else check if mouse was inside a polygon (needed to paint active polygon grey)
-                    //calculate the axis between press point and center point of the polygon
-                    } else if (cPolys.get(k).contains(e.getPoint())) {
-                        activePolygon = cPolys.get(k);
-                        cPolys.remove(k);
-                        cPolys.add(k, activePolygon);
-                        repaint();
-                        centerPt = activePolygon.getCenter();
-                        lastTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
+                        resizePolygon = true;
+                        npoint = i;
+                        activePolygon = cPoly;
                         break;
                     }
                 }
-                repaint();
+                //break we have to resize the polygon with index k
+                if(resizePolygon){
+                    break;
+                }
+
+                //check if mouse was clicked on the small black center ellipse to translatePolygon the polygon
+                ellipse = new Ellipse2D.Double((int) cPoly.getCenter().getX() - SIZE / 2, (int) cPoly.getCenter().getY() - SIZE / 2, SIZE, SIZE);
+                if (ellipse.contains(pressPt)) {
+                    activePolygon = cPoly;
+                    translatePolygon = true;
+                //else check if mouse was inside a polygon (needed to paint active polygon grey)
+                //calculate the axis between press point and center point of the polygon
+                } else if (cPoly.contains(e.getPoint())) {
+                    activePolygon = cPoly;
+                    originalPoly = activePolygon.clone();
+                    repaint();
+                    centerPt = activePolygon.getCenter();
+                    lastTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
+                    break;
+                }
             }
+            repaint();
         }
 
         @Override
@@ -235,7 +235,6 @@ public class WorldEditor extends JPanel{
             translatePolygon = false;
             resizePolygon = false;
             activePolygon = null;
-            //polygon = null;
             npoint = 0;
             repaint();
         }
@@ -251,27 +250,47 @@ public class WorldEditor extends JPanel{
                 for (CPolygon cPoly : cPolys){
                     if(resizePolygon && cPoly == activePolygon){
                         cPoly.addXY(dx, dy, npoint);
-                        repaint();
                         break;
-                    }else if(cPoly.isHit(pressPtX, pressPtY)){
+                    }else if(cPoly.isHit(pressPtX, pressPtY)/*activePolygon != null*/){
                         if(translatePolygon){
                             cPoly.translateXY(dx, dy);
-                            repaint();
                             break;
                         } else {
                             double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
                             double deltaTheta = dragTheta - lastTheta;
                             lastTheta = dragTheta;
+                            //activePolygon = originalPoly.clone();
                             activePolygon.transform(deltaTheta, centerPt);
-                            repaint();
                             break;
                         }
                     }
                 }
             }
+//            if (activePolygon != null)
+//            {
+//                if (resizePolygon)
+//                {
+//                    activePolygon.xpoints[npoint] = dragPt.x;
+//                    activePolygon.ypoints[npoint] = dragPt.y;
+//                }
+//                else if (translatePolygon)
+//                {
+//                    activePolygon.translateXY(dx, dy);
+//                }
+//                else
+//                {
+//                    double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
+//                    double deltaTheta = dragTheta - lastTheta;
+//                    lastTheta = dragTheta;
+//                    //activePolygon = originalPoly.clone();
+//                    activePolygon.transform(deltaTheta, centerPt);
+//                }
+//            }
+
             pressPtX += dx;
             pressPtY += dy;
-
+            activePolygon.invalidate(); //To update the boundary box
+            repaint();
         }
     }
 }
