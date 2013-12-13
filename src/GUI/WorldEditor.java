@@ -232,7 +232,7 @@ public class WorldEditor extends JPanel{
             translatePolygon = false;
             resizePolygon = false;
             activePolygon = null;
-            polygon = null;
+            //polygon = null;
             npoint = 0;
             repaint();
         }
