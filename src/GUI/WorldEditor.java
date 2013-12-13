@@ -86,8 +86,8 @@ public class WorldEditor extends JPanel{
             for (CWalker walker : walkers) {
                 g2d.setColor(Color.ORANGE);
                 //TODO: anpassen Malen mit SIZE / 2 --> erledigt von Roger =)
-                CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), (double)SIZE, true);
-                CDrawHelper.drawPointAsCircle(g2d, walker.getTarget(), (double)SIZE, true);
+                CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), (double) SIZE, true);
+                CDrawHelper.drawPointAsCircle(g2d, walker.getTarget(), (double) SIZE, true);
                 CDrawHelper.drawLine(g2d, walker.getPosition(), walker.getTarget());
                 //g2d.fillOval(walker.getPosition().getX().intValue(), walker.getPosition().getY().intValue(), SIZE, SIZE);
                 //g2d.fillOval(walker.getTarget().getX().intValue(), walker.getTarget().getY().intValue(), SIZE, SIZE);
@@ -220,7 +220,6 @@ public class WorldEditor extends JPanel{
                 //calculate the axis between press point and center point of the polygon
                 } else if (cPoly.contains(e.getPoint())) {
                     activePolygon = cPoly;
-                    originalPoly = activePolygon.clone();
                     repaint();
                     centerPt = activePolygon.getCenter();
                     lastTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
@@ -246,46 +245,28 @@ public class WorldEditor extends JPanel{
             int dx = e.getX() - pressPtX;
             int dy = e.getY() - pressPtY;
 
-            if(cPolys.size() > 0){
-                for (CPolygon cPoly : cPolys){
-                    if(resizePolygon && cPoly == activePolygon){
-                        cPoly.addXY(dx, dy, npoint);
-                        break;
-                    }else if(cPoly.isHit(pressPtX, pressPtY)/*activePolygon != null*/){
-                        if(translatePolygon){
-                            cPoly.translateXY(dx, dy);
-                            break;
-                        } else {
-                            double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
-                            double deltaTheta = dragTheta - lastTheta;
-                            lastTheta = dragTheta;
-                            //activePolygon = originalPoly.clone();
-                            activePolygon.transform(deltaTheta, centerPt);
-                            break;
-                        }
+            if (activePolygon != null)
+            {
+                if (resizePolygon)
+                {
+                    activePolygon.xpoints[npoint] = dragPt.x;
+                    activePolygon.ypoints[npoint] = dragPt.y;
+                }
+                else if (activePolygon.contains(pressPtX, pressPtY))
+                {
+                    if (translatePolygon)
+                    {
+                        activePolygon.translateXY(dx, dy);
+                    }
+                    else
+                    {
+                        double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
+                        double deltaTheta = dragTheta - lastTheta;
+                        lastTheta = dragTheta;
+                        activePolygon.transform(deltaTheta, centerPt);
                     }
                 }
             }
-//            if (activePolygon != null)
-//            {
-//                if (resizePolygon)
-//                {
-//                    activePolygon.xpoints[npoint] = dragPt.x;
-//                    activePolygon.ypoints[npoint] = dragPt.y;
-//                }
-//                else if (translatePolygon)
-//                {
-//                    activePolygon.translateXY(dx, dy);
-//                }
-//                else
-//                {
-//                    double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
-//                    double deltaTheta = dragTheta - lastTheta;
-//                    lastTheta = dragTheta;
-//                    //activePolygon = originalPoly.clone();
-//                    activePolygon.transform(deltaTheta, centerPt);
-//                }
-//            }
 
             pressPtX += dx;
             pressPtY += dy;

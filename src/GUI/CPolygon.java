@@ -134,7 +134,6 @@ public class CPolygon extends Polygon {
     @Override
     public CPolygon clone () throws CloneNotSupportedException
     {
-        super.clone();
         return new CPolygon(this.xpoints.clone(), this.ypoints.clone(), this.npoints);
     }
 
