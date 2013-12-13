@@ -91,7 +91,11 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
                 g2d.setColor(Color.WHITE);
                 for (CObstacle obstacle : simulationWorld.getObstacles()) {
-                    Vector<CPosition> positions = obstacle.getPositions();
+                    //Vector<CPosition> positions = ;
+
+                    CDrawHelper.drawPolygon(g2d, obstacle.getPositions());
+
+                    /*
                     int[] xCoordinates = new int[positions.size()];
                     int[] yCoordinates = new int[positions.size()];
 
@@ -103,6 +107,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                     }
 
                     g2d.fillPolygon(xCoordinates, yCoordinates, positions.size());
+                    */
                 }
             }
         });
@@ -138,10 +143,15 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
         drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_W, "W - Zeige Waypoints an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
-                g2d.setColor(Color.YELLOW);
+                //g2d.setColor(Color.YELLOW);
+                g2d.setColor(Color.GREEN);
                 for (CObstacle obstacle : simulationWorld.getObstacles()) {
                     Vector<CPosition> positions = obstacle.getWaypoints();
-                    int[] xCoordinates2 = new int[positions.size()];
+
+
+
+                    CDrawHelper.drawPolygon(g2d, positions);
+                    /* int[] xCoordinates2 = new int[positions.size()];
                     int[] yCoordinates2 = new int[positions.size()];
 
                     int j = 0;
@@ -151,8 +161,9 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                         j += 1;
                     }
 
-                    g2d.setColor(Color.GREEN);
+
                     g2d.drawPolygon(xCoordinates2, yCoordinates2, positions.size());
+                    */
                 }
             }
         });
@@ -163,7 +174,8 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.GREEN);
                 for (CEdge edge : simulationWorld.getGraph().getEdges()) {
-                    g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
+                    CDrawHelper.drawLine(g2d, edge.getSource(), edge.getDestination());
+                    //g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
                 }
             }
         });
@@ -174,7 +186,8 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.RED);
                 for (CEdge edge : simulationWorld.getGraph().getTrashEdges()) {
-                    g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
+                    CDrawHelper.drawLine(g2d, edge.getSource(), edge.getDestination());
+                    //g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
                 }
             }
         });
@@ -184,30 +197,39 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
             @Override
             public void doDrawing(Graphics2D g2d) {
                 for (CWalker walker : simulationWorld.getWalkers()) {
-                    CPosition position = walker.getPosition();
+                    //CPosition position = walker.getPosition();
 
                     if(selectedWalker != null && walker.equals(selectedWalker)) {
                         g2d.setColor(Color.YELLOW);
+                        CDrawHelper.drawPointAsFilledCircle(g2d, walker.getPosition(), walker.getHalfWalkerSize() * 2 + 1);
+                        /*
                         g2d.fillOval(((Double) (position.getX() - walker.getHalfWalkerSize())).intValue() - 1,
                                 ((Double) (position.getY() - walker.getHalfWalkerSize())).intValue() - 1,
                                 ((Double) (walker.getHalfWalkerSize() * 2)).intValue() + 2,
                                 ((Double) (walker.getHalfWalkerSize() * 2)).intValue() + 2);
+                                */
                     }
 
                     g2d.setColor((walker.hasCollisions() ? Color.RED : Color.ORANGE));
+                    CDrawHelper.drawPointAsFilledCircle(g2d, walker.getPosition(), walker.getHalfWalkerSize() * 2);
+                    /*
                     g2d.fillOval(((Double) (position.getX() - walker.getHalfWalkerSize())).intValue(),
                             ((Double) (position.getY() - walker.getHalfWalkerSize())).intValue(),
                             ((Double) (walker.getHalfWalkerSize() * 2)).intValue(),
                             ((Double) (walker.getHalfWalkerSize() * 2)).intValue());
+                    */
 
                     // draw the target as x, because the X marks the point =)
                     g2d.setColor(Color.ORANGE);
+                    CDrawHelper.drawPointAsX(g2d, walker.getTarget(), walker.getHalfWalkerSize() * 2);
+                    /*
                     int upperleftX = ((Double) (walker.getTarget().getX() - walker.getHalfWalkerSize())).intValue();
                     int upperleftY = ((Double) (walker.getTarget().getY() - walker.getHalfWalkerSize())).intValue();
                     int width = ((Double) (walker.getHalfWalkerSize() * 2)).intValue();
                     int height = ((Double) (walker.getHalfWalkerSize() * 2)).intValue();
                     g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
                     g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
+                    */
                 }
             }
         });
