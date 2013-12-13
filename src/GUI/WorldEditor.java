@@ -143,7 +143,7 @@ public class WorldEditor extends JPanel{
         //
         private Point pressPt, centerPt;
         private int pressPtX, pressPtY;
-        private double pressTheta;
+        private double lastTheta;
         private boolean resize, translate;
         private Ellipse2D.Double ellipse;
 
@@ -197,7 +197,7 @@ public class WorldEditor extends JPanel{
                         zpolys.add(k, activePolygon);
                         repaint();
                         centerPt = activePolygon.getCenter();
-                        pressTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
+                        lastTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
                         break;
                     }
                 }
@@ -238,7 +238,8 @@ public class WorldEditor extends JPanel{
                             break;
                         } else {
                             double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
-                            double deltaTheta = dragTheta - pressTheta;
+                            double deltaTheta = dragTheta - lastTheta;
+                            lastTheta = dragTheta;
                             activePolygon = new CPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
                             activePolygon.transform(deltaTheta, centerPt);
                             zpolys.remove(polygonIndex);
