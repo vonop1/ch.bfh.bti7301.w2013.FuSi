@@ -85,10 +85,13 @@ public class WorldEditor extends JPanel{
         if (walkers.size() > 0){
             for (CWalker walker : walkers) {
                 g2d.setColor(Color.ORANGE);
-                //TODO: anpassen Malen mit SIZE / 2
-                g2d.fillOval(walker.getPosition().getX().intValue(), walker.getPosition().getY().intValue(), SIZE, SIZE);
-                g2d.fillOval(walker.getTarget().getX().intValue(), walker.getTarget().getY().intValue(), SIZE, SIZE);
-                g2d.drawLine(walker.getPosition().getX().intValue(), walker.getPosition().getY().intValue(), walker.getTarget().getX().intValue(), walker.getTarget().getY().intValue());
+                //TODO: anpassen Malen mit SIZE / 2 --> erledigt von Roger =)
+                CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), (double)SIZE, true);
+                CDrawHelper.drawPointAsCircle(g2d, walker.getTarget(), (double)SIZE, true);
+                CDrawHelper.drawLine(g2d, walker.getPosition(), walker.getTarget());
+                //g2d.fillOval(walker.getPosition().getX().intValue(), walker.getPosition().getY().intValue(), SIZE, SIZE);
+                //g2d.fillOval(walker.getTarget().getX().intValue(), walker.getTarget().getY().intValue(), SIZE, SIZE);
+                //g2d.drawLine(walker.getPosition().getX().intValue(), walker.getPosition().getY().intValue(), walker.getTarget().getX().intValue(), walker.getTarget().getY().intValue());
                 //g2d.fillOval((int) walker[1].getX(), (int) walker[1].getY(), SIZE, SIZE);
                 //g2d.drawLine((int) walker[0].getX(), (int) walker[0].getY(), (int) walker[1].getX(), (int) walker[1].getY());
             }
