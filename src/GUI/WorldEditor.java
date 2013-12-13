@@ -161,7 +161,7 @@ public class WorldEditor extends JPanel{
             //standard: don't move any walker points and no clicked walker at this moment
             moveWalkerEnd = false;
             moveWalkerStart = false;
-            walkerIndex = 0;
+            //walkerIndex = 0;
 
             //standard: don't translate or resize and no clicked polygon at this moment
             translatePolygon = false;
