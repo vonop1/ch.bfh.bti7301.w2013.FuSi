@@ -140,11 +140,11 @@ public class WorldEditor extends JPanel{
      */
     private class MovingAdapter extends MouseAdapter {
 
+        //
         private Point pressPt, centerPt;
         private int pressPtX, pressPtY;
         private double pressTheta;
         private boolean resize, translate;
-        private int currentShape, clickedShape;
         private Ellipse2D.Double ellipse;
 
         //temporary polygon
@@ -152,18 +152,25 @@ public class WorldEditor extends JPanel{
 
         @Override
         public void mousePressed(MouseEvent e) {
+            //save point of mouse pressed event into variable
             pressPt = e.getPoint();
+            // get x and y coordinate of the pressed point
             pressPtX = e.getX();
             pressPtY = e.getY();
+
+            //standard: don't translate or resize and no clicked polygon at this moment
             translate = false;
             resize = false;
             polygonIndex = 0;
-            int currentShape = 0;
 
+            //determine if we have some polygons and if the mouse was inside a polygon
             if(zpolys.size()> 0){
                 for (int k = zpolys.size() - 1; k >= 0; k--) {
+                    //check if mouse was clicked on a small black resizing ellipse
                     for (int i = 0; i < zpolys.get(k).npoints; i++) {
                         ellipse = new Ellipse2D.Double(zpolys.get(k).xpoints[i] - SIZE / 2, zpolys.get(k).ypoints[i] - SIZE / 2, SIZE, SIZE);
+                        //mouse was inside our polygon and inside our black ellipse
+                        //break because we don't need to search further
                         if (ellipse.contains(pressPt)) {
                             resize = true;
                             npoint = i;
@@ -171,9 +178,12 @@ public class WorldEditor extends JPanel{
                             break;
                         }
                     }
+                    //break we have to resize the polygon with index k
                     if(resize){
                         break;
                     }
+
+                    //check if mouse was clicked on the small black center ellipse to translate the polygon
                     ellipse = new Ellipse2D.Double((int) zpolys.get(k).getCenter().getX() - SIZE / 2, (int) zpolys.get(k).getCenter().getY() - SIZE / 2, SIZE, SIZE);
                     if (ellipse.contains(pressPt)) {
                         translate = true;
@@ -211,7 +221,6 @@ public class WorldEditor extends JPanel{
             Point dragPt = e.getPoint();
             int dx = e.getX() - pressPtX;
             int dy = e.getY() - pressPtY;
-            Point2D points[];
 
             if(zpolys.size() > 0){
                 polygon = zpolys.get(polygonIndex);
