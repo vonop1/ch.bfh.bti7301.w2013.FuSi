@@ -93,7 +93,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                 for (CObstacle obstacle : simulationWorld.getObstacles()) {
                     //Vector<CPosition> positions = ;
 
-                    CDrawHelper.drawPolygon(g2d, obstacle.getPositions());
+                    CDrawHelper.drawPolygon(g2d, obstacle.getPositions(), true);
 
                     /*
                     int[] xCoordinates = new int[positions.size()];
@@ -150,7 +150,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
 
 
-                    CDrawHelper.drawPolygon(g2d, positions);
+                    CDrawHelper.drawPolygon(g2d, positions, false);
                     /* int[] xCoordinates2 = new int[positions.size()];
                     int[] yCoordinates2 = new int[positions.size()];
 
@@ -201,7 +201,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
 
                     if(selectedWalker != null && walker.equals(selectedWalker)) {
                         g2d.setColor(Color.YELLOW);
-                        CDrawHelper.drawPointAsFilledCircle(g2d, walker.getPosition(), walker.getHalfWalkerSize() * 2 + 1);
+                        CDrawHelper.drawPointAsCircle(g2d, new CPosition(walker.getPosition().getX() - 0.5, walker.getPosition().getY() - 0.5), (walker.getHalfWalkerSize() + 1) * 2, true);
                         /*
                         g2d.fillOval(((Double) (position.getX() - walker.getHalfWalkerSize())).intValue() - 1,
                                 ((Double) (position.getY() - walker.getHalfWalkerSize())).intValue() - 1,
@@ -211,7 +211,7 @@ public class SimulationPanel extends JPanel implements ActionListener, KeyListen
                     }
 
                     g2d.setColor((walker.hasCollisions() ? Color.RED : Color.ORANGE));
-                    CDrawHelper.drawPointAsFilledCircle(g2d, walker.getPosition(), walker.getHalfWalkerSize() * 2);
+                    CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), walker.getHalfWalkerSize() * 2, true);
                     /*
                     g2d.fillOval(((Double) (position.getX() - walker.getHalfWalkerSize())).intValue(),
                             ((Double) (position.getY() - walker.getHalfWalkerSize())).intValue(),
