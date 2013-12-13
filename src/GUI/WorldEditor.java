@@ -18,7 +18,7 @@ import javax.swing.*;
 public class WorldEditor extends JPanel{
 
     //ArrayList with all resizable and movable polygons
-    private ArrayList<CPolygon> zpolys = new ArrayList<CPolygon>();
+    private ArrayList<CPolygon> cPolys = new ArrayList<CPolygon>();
     private CPolygon activePolygon = null;
     private int polygonIndex = 0;
     private int npoint = 0;
@@ -45,7 +45,6 @@ public class WorldEditor extends JPanel{
         setDoubleBuffered(true);
         activePolygon = null;
         npoint = 0;
-        polygonIndex=0;
     }
 
     /**
@@ -59,21 +58,21 @@ public class WorldEditor extends JPanel{
 
         //create new white polygons with small black translate/resizing ellipses
         //paint the active polygon grey
-        if (zpolys.size() > 0){
-            for(CPolygon zpoly : zpolys){
-                if (!zpoly.equals(activePolygon)) {
+        if (cPolys.size() > 0){
+            for(CPolygon cPoly : cPolys){
+                if (!cPoly.equals(activePolygon)) {
                     g2d.setColor(Color.WHITE);
-                    g2d.fill(zpoly);
+                    g2d.fill(cPoly);
                 }
                 else {
                     g2d.setColor(Color.LIGHT_GRAY);
-                    g2d.fill(zpoly);
+                    g2d.fill(cPoly);
                 }
                 g2d.setColor(Color.BLACK);
-                Ellipse2D.Double ellipse = new Ellipse2D.Double((int)zpoly.getCenter().getX() - SIZE / 2, (int) zpoly.getCenter().getY()- SIZE / 2, SIZE, SIZE);
+                Ellipse2D.Double ellipse = new Ellipse2D.Double((int)cPoly.getCenter().getX() - SIZE / 2, (int) cPoly.getCenter().getY()- SIZE / 2, SIZE, SIZE);
                 g2d.fill(ellipse);
-                for(int i=0; i<zpoly.npoints; i++){
-                    ellipse = new Ellipse2D.Double(zpoly.xpoints[i] - SIZE / 2, zpoly.ypoints[i] - SIZE / 2, SIZE, SIZE);
+                for(int i=0; i<cPoly.npoints; i++){
+                    ellipse = new Ellipse2D.Double(cPoly.xpoints[i] - SIZE / 2, cPoly.ypoints[i] - SIZE / 2, SIZE, SIZE);
                     g2d.fill(ellipse);
                 }
             }
@@ -82,7 +81,7 @@ public class WorldEditor extends JPanel{
         //create new walkers
         if (walkers.size() > 0){
             for (Point2D.Double walker[] : walkers) {
-                g2d.setColor(Color.BLACK);
+                g2d.setColor(Color.ORANGE);
                 g2d.fillOval((int) walker[0].getX(), (int) walker[0].getY(), SIZE, SIZE);
                 g2d.fillOval((int) walker[1].getX(), (int) walker[1].getY(), SIZE, SIZE);
                 g2d.drawLine((int) walker[0].getX(), (int) walker[0].getY(), (int) walker[1].getX(), (int) walker[1].getY());
@@ -103,7 +102,7 @@ public class WorldEditor extends JPanel{
      * @param edges number of edges
      */
     public void addPolygon(int edges){
-        zpolys.add(new CPolygon(edges));
+        cPolys.add(new CPolygon(edges));
         repaint();
     }
 
@@ -123,7 +122,7 @@ public class WorldEditor extends JPanel{
      */
     public void saveWorld(){
         CXMLFunctions xml = new CXMLFunctions();
-        xml.saveXMLFile(zpolys);
+        xml.saveXMLFile(cPolys);
     }
 
     /**
@@ -131,7 +130,7 @@ public class WorldEditor extends JPanel{
      */
     public void loadWorld(){
         CXMLFunctions xml = new CXMLFunctions();
-        zpolys = xml.loadXMLFile();
+        cPolys = xml.loadXMLFile();
         repaint();
     }
 
@@ -144,7 +143,7 @@ public class WorldEditor extends JPanel{
         private Point pressPt, centerPt;
         private int pressPtX, pressPtY;
         private double lastTheta;
-        private boolean resize, translate;
+        private boolean resizePolygon, translatePolygon, moveWalkerStart, moveWalkerEnd;
         private Ellipse2D.Double ellipse;
 
         //temporary polygon
@@ -152,49 +151,68 @@ public class WorldEditor extends JPanel{
 
         @Override
         public void mousePressed(MouseEvent e) {
+
             //save point of mouse pressed event into variable
             pressPt = e.getPoint();
             // get x and y coordinate of the pressed point
             pressPtX = e.getX();
             pressPtY = e.getY();
 
+            //standard: don't move any walker points and no clicked walker at this moment
+            moveWalkerEnd = false;
+            moveWalkerStart = false;
+            walkerIndex = 0;
+
             //standard: don't translate or resize and no clicked polygon at this moment
-            translate = false;
-            resize = false;
+            translatePolygon = false;
+            resizePolygon = false;
             polygonIndex = 0;
 
+            if(walkers.size() > 0){
+                for(Point2D.Double walker[] : walkers){
+                    ellipse = new Ellipse2D.Double(walker[0].getX() - SIZE / 2, walker[0].getY() - SIZE / 2, SIZE, SIZE);
+                    if(ellipse.contains(pressPt)){
+                        break;
+                    }
+                    ellipse = new Ellipse2D.Double(walker[1].getX() - SIZE / 2, walker[1].getY() - SIZE / 2, SIZE, SIZE);
+                    if(ellipse.contains(pressPt)){
+                        break;
+                    }
+                }
+            }
+
             //determine if we have some polygons and if the mouse was inside a polygon
-            if(zpolys.size()> 0){
-                for (int k = zpolys.size() - 1; k >= 0; k--) {
+            if(cPolys.size() > 0){
+                for (int k = cPolys.size() - 1; k >= 0; k--) {
                     //check if mouse was clicked on a small black resizing ellipse
-                    for (int i = 0; i < zpolys.get(k).npoints; i++) {
-                        ellipse = new Ellipse2D.Double(zpolys.get(k).xpoints[i] - SIZE / 2, zpolys.get(k).ypoints[i] - SIZE / 2, SIZE, SIZE);
+                    for (int i = 0; i < cPolys.get(k).npoints; i++) {
+                        ellipse = new Ellipse2D.Double(cPolys.get(k).xpoints[i] - SIZE / 2, cPolys.get(k).ypoints[i] - SIZE / 2, SIZE, SIZE);
                         //mouse was inside our small black ellipse
                         //break because we don't need to search further
                         if (ellipse.contains(pressPt)) {
-                            resize = true;
+                            resizePolygon = true;
                             npoint = i;
                             polygonIndex = k;
                             break;
                         }
                     }
                     //break we have to resize the polygon with index k
-                    if(resize){
+                    if(resizePolygon){
                         break;
                     }
 
-                    //check if mouse was clicked on the small black center ellipse to translate the polygon
-                    ellipse = new Ellipse2D.Double((int) zpolys.get(k).getCenter().getX() - SIZE / 2, (int) zpolys.get(k).getCenter().getY() - SIZE / 2, SIZE, SIZE);
+                    //check if mouse was clicked on the small black center ellipse to translatePolygon the polygon
+                    ellipse = new Ellipse2D.Double((int) cPolys.get(k).getCenter().getX() - SIZE / 2, (int) cPolys.get(k).getCenter().getY() - SIZE / 2, SIZE, SIZE);
                     if (ellipse.contains(pressPt)) {
-                        translate = true;
+                        translatePolygon = true;
                     //else check if mouse was inside a polygon (needed to paint active polygon grey)
                     //calculate the axis between press point and center point of the polygon
-                    } else if (zpolys.get(k).contains(e.getPoint())) {
+                    } else if (cPolys.get(k).contains(e.getPoint())) {
                         polygonIndex = k;
-                        polygon = zpolys.get(k);
+                        polygon = cPolys.get(k);
                         activePolygon = new CPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
-                        zpolys.remove(k);
-                        zpolys.add(k, activePolygon);
+                        cPolys.remove(k);
+                        cPolys.add(k, activePolygon);
                         repaint();
                         centerPt = activePolygon.getCenter();
                         lastTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
@@ -208,8 +226,8 @@ public class WorldEditor extends JPanel{
 
         @Override
         public void mouseReleased(MouseEvent event) {
-            translate = false;
-            resize = false;
+            translatePolygon = false;
+            resizePolygon = false;
             activePolygon = null;
             polygon = null;
             npoint = 0;
@@ -224,16 +242,16 @@ public class WorldEditor extends JPanel{
             int dx = e.getX() - pressPtX;
             int dy = e.getY() - pressPtY;
 
-            if(zpolys.size() > 0){
-                polygon = zpolys.get(polygonIndex);
-                for (CPolygon zpoly : zpolys){
-                    if(resize && zpoly == polygon){
-                        zpoly.addXY(dx, dy, npoint);
+            if(cPolys.size() > 0){
+                polygon = cPolys.get(polygonIndex);
+                for (CPolygon cPoly : cPolys){
+                    if(resizePolygon && cPoly == polygon){
+                        cPoly.addXY(dx, dy, npoint);
                         repaint();
                         break;
-                    }else if(zpoly.isHit(pressPtX, pressPtY)){
-                        if(translate){
-                            zpoly.translateXY(dx, dy);
+                    }else if(cPoly.isHit(pressPtX, pressPtY)){
+                        if(translatePolygon){
+                            cPoly.translateXY(dx, dy);
                             repaint();
                             break;
                         } else {
@@ -242,8 +260,8 @@ public class WorldEditor extends JPanel{
                             lastTheta = dragTheta;
                             activePolygon = new CPolygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
                             activePolygon.transform(deltaTheta, centerPt);
-                            zpolys.remove(polygonIndex);
-                            zpolys.add(polygonIndex, activePolygon);
+                            cPolys.remove(polygonIndex);
+                            cPolys.add(polygonIndex, activePolygon);
                             repaint();
                             break;
                         }
