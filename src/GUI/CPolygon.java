@@ -26,7 +26,7 @@ public class CPolygon extends Polygon {
      */
     public CPolygon(int n){
 
-        //compute the points for the rectangle on a given radius
+        //calculate the points for the rectangle on a given radius
         for (int i=0; i<n; i++) {
             addPoint((int) (X_POS + RADIUS * Math.cos(i * 2 * Math.PI / n)), (int) (Y_POS + RADIUS * Math.sin(i * 2 * Math.PI / n)));
         }

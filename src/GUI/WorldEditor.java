@@ -169,7 +169,7 @@ public class WorldEditor extends JPanel{
                     //check if mouse was clicked on a small black resizing ellipse
                     for (int i = 0; i < zpolys.get(k).npoints; i++) {
                         ellipse = new Ellipse2D.Double(zpolys.get(k).xpoints[i] - SIZE / 2, zpolys.get(k).ypoints[i] - SIZE / 2, SIZE, SIZE);
-                        //mouse was inside our polygon and inside our black ellipse
+                        //mouse was inside our small black ellipse
                         //break because we don't need to search further
                         if (ellipse.contains(pressPt)) {
                             resize = true;
@@ -187,6 +187,8 @@ public class WorldEditor extends JPanel{
                     ellipse = new Ellipse2D.Double((int) zpolys.get(k).getCenter().getX() - SIZE / 2, (int) zpolys.get(k).getCenter().getY() - SIZE / 2, SIZE, SIZE);
                     if (ellipse.contains(pressPt)) {
                         translate = true;
+                    //else check if mouse was inside a polygon (needed to paint active polygon grey)
+                    //calculate the axis between press point and center point of the polygon
                     } else if (zpolys.get(k).contains(e.getPoint())) {
                         polygonIndex = k;
                         polygon = zpolys.get(k);
