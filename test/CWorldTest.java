@@ -17,8 +17,6 @@ import java.util.Vector;
 import Source.CObstacle;
 import Util.*;
 import org.hamcrest.core.CombinableMatcher;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CWorldTest {
@@ -121,11 +119,6 @@ public class CWorldTest {
     @Test
     public void testAssertThathasItemsContainsString() {
         org.junit.Assert.assertThat(Arrays.asList("one", "two", "three"), hasItems("one", "three"));
-    }
-
-    @Test
-    public void testAssertThatEveryItemContainsString() {
-        org.junit.Assert.assertThat(Arrays.asList(new String[] { "fun", "ban", "net" }), everyItem(containsString("n")));
     }
 
     // Core Hamcrest Matchers with assertThat

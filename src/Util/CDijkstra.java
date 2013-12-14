@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class CDijkstra {
 
-    private Vector<CPosition> aoNodes;
+    //private Vector<CPosition> aoNodes;
     private Vector<CEdge> aoEdges;
     private Vector<CPosition> aoSettledNodes;
     private Vector<CPosition> aoUnSettledNodes;
@@ -21,7 +21,7 @@ public class CDijkstra {
     public CDijkstra (CGraph oGraph)
     {
         // Create a copy of the array so that we can operate on this array
-        this.aoNodes = new Vector<CPosition>(oGraph.getVertexes());
+        //this.aoNodes = new Vector<CPosition>(oGraph.getVertexes());
         this.aoEdges = new Vector<CEdge>(oGraph.getEdges());
     }
 
@@ -53,8 +53,8 @@ public class CDijkstra {
 
     /**
      * executes the dijskta on the instance variables and save the result in the predecessors instance vector
-     * @param oSource
-     * @param oTarget
+     * @param oSource the start position
+     * @param oTarget the end position
      */
     private void execute(CPosition oSource, CPosition oTarget) throws IllegalArgumentException {
         if(oSource == null || oTarget == null) {
@@ -83,7 +83,7 @@ public class CDijkstra {
 
     /**
      * Finds the minimal distance of a node to all neighbor nodes
-     * @param oNode
+     * @param oNode the node
      */
     private void findMinimalDistances(CPosition oNode) 
     {
@@ -125,8 +125,8 @@ public class CDijkstra {
 
     /**
      * Get all unsettled neighbors of a node
-     * @param oNode
-     * @return
+     * @param oNode the node
+     * @return list of Nodes
      */
     private Vector<CPosition> getNeighbors(CPosition oNode) {
         Vector<CPosition> oNeighbors = new Vector<CPosition>();
@@ -173,8 +173,8 @@ public class CDijkstra {
 
     /**
      * returns if a node is settled (besucht)
-     * @param oVertex
-     * @return
+     * @param oVertex the vertex (node)
+     * @return true if settled
      */
     private boolean isSettled(CPosition oVertex) 
     {

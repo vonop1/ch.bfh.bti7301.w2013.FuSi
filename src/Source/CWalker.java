@@ -140,8 +140,8 @@ public class CWalker {
                 return;
             }
 
-            for (int i = 0; i < this.originalDesiredPath.size(); i++) {
-                this.walkerGraph.addWayPointEdge(this.currentPosition, this.originalDesiredPath.get(i));
+            for (CPosition anOriginalDesiredPath : this.originalDesiredPath) {
+                this.walkerGraph.addWayPointEdge(this.currentPosition, anOriginalDesiredPath);
             }
 
             CDijkstra dijkstra = new CDijkstra(this.walkerGraph);
@@ -236,11 +236,8 @@ public class CWalker {
      */
     public boolean checkCollisionWith(CPosition position) {
 
-        if (position == null) {
-            return false;
-        }
+        return position != null && this.getDesiredNextPosition().getDistanceTo(position) < this.getHalfWalkerSize() + 1;
 
-        return this.getDesiredNextPosition().getDistanceTo(position) < this.getHalfWalkerSize() + 1;
     }
 
     /**

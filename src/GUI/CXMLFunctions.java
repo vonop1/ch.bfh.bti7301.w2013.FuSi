@@ -164,9 +164,9 @@ public class CXMLFunctions{
         chooser.setMultiSelectionEnabled(false);
 
         int returnValue;
-        if(dialogType=="Open"){
+        if(dialogType.equals("Open")){
             returnValue = chooser.showOpenDialog(null);
-        }else if(dialogType=="Save"){
+        }else if(dialogType.equals("Save")){
             returnValue = chooser.showSaveDialog(null);
         } else {
             return null;

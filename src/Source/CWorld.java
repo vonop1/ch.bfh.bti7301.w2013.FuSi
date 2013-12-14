@@ -19,11 +19,10 @@ import org.w3c.dom.*;
  */
 public class CWorld {
     private Vector<CWalker> walkers = new Vector<CWalker>();
-    //private Map<CWalker, Integer> walkerWaitingQueue = new HashMap<CWalker, Integer>();
 
     public static final Random randomGenerator = new Random();
 
-    private Integer maxCalculationCount = 10000;
+    private static final Integer maxCalculationCount = 10000;
     private Integer worldWidth = 800;
     private Integer worldHeight = 580;
 
@@ -207,10 +206,7 @@ public class CWorld {
     }
 
     public Boolean isPointInWorld(CPosition point) {
-        if (0 <= point.getX() && point.getX() <= this.worldWidth && 0 <= point.getY() && point.getY() <= this.worldHeight) {
-            return true;
-        }
-        return false;
+        return 0 <= point.getX() && point.getX() <= this.worldWidth && 0 <= point.getY() && point.getY() <= this.worldHeight;
     }
 
     public CGraph getGraph() {

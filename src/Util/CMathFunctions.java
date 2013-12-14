@@ -55,19 +55,80 @@ public class CMathFunctions {
         return new CPosition(px, py);
     }
 
-    public static Double angleBetween2Lines(CPosition startLine1, CPosition endLine1, CPosition startLine2, CPosition endLine2) {
+    /**
+     * Computes the dot product AB . AC
+     * @param pointA point A
+     * @param pointB point B
+     * @param pointC point C
+     * @return dot product as Double
+     */
+    public static Double calcDotProduct(CPosition pointA, CPosition pointB, CPosition pointC)
+    {
+        Double ab_x = pointB.getX() - pointA.getX();
+        Double ab_y = pointB.getY() - pointA.getY();
+        Double bc_x = pointC.getX() - pointB.getX();
+        Double bc_y = pointC.getY() - pointB.getY();
 
-        double angle1 = Math.atan2(startLine1.getY() - endLine1.getY(), startLine1.getX() - endLine1.getX());
-
-        double angle2 = Math.atan2(startLine2.getY() - endLine2.getY(), startLine2.getX() - endLine2.getX());
-
-        return angle1-angle2;
+        return ab_x * bc_x + ab_y * bc_y;
     }
 
-    /*
-    public CPosition rotateAround(CPosition point, CPosition center, double angle) {
-        x = center.x + (Math.cos(Math.toRadians(angle)) * (x - center.x) - Math.sin(Math.toRadians(angle)) * (y - center.y));
-        y = center.y + (Math.sin(Math.toRadians(angle)) * (x - center.x) + Math.cos(Math.toRadians(angle)) * (y - center.y));
+    /**
+     * Computes the cross product AB x AC
+     * @param pointA point A
+     * @param pointB point B
+     * @param pointC point C
+     * @return the cross product as Double
+     */
+    public static Double calcCrossProduct(CPosition pointA, CPosition pointB, CPosition pointC)
+    {
+        Double ab_x = pointB.getX() - pointA.getX();
+        Double ab_y = pointB.getY() - pointA.getY();
+        Double ac_x = pointC.getX() - pointA.getX();
+        Double ac_y = pointC.getY() - pointA.getY();
+
+        return ab_x * ac_y - ab_y * ac_x;
     }
-    */
+
+    /**
+     * Compute the distance from A to B
+     * @param pointA point A
+     * @param pointB point B
+     * @return the distance between the two points as Double
+     */
+    public static Double calcDistance(CPosition pointA, CPosition pointB)
+    {
+        if(pointA == null || pointB == null) {
+            return null;
+        }
+
+        Double deltaX = pointA.getX() - pointB.getX();
+        Double deltaY = pointA.getY() - pointB.getY();
+
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
+
+    /**
+     * Compute the distance from the line AB to point C, if isInfiniteLine is true, line AB is infinite an not a segment
+     * @param pointA point A
+     * @param pointB point B
+     * @param pointC point C
+     * @param isInfiniteLine true if the line is infinite, false if the linie is a finite segment
+     * @return the distance from point C to line AB as double
+     */
+    public static Double calcLineToPointDistance(CPosition pointA, CPosition pointB, CPosition pointC, Boolean isInfiniteLine)
+    {
+        Double dist = calcCrossProduct(pointA, pointB, pointC) / calcDistance(pointA, pointB);
+        if (!isInfiniteLine) {
+            double dot1 = calcDotProduct(pointA, pointB, pointC);
+            if (dot1 > 0) {
+                return calcDistance(pointB, pointC);
+            }
+
+            double dot2 = calcDotProduct(pointB, pointA, pointC);
+            if (dot2 > 0) {
+                return calcDistance(pointA, pointC);
+            }
+        }
+        return Math.abs(dist);
+    }
 }

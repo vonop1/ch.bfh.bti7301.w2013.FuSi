@@ -20,18 +20,11 @@ public class CGraph {
     private final List<CPosition> vertexes;
     private final List<CEdge> edges;
     private final List<CEdge> trashEdges;
-    //private final List<CEdge> obstacleEdges;
-    //private Integer maxWidth;
-    //private Integer maxHeight;
     private final CWorld worldReference;
 
     public static int incrementId() {
         CGraph.lastId += 1;
         return CGraph.lastId;
-    }
-
-    public static void resetId() {
-        CGraph.lastId = 0;
     }
 
     /**
@@ -42,25 +35,6 @@ public class CGraph {
         this.edges = new LinkedList<CEdge>();
         this.trashEdges = new LinkedList<CEdge>();
         this.worldReference = worldReference;
-        //this.obstacleEdges = new LinkedList<CEdge>();
-        //this.maxWidth = maxWidth;
-        //this.maxHeight = maxHeight;
-    }
-
-    /**
-     * Creates a predefined graph
-     * @param vertexes the vertexes
-     * @param edges the edges
-     */
-    public CGraph(List<CPosition> vertexes, List<CEdge> edges, List<CEdge> obstacleEdges, CWorld worldReference) {
-        this.vertexes = vertexes;
-        this.edges = edges;
-        this.trashEdges = new LinkedList<CEdge>();
-        this.worldReference = worldReference;
-    }
-
-    public List<CPosition> getVertexes() {
-        return vertexes;
     }
 
     public List<CEdge> getEdges() {
@@ -130,8 +104,8 @@ public class CGraph {
 
     /**
      * adds a Waypoint edge to the graph if it does not intersect with an obstacle edge
-     * @param source
-     * @param destination
+     * @param source the source point
+     * @param destination the destination point
      */
     public Boolean addWayPointEdge(CPosition source, CPosition destination) {
         CPosition vertexSource = null;

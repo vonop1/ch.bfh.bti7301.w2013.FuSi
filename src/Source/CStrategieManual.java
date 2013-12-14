@@ -15,23 +15,6 @@ public class CStrategieManual implements CStrategie, KeyListener {
     private Double angle = 0.0;
     private Double stepSize = 3.0;
 
-
-    public void setAngle(Double angle) {
-        if(angle == null) {
-            angle = 0.0;
-        }
-        this.angle = angle;
-    }
-
-    public void setStepSize(Double stepSize) {
-        if(stepSize == null) {
-            stepSize = 0.0;
-        }
-        this.stepSize = stepSize;
-    }
-
-
-
     /**
      * calculates the next position and saves the result to the nextDesiredPosition member var
      * @param roundCount the calculation round count

@@ -36,11 +36,11 @@ public class CDrawHelper {
     public static void drawLine(Graphics2D g2d, CPosition start, CPosition target) {
         g2d.drawLine(start.getX().intValue(), start.getY().intValue(), target.getX().intValue(), target.getY().intValue());
     }
-
+        /*
     public static void drawArrow(Graphics2D g2d, CPosition start, CPosition target, Double arrowSize) {
         g2d.drawLine(start.getX().intValue(), start.getY().intValue(), target.getX().intValue(), target.getY().intValue());
 
-        /*
+
         AffineTransform tx = new AffineTransform();
         Line2D.Double line = new Line2D.Double(x1,y1,x2,y2);
 
@@ -58,8 +58,9 @@ public class CDrawHelper {
         g.setTransform(tx);
         g.fill(arrowHead);
         g.dispose();
-        //g.drawLine(x1,y1,x2,y2); */
+        //g.drawLine(x1,y1,x2,y2);
     }
+    */
 
     public static void drawPolygon(Graphics2D g2d, Vector<CPosition> positions, Boolean filled) {
         int[] xCoordinates = new int[positions.size()];
