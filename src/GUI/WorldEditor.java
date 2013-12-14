@@ -154,7 +154,7 @@ public class WorldEditor extends JPanel{
         //
         private Point pressPt, centerPt;
         private int pressPtX, pressPtY;
-        private double lastTheta;
+        private double pressTheta;
         private boolean resizePolygon, translatePolygon, moveWalkerStart, moveWalkerEnd;
         private Ellipse2D.Double ellipse;
 
@@ -220,9 +220,17 @@ public class WorldEditor extends JPanel{
                 //calculate the axis between press point and center point of the polygon
                 } else if (cPoly.contains(e.getPoint())) {
                     activePolygon = cPoly;
+                    try
+                    {
+                        originalPoly = cPoly.clone();
+                    }
+                    catch (CloneNotSupportedException ex)
+                    {
+                        System.out.println(ex.toString());
+                    }
                     repaint();
                     centerPt = activePolygon.getCenter();
-                    lastTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
+                    pressTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
                     break;
                 }
             }
@@ -261,9 +269,8 @@ public class WorldEditor extends JPanel{
                     else
                     {
                         double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
-                        double deltaTheta = dragTheta - lastTheta;
-                        lastTheta = dragTheta;
-                        activePolygon.transform(deltaTheta, centerPt);
+                        double deltaTheta = dragTheta - pressTheta;
+                        activePolygon.transform(deltaTheta, centerPt, originalPoly);
                     }
                 }
             }

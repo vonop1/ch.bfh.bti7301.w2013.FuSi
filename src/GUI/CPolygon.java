@@ -114,20 +114,16 @@ public class CPolygon extends Polygon {
      * @param deltaTheta
      * @param centerPt
      */
-    public void transform (double deltaTheta, Point centerPt) {
+    public void transform (double deltaTheta, Point centerPt, CPolygon originalPoly) {
         AffineTransform rotateTransform = AffineTransform.getRotateInstance(deltaTheta, centerPt.x, centerPt.y);
 
-        int[] rx = new int[xpoints.length];
-        int[] ry = new int[ypoints.length];
-
         for(int i=0; i<npoints; i++){
-            Point p = new Point(xpoints[i], ypoints[i]);
+            Point p = new Point(originalPoly.xpoints[i], originalPoly.ypoints[i]);
             rotateTransform.transform(p,p);
-            rx[i]=p.x;
-            ry[i]=p.y;
+            xpoints[i]=p.x;
+            ypoints[i]=p.y;
         }
-        xpoints = rx;
-        ypoints = ry;
+
 
     }
 
