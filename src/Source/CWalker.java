@@ -79,6 +79,14 @@ public class CWalker {
         return this.collisionWith != null && this.collisionWith.hasCollisions();
     }
 
+    public void changeStrategie(CStrategie strategie) {
+        if(strategie == null) {
+            return;
+        }
+
+        this.strategie = strategie;
+    }
+
     public void setDesiredPath(LinkedList<CPosition> vertexes) {
         if (vertexes == null || vertexes.size() == 0) {
             throw new IllegalArgumentException("Der desiredPath darf nicht Null oder leer sein --> vermutlich kam Dijsktra zu keinem Ergebnis!");

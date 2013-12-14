@@ -1,8 +1,6 @@
 package GUI;
 
-import Source.CObstacle;
-import Source.CWalker;
-import Source.CWorld;
+import Source.*;
 import Util.CEdge;
 import Util.CPosition;
 
@@ -33,6 +31,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
 
     protected CWorld simulationWorld = null;
     protected CWalker selectedWalker = null;
+    protected CStrategieManual manualStrategie = new CStrategieManual();
 
     public CSimulationPanel() {
         super();
@@ -304,13 +303,15 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // currently do nothing
+        // give the event to the manualstrategie
+        this.manualStrategie.keyTyped(e);
     }
 
     /*
      * (non-Javadoc)
      * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
      */
+    @Override
     public void keyPressed(KeyEvent e) {
 
         File fileToLoad = null;
@@ -345,7 +346,12 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                 e.consume();
                 break;
 
-            case KeyEvent.VK_RIGHT:
+            case KeyEvent.VK_M:
+                if(this.selectedWalker != null) {
+                    this.selectedWalker.changeStrategie(this.manualStrategie);
+                }
+
+            case KeyEvent.VK_PAGE_DOWN:
                 this.runOneStep();
                 e.consume();
                 break;
@@ -360,6 +366,9 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                 e.consume();
                 break;
         }
+
+        // give the event to the manualstrategie
+        this.manualStrategie.keyPressed(e);
 
         // give the event to the drawobject
         for(CDrawObject drawObject : this.drawSimulationObjects) {
@@ -378,7 +387,8 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // currently do nothing
+        // give the event to the manualstrategie
+        this.manualStrategie.keyReleased(e);
     }
 
     /**
