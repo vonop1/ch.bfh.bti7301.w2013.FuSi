@@ -13,7 +13,7 @@ import org.w3c.dom.*;
 
 /**
  * Created with IntelliJ IDEA.
- * User: bohnp1
+ * User: bohnp1, jaggr2
  * Date: 27.09.13
  * Time: 14:30
  */

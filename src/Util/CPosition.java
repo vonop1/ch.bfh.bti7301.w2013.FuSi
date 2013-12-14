@@ -1,12 +1,10 @@
 package Util;
 
-import com.sun.istack.internal.NotNull;
-
 import java.text.DecimalFormat;
 
 /**
  * Created with IntelliJ IDEA.
- * User: bohnp1
+ * User: bohnp1, jaggr2
  * Date: 27.09.13
  * Time: 14:14
  */
@@ -46,7 +44,7 @@ public class CPosition implements Comparable<CPosition> {
     }
 
     @Override
-    public int compareTo(@NotNull CPosition o) {
+    public int compareTo(CPosition o) {
         int returnValue = this.dX.compareTo(o.getX());
 
         if(returnValue == 0) {

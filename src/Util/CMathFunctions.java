@@ -2,7 +2,7 @@ package Util;
 
 /**
  * Created with IntelliJ IDEA.
- * User: bohnp1
+ * User: bohnp1, jaggr2
  * Date: 18.10.13
  * Time: 18:46
  */
