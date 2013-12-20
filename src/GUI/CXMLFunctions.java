@@ -14,6 +14,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import Source.CWalker;
+import Util.CPosition;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
@@ -32,9 +34,7 @@ public class CXMLFunctions{
      * loads a xml file into the world editor
      * @return returns an arraylist with the polygons from the xml file
      */
-    public ArrayList<CPolygon> loadXMLFile(){
-
-        ArrayList<CPolygon> zpolys = new ArrayList<CPolygon>();
+    public void loadXMLFile(ArrayList<CPolygon> cPolys, ArrayList<CWalker> cWalkers){
 
         File XMLFile = getJFileChooserDialogFile("Open");
         if(XMLFile != null){
@@ -49,11 +49,17 @@ public class CXMLFunctions{
 
                 //get WorldObjects
                 NodeList objList = doc.getElementsByTagName("obj");
+                NodeList walkerList = doc.getElementsByTagName("walkerList");
 
                 //points of the polygons
                 int npoints = 0;
                 int[] xpoints = null;
                 int[] ypoints = null;
+
+                //points of the walkers
+                int walkers = 0;
+                CPosition startPoint = null;
+                CPosition targetPoint = null;
 
                 //get points of the object
                 for(int i=0; i<objList.getLength(); i++){
@@ -77,23 +83,51 @@ public class CXMLFunctions{
                     }
                     if(npoints > 0){
                         CPolygon zpoly = new CPolygon(xpoints, ypoints, npoints);
-                        zpolys.add(zpoly);
+                        cPolys.add(zpoly);
                     }
                 }
+
+                //get points of the walkers
+                for(int i=0; i<walkerList.getLength(); i++){
+
+                    Node walker = objList.item(i);
+                    if (walker.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eWalker = (Element) walker;
+                        NodeList sourceList = eWalker.getElementsByTagName("source");
+                        NodeList targetList = eWalker.getElementsByTagName("target");
+                        walkers = sourceList.getLength();
+                        for(int j=0; j<sourceList.getLength(); j++){
+                            Node point = sourceList.item(j);
+                            if (point.getNodeType() == Node.ELEMENT_NODE) {
+                                Element ePoint = (Element) point;
+                                startPoint = new CPosition(Integer.parseInt(ePoint.getAttribute("x")),Integer.parseInt(ePoint.getAttribute("y")));
+                            }
+                        }
+                        for(int j=0; j<targetList.getLength(); j++){
+                            Node point = targetList.item(j);
+                            if (point.getNodeType() == Node.ELEMENT_NODE) {
+                                Element ePoint = (Element) point;
+                                targetPoint = new CPosition(Integer.parseInt(ePoint.getAttribute("x")),Integer.parseInt(ePoint.getAttribute("y")));
+                            }
+                        }
+                    }
+                    if(walkers > 0){
+                        CWalker cWalker = new CWalker(startPoint, targetPoint, null );
+                        cWalkers.add(cWalker);
+                    }
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return zpolys;
-        } else {
-            return null;
         }
     }
 
     /**
      *  Saves the content of the world editor to a xml file
-     * @param zpolys ArrayList with the polygons to save to the file
+     * @param cPolys ArrayList with the polygons to save to the file
      */
-    public void saveXMLFile(ArrayList<CPolygon> zpolys){
+    public void saveXMLFile(ArrayList<CPolygon> cPolys, ArrayList<CWalker> cWalkers){
         File XMLFile = getJFileChooserDialogFile("Save");
         if(XMLFile != null){
             try {
@@ -113,8 +147,22 @@ public class CXMLFunctions{
                 Element walkerList = doc.createElement("walkerList");
                 config.appendChild(walkerList);
 
+                //walkers elements
+                for (CWalker cWalker : cWalkers){
+                    Element walker = doc.createElement("walker");
+                    walkerList.appendChild(walker);
+                    Element source = doc.createElement("source");
+                    Element target = doc.createElement("target");
+                    walker.appendChild(source);
+                    walker.appendChild(target);
+                    source.setAttribute("x", Integer.toString(cWalker.getPosition().getX().intValue()));
+                    source.setAttribute("y", Integer.toString(cWalker.getPosition().getY().intValue()));
+                    target.setAttribute("x", Integer.toString(cWalker.getTarget().getX().intValue()));
+                    target.setAttribute("y", Integer.toString(cWalker.getTarget().getY().intValue()));
+                }
+
                 // world elements
-                for(CPolygon zpoly : zpolys){
+                for(CPolygon zpoly : cPolys){
                     Element obj = doc.createElement("obj");
                     objList.appendChild(obj);
                     for(int i=0; i<zpoly.npoints; i++){
