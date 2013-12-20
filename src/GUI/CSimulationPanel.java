@@ -115,7 +115,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                 y += 20;
                 g2d.drawString("P - Pausiere Simulation", x, y);
                 y += 20;
-                g2d.drawString("RECHTS - Mache 1 Simulationsschritt", x, y);
+                g2d.drawString("Page Down - Mache 1 Simulationsschritt", x, y);
                 y += 20;
                 g2d.drawString("0-9 - Lade andere Simulation", x, y);
                 y += 20;
