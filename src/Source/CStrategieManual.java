@@ -4,10 +4,9 @@ import Util.CPosition;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.HashMap;
 
 /**
- * User: bohnp1
+ * User: jaggr2
  * Date: 05.11.13
  * Time: 19:08
  */
@@ -85,7 +84,7 @@ public class CStrategieManual implements CStrategie, KeyListener {
                 e.consume();
                 break;
             case KeyEvent.VK_ALT:
-                if(isPressed == true){
+                if(isPressed){
                     isTempomat = !isTempomat;
                 }
                 e.consume();
