@@ -31,7 +31,10 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
 
     protected CWorld simulationWorld = null;
     protected CWalker selectedWalker = null;
+
     protected CStrategieManual manualStrategie = new CStrategieManual();
+    protected CStrategie oldStrategieHolder = null;
+    protected CWalker manualWalker = null;
 
     public CSimulationPanel() {
         super();
@@ -127,7 +130,6 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
         drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_W, "W - Zeige Waypoints an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
-                //g2d.setColor(Color.YELLOW);
                 g2d.setColor(Color.BLUE);
                 for (CObstacle obstacle : simulationWorld.getObstacles()) {
                     CDrawHelper.drawPolygon(g2d, obstacle.getWaypoints(), false);
@@ -153,7 +155,6 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                 g2d.setColor(Color.RED);
                 for (CEdge edge : simulationWorld.getGraph().getTrashEdges()) {
                     CDrawHelper.drawLine(g2d, edge.getSource(), edge.getDestination());
-                    //g2d.drawLine(edge.getSource().getX().intValue(), edge.getSource().getY().intValue(), edge.getDestination().getX().intValue(), edge.getDestination().getY().intValue());
                 }
             }
         });
@@ -247,17 +248,8 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                         y += 20;
 
                         // draw the position as x
-                        int upperleftX = ((Double) (position.getX() - selectedWalker.getHalfWalkerSize())).intValue();
-                        int upperleftY = ((Double) (position.getY() - selectedWalker.getHalfWalkerSize())).intValue();
-                        int width = ((Double) (selectedWalker.getHalfWalkerSize() * 2)).intValue();
-                        int height = ((Double) (selectedWalker.getHalfWalkerSize() * 2)).intValue();
-                        g2d.drawLine(upperleftX, upperleftY, upperleftX + width, upperleftY + height);
-                        g2d.drawLine(upperleftX + width, upperleftY, upperleftX, upperleftY + height);
-
+                        CDrawHelper.drawPointAsX(g2d, position, selectedWalker.getHalfWalkerSize());
                     }
-
-
-
                 }
             }
         });
@@ -358,9 +350,20 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                 break;
 
             case KeyEvent.VK_M:
-                if(this.selectedWalker != null) {
-                    this.selectedWalker.changeStrategie(this.manualStrategie);
+                if(this.selectedWalker != null && manualWalker == null) {
+
+                    manualWalker = this.selectedWalker;
+                    oldStrategieHolder = this.selectedWalker.getStrategie();
+
+                    this.manualWalker.changeStrategie(this.manualStrategie);
                 }
+                else if(manualWalker != null) {
+                    this.manualWalker.changeStrategie(this.oldStrategieHolder);
+                    this.oldStrategieHolder = null;
+                    this.manualWalker = null;
+                }
+                e.consume();
+                break;
 
             case KeyEvent.VK_PAGE_DOWN:
                 this.runOneStep();

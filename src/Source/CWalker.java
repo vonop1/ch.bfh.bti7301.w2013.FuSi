@@ -88,6 +88,10 @@ public class CWalker {
         return this.lastDirectionAngle;
     }
 
+    public CStrategie getStrategie() {
+        return this.strategie;
+    }
+
     public Boolean hasCollisions() {
         return this.collisionWith != null && this.collisionWith.hasCollisions();
     }
