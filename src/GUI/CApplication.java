@@ -60,60 +60,22 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
         // add listener for key events
         this.addKeyListener(this);
 
-        // add menuBar
-        menuBar.setBounds(0,0,800,20);
-        this.setJMenuBar(menuBar);
-
-        JMenu menuOption = new JMenu("Options");
-        menuBar.add(menuOption);
-
-        menuOption.add(createMenuItem("Zeige Hilfe an (F1)", KeyEvent.VK_F1));
-        menuOption.add(createMenuItem("Simulation (F2)", KeyEvent.VK_F2));
-        menuOption.add(createMenuItem("World Editor (F3)", KeyEvent.VK_F3));
+        // init Menus
+        initWorldEditorMenu();
+        initSimulationMenu();
 
         // show the UI
         this.setVisible(true);
     }
 
-    public void initSimulationMenu() {
+    public void initWorldEditorMenu() {
+        menuBar.setBounds(0,0,800,20);
 
-    }
+        JMenu menuOption = new JMenu("Modus");
+        menuBar.add(menuOption);
 
-    public JMenuItem createMenuItem(String text, final Integer keyCode) {
-        JMenuItem newMenuItem = new JMenuItem(text);
-        newMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                CApplication.INSTANCE.dispatchEvent(new KeyEvent(CApplication.INSTANCE, KeyEvent.KEY_PRESSED, 0, 0, keyCode, KeyEvent.CHAR_UNDEFINED));
-            }
-        });
-        return newMenuItem;
-    }
-
-    /**
-     *  loads the simulation panel for the Passenger Simulation
-     */
-    public void loadSimulationPanel() {
-
-        // check if JMenu from CWorldEditor is present and if yes remove it
-        for(int m = 0; m < menuBar.getMenuCount(); m++) {
-            String accessibleName = menuBar.getMenu(m).getAccessibleContext().getAccessibleName();
-            if(accessibleName.equals("World Editor")) {
-                menuBar.remove(menuBar.getMenu(m));
-            }
-        }
-
-        /*  - set the panel size
-            - remove other content
-            - add the simulationPanel to our application
-            - revalidate the application
-         */
-        simulationPanel.setBounds(0, 0, 800, 580);
-        this.getContentPane().removeAll();
-        this.getContentPane().add(simulationPanel);
-        this.revalidate();
-    }
-
-    public void loadWorldEditor() {
+        menuOption.add(createMenuItem("Simulation (F2)", KeyEvent.VK_F2));
+        menuOption.add(createMenuItem("World Editor (F3)", KeyEvent.VK_F3));
 
         // ArrayList with all menu items for the world editor
         ArrayList<JMenuItem> itemsAdd = new ArrayList<JMenuItem>();
@@ -199,17 +161,72 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
             menu.add(item);
         }
         menu.add(menuAdd);
+        menuBar.add(menu);
+    }
 
-        //check if menus already are present, if not add it to the menuBar
-        boolean world = false;
-        for(int m = 0; m < menuBar.getMenuCount(); ++m) {
-            if(menuBar.getMenu(m).getAccessibleContext().getAccessibleName().equals("World Editor")){
-                world = true;
+    public void initSimulationMenu() {
+        menuSimulation.setBounds(0,0,800,20);
+
+        JMenu menuOption = new JMenu("Modus");
+        menuSimulation.add(menuOption);
+
+        menuOption.add(createMenuItem("Simulation (F2)", KeyEvent.VK_F2));
+        menuOption.add(createMenuItem("World Editor (F3)", KeyEvent.VK_F3));
+
+
+        JMenu menuSimulationControll = new JMenu("Simulationsteuerung");
+        menuSimulation.add(menuSimulationControll);
+
+        menuSimulationControll.add(createMenuItem("Pausiere Simulation (P)", KeyEvent.VK_P));
+        menuSimulationControll.add(createMenuItem("Markierten Fussgänger manuell steuern (M)", KeyEvent.VK_M));
+        menuSimulationControll.add(createMenuItem("Mache 1 Simulationsschritt (PageDown)", KeyEvent.VK_PAGE_DOWN));
+        menuSimulationControll.add(createMenuItem("Beende Simulation (Esc)", KeyEvent.VK_ESCAPE));
+
+
+        JMenu menuDisplay = new JMenu("Ansicht");
+        menuSimulation.add(menuDisplay);
+
+        menuDisplay.add(createMenuItem("Zeige Hilfe an (F1)", KeyEvent.VK_F1));
+        menuDisplay.add(createMenuItem("Zeige das Grid an (H)", KeyEvent.VK_H));
+        menuDisplay.add(createMenuItem("Zeige Hindernisse an (O)", KeyEvent.VK_O));
+        menuDisplay.add(createMenuItem("Zeige Waypoints an (W)", KeyEvent.VK_W));
+        menuDisplay.add(createMenuItem("Zeige Graph-Kanten an (G)", KeyEvent.VK_G));
+        menuDisplay.add(createMenuItem("Zeige gelöschte Graph-Kanten an (T)", KeyEvent.VK_T));
+        menuDisplay.add(createMenuItem("Zeige Walkers an (L)", KeyEvent.VK_L));
+        menuDisplay.add(createMenuItem("Zeige Walker Richtung an (D)", KeyEvent.VK_D));
+        menuDisplay.add(createMenuItem("Zeige Walker ID an (I)", KeyEvent.VK_I));
+        menuDisplay.add(createMenuItem("Zeige Walker Koordinaten an (J)", KeyEvent.VK_J));
+    }
+
+    public JMenuItem createMenuItem(String text, final Integer keyCode) {
+        JMenuItem newMenuItem = new JMenuItem(text);
+        newMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CApplication.INSTANCE.dispatchEvent(new KeyEvent(CApplication.INSTANCE, KeyEvent.KEY_PRESSED, 0, 0, keyCode, KeyEvent.CHAR_UNDEFINED));
             }
-        }
-        if(!world){
-            menuBar.add(menu);
-        }
+        });
+        return newMenuItem;
+    }
+
+    /**
+     *  loads the simulation panel for the Passenger Simulation
+     */
+    public void loadSimulationPanel() {
+
+        /*  - set the panel size
+            - remove other content
+            - add the simulationPanel to our application
+            - revalidate the application
+         */
+        this.setJMenuBar(menuSimulation);
+
+        simulationPanel.setBounds(0, 0, 800, 580);
+        this.getContentPane().removeAll();
+        this.getContentPane().add(simulationPanel);
+        this.revalidate();
+    }
+
+    public void loadWorldEditor() {
 
         /*  - set the panel size
             - remove other content
@@ -217,6 +234,8 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
             - revalidate the application
             - setup the default editor
          */
+        this.setJMenuBar(menuBar);
+
         CWorldEditor.setBounds(0, 0, 800, 580);
         this.getContentPane().removeAll();
         this.getContentPane().add(CWorldEditor);
