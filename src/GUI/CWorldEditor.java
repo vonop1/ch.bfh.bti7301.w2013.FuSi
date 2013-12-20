@@ -84,9 +84,11 @@ public class CWorldEditor extends JPanel{
         //create new walkers
         if (walkers.size() > 0){
             for (CWalker walker : walkers) {
-                g2d.setColor(Color.ORANGE);
+                g2d.setColor(Color.GREEN);
                 CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), (double) SIZE, true);
+                g2d.setColor(Color.RED);
                 CDrawHelper.drawPointAsCircle(g2d, walker.getTarget(), (double) SIZE, true);
+                g2d.setColor(CApplication.WALKER_COLOR);
                 CDrawHelper.drawLine(g2d, walker.getPosition(), walker.getTarget());
             }
         }
@@ -125,7 +127,7 @@ public class CWorldEditor extends JPanel{
      */
     public void saveWorld(){
         CXMLFunctions xml = new CXMLFunctions();
-        xml.saveXMLFile(cPolys);
+        xml.saveXMLFile(cPolys, walkers);
     }
 
     /**
@@ -133,7 +135,7 @@ public class CWorldEditor extends JPanel{
      */
     public void loadWorld(){
         CXMLFunctions xml = new CXMLFunctions();
-        cPolys = xml.loadXMLFile();
+        xml.loadXMLFile(cPolys, walkers);
         repaint();
     }
 
@@ -258,7 +260,9 @@ public class CWorldEditor extends JPanel{
 
             if(activeWalker != null){
                 if (moveWalkerStart){
-                    //activeWalker
+                    activeWalker.setPosition(new CPosition(dragPt.x, dragPt.y));
+                }else if(moveWalkerEnd){
+                    activeWalker.setTarget(new CPosition(dragPt.x, dragPt.y));
                 }
             }
 
@@ -275,11 +279,11 @@ public class CWorldEditor extends JPanel{
                         activePolygon.transform(deltaTheta, centerPt, originalPoly);
                     }
                 }
+                activePolygon.invalidate(); //To update the boundary box
             }
 
             pressPtX += dx;
             pressPtY += dy;
-            activePolygon.invalidate(); //To update the boundary box
             repaint();
         }
     }
