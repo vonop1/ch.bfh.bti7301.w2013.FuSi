@@ -19,7 +19,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
 
     // the main components
     final CSimulationPanel simulationPanel = new CSimulationPanel();
-    final WorldEditor worldEditor = new WorldEditor();
+    final CWorldEditor CWorldEditor = new CWorldEditor();
     final JMenuBar menuBar = new JMenuBar();
 
     /**
@@ -69,7 +69,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
         });
         menu.add(itemSimulation);
 
-        // JMenuItem for the WorldEditor
+        // JMenuItem for the CWorldEditor
         JMenuItem itemWorldEditor = new JMenuItem("World Editor");
         itemWorldEditor.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -87,7 +87,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
      */
     public void loadSimulationPanel() {
 
-        // check if JMenu from WorldEditor is present and if yes remove it
+        // check if JMenu from CWorldEditor is present and if yes remove it
         for(int m = 0; m < menuBar.getMenuCount(); m++) {
             String accessibleName = menuBar.getMenu(m).getAccessibleContext().getAccessibleName();
             if(accessibleName.equals("World Editor")) {
@@ -118,7 +118,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
         itemTriangle.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int edges = 3;
-                worldEditor.addPolygon(edges);
+                CWorldEditor.addPolygon(edges);
             }
         });
 
@@ -128,7 +128,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
         itemRectangle.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int edges = 4;
-                worldEditor.addPolygon(edges);
+                CWorldEditor.addPolygon(edges);
             }
         });
 
@@ -143,7 +143,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
                 try {
                     edges = Integer.parseInt(input);
                     if (edges >= 3 && edges <= 10){
-                        worldEditor.addPolygon(edges);
+                        CWorldEditor.addPolygon(edges);
                     } else {
                         throw new NumberFormatException();
                     }
@@ -158,7 +158,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
         itemsAdd.add(itemWalker);
         itemWalker.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                worldEditor.addWalker();
+                CWorldEditor.addWalker();
             }
         });
 
@@ -172,7 +172,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
         JMenuItem menuLoad = new JMenuItem("Load File");
         menuLoad.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                worldEditor.loadWorld();
+                CWorldEditor.loadWorld();
             }
         });
         items.add(menuLoad);
@@ -181,12 +181,12 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
         JMenuItem menuSave = new JMenuItem("Save File");
         menuSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                worldEditor.saveWorld();
+                CWorldEditor.saveWorld();
             }
         });
         items.add(menuSave);
 
-        // JMenu WorldEditor
+        // JMenu CWorldEditor
         JMenu menu = new JMenu("World Editor");
         for(JMenuItem item : items) {
             menu.add(item);
@@ -206,15 +206,15 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
 
         /*  - set the panel size
             - remove other content
-            -  add the worldEditor to our application
+            -  add the CWorldEditor to our application
             - revalidate the application
             - setup the default editor
          */
-        worldEditor.setBounds(0, 0, 800, 580);
+        CWorldEditor.setBounds(0, 0, 800, 580);
         this.getContentPane().removeAll();
-        this.getContentPane().add(worldEditor);
+        this.getContentPane().add(CWorldEditor);
         this.revalidate();
-        worldEditor.setupEditor();
+        CWorldEditor.setupEditor();
 
     }
 
