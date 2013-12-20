@@ -1,5 +1,7 @@
 package GUI;
 
+import javafx.scene.input.KeyCode;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -24,6 +26,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
     final CSimulationPanel simulationPanel = new CSimulationPanel();
     final CWorldEditor CWorldEditor = new CWorldEditor();
     final JMenuBar menuBar = new JMenuBar();
+    final JMenuBar menuSimulation = new JMenuBar();
 
     /**
      * Startup the application and shows the window
@@ -59,30 +62,31 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
 
         // add menuBar
         menuBar.setBounds(0,0,800,20);
-        JMenu menu = new JMenu("Options");
-        menuBar.add(menu);
         this.setJMenuBar(menuBar);
 
-        // JMenuItem for the SimulationPanel
-        JMenuItem itemSimulation = new JMenuItem("Start Simulation (F2)");
-        itemSimulation.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loadSimulationPanel();
-            }
-        });
-        menu.add(itemSimulation);
+        JMenu menuOption = new JMenu("Options");
+        menuBar.add(menuOption);
 
-        // JMenuItem for the CWorldEditor
-        JMenuItem itemWorldEditor = new JMenuItem("World Editor");
-        itemWorldEditor.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loadWorldEditor();
-            }
-        });
-        menu.add(itemWorldEditor);
+        menuOption.add(createMenuItem("Zeige Hilfe an (F1)", KeyEvent.VK_F1));
+        menuOption.add(createMenuItem("Simulation (F2)", KeyEvent.VK_F2));
+        menuOption.add(createMenuItem("World Editor (F3)", KeyEvent.VK_F3));
 
         // show the UI
         this.setVisible(true);
+    }
+
+    public void initSimulationMenu() {
+
+    }
+
+    public JMenuItem createMenuItem(String text, final Integer keyCode) {
+        JMenuItem newMenuItem = new JMenuItem(text);
+        newMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CApplication.INSTANCE.dispatchEvent(new KeyEvent(CApplication.INSTANCE, KeyEvent.KEY_PRESSED, 0, 0, keyCode, KeyEvent.CHAR_UNDEFINED));
+            }
+        });
+        return newMenuItem;
     }
 
     /**
