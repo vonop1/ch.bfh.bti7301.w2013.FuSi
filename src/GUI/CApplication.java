@@ -51,7 +51,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
 
         // set default parameters
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setSize(800, 600);
+        this.setSize(800, 640);
         this.setLocationRelativeTo(null);
 
         // add listener for key events
