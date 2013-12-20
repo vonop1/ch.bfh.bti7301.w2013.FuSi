@@ -90,8 +90,8 @@ public class CXMLFunctions{
 
                 //get points of the walkers
                 for(int i=0; i<walkerList.getLength(); i++){
-                    System.out.println(walkerList.getLength());
                     Node walker = objList.item(i);
+                    System.out.println(walkerList.getLength());
                     if (walker.getNodeType() == Node.ELEMENT_NODE) {
                         Element eWalker = (Element) walker;
                         NodeList sourceList = eWalker.getElementsByTagName("source");
