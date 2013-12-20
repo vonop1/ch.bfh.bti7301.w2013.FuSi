@@ -55,8 +55,16 @@ public class CWalker {
         return currentPosition;
     }
 
+    public void setPosition(CPosition start) {
+        this.currentPosition = start;
+    }
+
     public CPosition getTarget() {
         return targetPosition;
+    }
+
+    public void setTarget(CPosition start) {
+        this.targetPosition = start;
     }
 
     public CPosition getDesiredNextPosition() {
