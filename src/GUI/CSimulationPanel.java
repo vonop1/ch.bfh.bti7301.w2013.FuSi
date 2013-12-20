@@ -175,8 +175,17 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                                 */
                     }
 
-                    g2d.setColor((walker.hasCollisions() ? Color.RED : CApplication.WALKER_COLOR));
+                    g2d.setColor(CApplication.WALKER_COLOR);
                     CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), walker.getHalfWalkerSize() * 2, true);
+
+                    g2d.setColor(Color.WHITE);
+                    Vector<CPosition> triangle = new Vector<CPosition>(3);
+                    triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle(), walker.getHalfWalkerSize()));
+                    triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle() + Math.PI * 4/5, walker.getHalfWalkerSize() ));
+                    triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle() - Math.PI * 4/5, walker.getHalfWalkerSize() ));
+
+                    CDrawHelper.drawPolygon(g2d, triangle, true);
+
 
                     // draw the target as x, because the X marks the point =)
                     g2d.setColor(CApplication.WALKER_COLOR);

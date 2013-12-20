@@ -35,6 +35,11 @@ public class CPosition implements Comparable<CPosition> {
         this.dY = pointB.getY() - pointA.getY();
     }
 
+    public CPosition(CPosition ursprungPos, Double angle, Double distance) {
+        this.dX = ursprungPos.getX() + Math.cos(angle) * distance;
+        this.dY = ursprungPos.getY() + Math.sin(angle) * distance;
+    }
+
     public Double getX() {
         return dX;
     }
