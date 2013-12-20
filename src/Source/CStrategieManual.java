@@ -22,6 +22,8 @@ public class CStrategieManual implements CStrategie, KeyListener {
     private Boolean isDownPressed = false;
     private Boolean isShiftPressed = false;
 
+    private Boolean isTempomat = false;
+
     public static final Double NORMAL_SPEED = 3.0;
     public static final Double HIGH_SPEED = 6.0;
 
@@ -82,11 +84,17 @@ public class CStrategieManual implements CStrategie, KeyListener {
                 isShiftPressed = isPressed;
                 e.consume();
                 break;
+            case KeyEvent.VK_ALT:
+                if(isPressed == true){
+                    isTempomat = !isTempomat;
+                }
+                e.consume();
+                break;
         }
 
         if(e.isConsumed()) {
 
-            if(isDownPressed || isUpPressed || isLeftPressed || isRightPressed) {
+            if(isDownPressed || isUpPressed || isLeftPressed || isRightPressed || isTempomat) {
                 this.stepSize = ( isShiftPressed ? HIGH_SPEED : NORMAL_SPEED );
             }
             else {
