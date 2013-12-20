@@ -1,7 +1,5 @@
 package GUI;
 
-import javafx.scene.input.KeyCode;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -25,7 +23,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
     // the main components
     final CSimulationPanel simulationPanel = new CSimulationPanel();
     final CWorldEditor CWorldEditor = new CWorldEditor();
-    final JMenuBar menuBar = new JMenuBar();
+    final JMenuBar menuWorldEditor = new JMenuBar();
     final JMenuBar menuSimulation = new JMenuBar();
 
     /**
@@ -69,10 +67,10 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
     }
 
     public void initWorldEditorMenu() {
-        menuBar.setBounds(0,0,800,20);
+        menuWorldEditor.setBounds(0, 0, 800, 20);
 
         JMenu menuOption = new JMenu("Modus");
-        menuBar.add(menuOption);
+        menuWorldEditor.add(menuOption);
 
         menuOption.add(createMenuItem("Simulation (F2)", KeyEvent.VK_F2));
         menuOption.add(createMenuItem("World Editor (F3)", KeyEvent.VK_F3));
@@ -161,7 +159,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
             menu.add(item);
         }
         menu.add(menuAdd);
-        menuBar.add(menu);
+        menuWorldEditor.add(menu);
     }
 
     public void initSimulationMenu() {
@@ -234,7 +232,7 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
             - revalidate the application
             - setup the default editor
          */
-        this.setJMenuBar(menuBar);
+        this.setJMenuBar(menuWorldEditor);
 
         CWorldEditor.setBounds(0, 0, 800, 580);
         this.getContentPane().removeAll();
