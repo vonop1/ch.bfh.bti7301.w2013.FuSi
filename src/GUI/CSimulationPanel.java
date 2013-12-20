@@ -100,7 +100,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
         drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_F1, "F1 - Zeigt diese Hilfe an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
-                g2d.setColor(Color.WHITE);
+                g2d.setColor(Color.BLACK);
 
                 int x = simulationWorld.getWorldWidth() - 250;
                 int y = 20;
@@ -128,7 +128,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
             @Override
             public void doDrawing(Graphics2D g2d) {
                 //g2d.setColor(Color.YELLOW);
-                g2d.setColor(Color.GREEN);
+                g2d.setColor(Color.BLUE);
                 for (CObstacle obstacle : simulationWorld.getObstacles()) {
                     CDrawHelper.drawPolygon(g2d, obstacle.getWaypoints(), false);
                 }
@@ -139,7 +139,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
         drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_G, "G - Zeige Graph-Kanten an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
-                g2d.setColor(Color.GREEN);
+                g2d.setColor(Color.BLUE);
                 for (CEdge edge : simulationWorld.getGraph().getEdges()) {
                     CDrawHelper.drawLine(g2d, edge.getSource(), edge.getDestination());
                 }
@@ -175,11 +175,11 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                                 */
                     }
 
-                    g2d.setColor((walker.hasCollisions() ? Color.RED : Color.ORANGE));
+                    g2d.setColor((walker.hasCollisions() ? Color.RED : CApplication.WALKER_COLOR));
                     CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), walker.getHalfWalkerSize() * 2, true);
 
                     // draw the target as x, because the X marks the point =)
-                    g2d.setColor(Color.ORANGE);
+                    g2d.setColor(CApplication.WALKER_COLOR);
                     CDrawHelper.drawPointAsX(g2d, walker.getTarget(), walker.getHalfWalkerSize() * 2);
                 }
             }
@@ -408,12 +408,12 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
     private void doDrawing(Graphics2D g2d) {
 
         //Customize the main world
-        g2d.setBackground(Color.BLACK);
+        g2d.setColor(CApplication.BACKGROUND_COLOR);
         g2d.fillRect(getX(), getY(), getWidth(), getHeight());
 
         if(simulationWorld == null) {
 
-            g2d.setColor(Color.WHITE);
+            g2d.setColor(Color.BLACK);
             g2d.drawString("Bitte wähle eine Welt, die geladen werden soll:", 100, 50);
             Integer i = 0;
             for(File file : this.files) {

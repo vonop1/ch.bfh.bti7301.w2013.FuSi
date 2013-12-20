@@ -1,6 +1,7 @@
 package GUI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.lang.String;
 import java.lang.System;
@@ -16,6 +17,8 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
 
     // Singleton Pattern for our application
     public static CApplication INSTANCE = new CApplication();
+    public static Color BACKGROUND_COLOR = new Color(230, 230, 230);
+    public static Color WALKER_COLOR = new Color(255, 154, 9);
 
     // the main components
     final CSimulationPanel simulationPanel = new CSimulationPanel();
