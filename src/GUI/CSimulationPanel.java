@@ -165,22 +165,33 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                 for (CWalker walker : simulationWorld.getWalkers()) {
 
                     if(selectedWalker != null && walker.equals(selectedWalker)) {
-                        g2d.setColor(Color.YELLOW);
-                        CDrawHelper.drawPointAsCircle(g2d, new CPosition(walker.getPosition().getX() - 0.5, walker.getPosition().getY() - 0.5), (walker.getHalfWalkerSize() + 1) * 2, true);
-                        /*
-                        g2d.fillOval(((Double) (position.getX() - walker.getHalfWalkerSize())).intValue() - 1,
-                                ((Double) (position.getY() - walker.getHalfWalkerSize())).intValue() - 1,
-                                ((Double) (walker.getHalfWalkerSize() * 2)).intValue() + 2,
-                                ((Double) (walker.getHalfWalkerSize() * 2)).intValue() + 2);
-                                */
+                        g2d.setColor(Color.GREEN);
+                        CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), walker.getHalfWalkerSize() * 2 + 2 , true);
                     }
 
-                    g2d.setColor((walker.hasCollisions() ? Color.RED : CApplication.WALKER_COLOR));
+                    g2d.setColor(CApplication.WALKER_COLOR);
                     CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), walker.getHalfWalkerSize() * 2, true);
 
                     // draw the target as x, because the X marks the point =)
                     g2d.setColor(CApplication.WALKER_COLOR);
                     CDrawHelper.drawPointAsX(g2d, walker.getTarget(), walker.getHalfWalkerSize() * 2);
+                }
+            }
+        });
+
+        // draw the walkers directions
+        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_D, "D - Zeige die Walker Richtung an") {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                for (CWalker walker : simulationWorld.getWalkers()) {
+
+                    g2d.setColor(Color.WHITE);
+                    Vector<CPosition> triangle = new Vector<CPosition>(3);
+                    triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle(), walker.getHalfWalkerSize()));
+                    triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle() + Math.PI * 4/5, walker.getHalfWalkerSize() ));
+                    triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle() - Math.PI * 4/5, walker.getHalfWalkerSize() ));
+
+                    CDrawHelper.drawPolygon(g2d, triangle, true);
                 }
             }
         });
@@ -218,7 +229,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
             @Override
             public void doDrawing(Graphics2D g2d) {
                 if(selectedWalker != null) {
-                    g2d.setColor(Color.WHITE);
+                    g2d.setColor(Color.BLACK);
 
                     int x = simulationWorld.getWorldWidth() - 250;
                     int y = 20;
@@ -228,7 +239,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                     y += 20;
 
                     int i = 0;
-                    g2d.setColor(Color.CYAN);
+                    g2d.setColor(Color.DARK_GRAY);
                     for(CPosition position : selectedWalker.getDesiredPath()) {
 
                         g2d.drawString("DesiredPath " + i + ": " + position, x, y);

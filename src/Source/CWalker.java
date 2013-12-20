@@ -38,6 +38,7 @@ public class CWalker {
 
     protected CCollisionList collisionWith = null;
     protected boolean hasCollisionHandled = false;
+    protected Double lastDirectionAngle = 0.0;
 
     private CStrategie strategie = null;
 
@@ -81,6 +82,10 @@ public class CWalker {
 
     public Double getHalfWalkerSize() {
         return halfWalkerSize;
+    }
+
+    public Double getLastDirectionAngle() {
+        return this.lastDirectionAngle;
     }
 
     public Boolean hasCollisions() {
@@ -318,6 +323,15 @@ public class CWalker {
         if (this.desiredNextPosition == null) {
             throw new IllegalArgumentException("this.desiredNextPosition must not be NULL!");
         }
+
+        Double xDelta = this.desiredNextPosition.getX() - this.currentPosition.getX();
+        Double yDelta = this.desiredNextPosition.getY() - this.currentPosition.getY();
+
+        this.lastDirectionAngle = Math.atan2( yDelta, xDelta );
+
+
+
+
 
         this.currentPosition = this.desiredNextPosition;
 
