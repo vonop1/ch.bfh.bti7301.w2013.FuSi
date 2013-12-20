@@ -172,6 +172,19 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                     g2d.setColor(CApplication.WALKER_COLOR);
                     CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), walker.getHalfWalkerSize() * 2, true);
 
+                    // draw the target as x, because the X marks the point =)
+                    g2d.setColor(CApplication.WALKER_COLOR);
+                    CDrawHelper.drawPointAsX(g2d, walker.getTarget(), walker.getHalfWalkerSize() * 2);
+                }
+            }
+        });
+
+        // draw the walkers directions
+        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_D, "D - Zeige die Walker Richtung an") {
+            @Override
+            public void doDrawing(Graphics2D g2d) {
+                for (CWalker walker : simulationWorld.getWalkers()) {
+
                     g2d.setColor(Color.WHITE);
                     Vector<CPosition> triangle = new Vector<CPosition>(3);
                     triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle(), walker.getHalfWalkerSize()));
@@ -179,11 +192,6 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                     triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle() - Math.PI * 4/5, walker.getHalfWalkerSize() ));
 
                     CDrawHelper.drawPolygon(g2d, triangle, true);
-
-
-                    // draw the target as x, because the X marks the point =)
-                    g2d.setColor(CApplication.WALKER_COLOR);
-                    CDrawHelper.drawPointAsX(g2d, walker.getTarget(), walker.getHalfWalkerSize() * 2);
                 }
             }
         });
