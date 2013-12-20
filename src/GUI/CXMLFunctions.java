@@ -51,6 +51,7 @@ public class CXMLFunctions{
                 NodeList objList = doc.getElementsByTagName("obj");
                 NodeList walkerList = doc.getElementsByTagName("walkerList");
 
+
                 //points of the polygons
                 int npoints = 0;
                 int[] xpoints = null;
@@ -89,12 +90,13 @@ public class CXMLFunctions{
 
                 //get points of the walkers
                 for(int i=0; i<walkerList.getLength(); i++){
-
                     Node walker = objList.item(i);
+                    System.out.println(walkerList.getLength());
                     if (walker.getNodeType() == Node.ELEMENT_NODE) {
                         Element eWalker = (Element) walker;
                         NodeList sourceList = eWalker.getElementsByTagName("source");
                         NodeList targetList = eWalker.getElementsByTagName("target");
+                        System.out.println(sourceList.getLength());
                         walkers = sourceList.getLength();
                         for(int j=0; j<sourceList.getLength(); j++){
                             Node point = sourceList.item(j);
