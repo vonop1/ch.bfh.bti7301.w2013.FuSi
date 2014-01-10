@@ -15,18 +15,18 @@ import javax.swing.*;
  * User: vonop1
  * Date: 11.10.13
  * Time: 14:28
- * To change this template use File | Settings | File Templates.
  */
-
 public class CWorldEditor extends JPanel{
 
-    //ArrayList with all resizable and movable polygons
+    //size of the helper ellipses
+    private int SIZE = 8;
+
+    //ArrayList with all resizable and movable polygons, polygon helper variables
     private ArrayList<CPolygon> cPolys = new ArrayList<CPolygon>();
     private CPolygon activePolygon = null;
     private int npoint = 0;
-    private int SIZE = 8;
 
-    //ArrayList with all walkers
+    //ArrayList with all walkers, walker helper variable
     private ArrayList<CWalker> walkers = new ArrayList<CWalker>();
     private CWalker activeWalker = null;
 
@@ -95,9 +95,12 @@ public class CWorldEditor extends JPanel{
 
     }
 
+    /**
+     * draw the world editor objects
+     * @param g the Graphics object
+     */
     @Override
     public void paintComponent(Graphics g) {
-
         super.paintComponent(g);
         doDrawing(g);
     }
@@ -135,25 +138,39 @@ public class CWorldEditor extends JPanel{
      */
     public void loadWorld(){
         CXMLFunctions xml = new CXMLFunctions();
+        cPolys.clear();
+        walkers.clear();
         xml.loadXMLFile(cPolys, walkers);
         repaint();
     }
 
     /**
-     *
+     * class used to handle mouse events
      */
     private class MovingAdapter extends MouseAdapter {
 
-        //
+        //Location of the pressed point and the center point of active polygon
         private Point pressPt, centerPt;
+
+        //value for x and y location of the pressed point
         private int pressPtX, pressPtY;
+
+        //Theta used to rotated polygons
         private double pressTheta;
+
+        //used to determine what we want to do
         private boolean resizePolygon, translatePolygon, moveWalkerStart, moveWalkerEnd;
+
+        //variable for helper ellipses
         private Ellipse2D.Double ellipse;
 
+        //helper variable to save original poly
         private CPolygon originalPoly = null;
 
-
+        /**
+         * executed if a mouse click occurs
+         * @param e the mouse event
+         */
         @Override
         public void mousePressed(MouseEvent e) {
 
@@ -230,17 +247,27 @@ public class CWorldEditor extends JPanel{
                     {
                         System.out.println(ex.toString());
                     }
-                    repaint();
                     centerPt = activePolygon.getCenter();
                     pressTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
+
+                    //repaint the world editor
+                    repaint();
                     break;
                 }
             }
+
+            //repaint the world editor
             repaint();
         }
 
+        /**
+         * executed if mouse is released
+         * @param e the event
+         */
         @Override
-        public void mouseReleased(MouseEvent event) {
+        public void mouseReleased(MouseEvent e) {
+
+            //set variables to standard (nothing to do)
             translatePolygon = false;
             resizePolygon = false;
             activePolygon = null;
@@ -248,16 +275,26 @@ public class CWorldEditor extends JPanel{
             moveWalkerEnd = false;
             moveWalkerStart = false;
             activeWalker = null;
+
+            //repaint the world editor
             repaint();
         }
 
+        /**
+         * executed if mouse is moving while clicked
+         * @param e the event
+         */
         @Override
         public void mouseDragged(MouseEvent e) {
 
+            //save position of mouse after move
             Point dragPt = e.getPoint();
+
+            //calculate and save the difference between initial mouse click and draged mouse position
             int dx = e.getX() - pressPtX;
             int dy = e.getY() - pressPtY;
 
+            //if a walker is activ set walker start/end to new position
             if(activeWalker != null){
                 if (moveWalkerStart){
                     activeWalker.setPosition(new CPosition(dragPt.x, dragPt.y));
@@ -266,24 +303,38 @@ public class CWorldEditor extends JPanel{
                 }
             }
 
+            //if a polygon is active resize/translate it
             if (activePolygon != null){
+
+                //resize the polygon
                 if (resizePolygon){
                     activePolygon.xpoints[npoint] = dragPt.x;
                     activePolygon.ypoints[npoint] = dragPt.y;
+
+                //if pressed point is inside active polygon...
                 }else if (activePolygon.contains(pressPtX, pressPtY)){
+
+                    //translate it
                     if (translatePolygon){
                         activePolygon.translateXY(dx, dy);
+
+                    // or else rotate it
                     }else{
                         double dragTheta = Math.atan2(dragPt.y - centerPt.y, dragPt.x - centerPt.x);
                         double deltaTheta = dragTheta - pressTheta;
                         activePolygon.transform(deltaTheta, centerPt, originalPoly);
                     }
                 }
-                activePolygon.invalidate(); //To update the boundary box
+
+                // update the boundary box
+                activePolygon.invalidate();
             }
 
+            //add dragged value to pressed point value
             pressPtX += dx;
             pressPtY += dy;
+
+            //repaint the world editor
             repaint();
         }
     }

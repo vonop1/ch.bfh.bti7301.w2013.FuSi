@@ -49,8 +49,7 @@ public class CXMLFunctions{
 
                 //get WorldObjects
                 NodeList objList = doc.getElementsByTagName("obj");
-                NodeList walkerList = doc.getElementsByTagName("walkerList");
-
+                NodeList walkerList = doc.getElementsByTagName("walker");
 
                 //points of the polygons
                 int npoints = 0;
@@ -90,37 +89,32 @@ public class CXMLFunctions{
 
                 //get points of the walkers
                 for(int i=0; i<walkerList.getLength(); i++){
-                    if (walkerList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                        Element eWalker = (Element) walkerList.item(i);
-
-                        startPoint = null;
-                        targetPoint = null;
-
+                    Node walker = walkerList.item(i);
+                    if (walker.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eWalker = (Element) walker;
                         NodeList sourceList = eWalker.getElementsByTagName("source");
+                        NodeList targetList = eWalker.getElementsByTagName("target");
+                        walkers = sourceList.getLength();
                         for(int j=0; j<sourceList.getLength(); j++){
                             Node point = sourceList.item(j);
                             if (point.getNodeType() == Node.ELEMENT_NODE) {
                                 Element ePoint = (Element) point;
                                 startPoint = new CPosition(Integer.parseInt(ePoint.getAttribute("x")),Integer.parseInt(ePoint.getAttribute("y")));
-                                break;
                             }
                         }
-
-                        NodeList targetList = eWalker.getElementsByTagName("target");
                         for(int j=0; j<targetList.getLength(); j++){
                             Node point = targetList.item(j);
                             if (point.getNodeType() == Node.ELEMENT_NODE) {
                                 Element ePoint = (Element) point;
                                 targetPoint = new CPosition(Integer.parseInt(ePoint.getAttribute("x")),Integer.parseInt(ePoint.getAttribute("y")));
-                                break;
                             }
                         }
-
-                        if(startPoint != null && targetPoint != null){
-                            cWalkers.add(new CWalker(startPoint, targetPoint, null));
-                        }
                     }
+                    if(walkers > 0){
+                        CWalker cWalker = new CWalker(startPoint, targetPoint, null);
+                        cWalkers.add(cWalker);
 
+                    }
                 }
 
             } catch (Exception e) {
