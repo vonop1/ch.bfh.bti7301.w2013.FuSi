@@ -18,13 +18,15 @@ import javax.swing.*;
  */
 public class CWorldEditor extends JPanel{
 
-    //ArrayList with all resizable and movable polygons
+    //size of the helper ellipses
+    private int SIZE = 8;
+
+    //ArrayList with all resizable and movable polygons, polygon helper variables
     private ArrayList<CPolygon> cPolys = new ArrayList<CPolygon>();
     private CPolygon activePolygon = null;
     private int npoint = 0;
-    private int SIZE = 8;
 
-    //ArrayList with all walkers
+    //ArrayList with all walkers, walker helper variable
     private ArrayList<CWalker> walkers = new ArrayList<CWalker>();
     private CWalker activeWalker = null;
 
@@ -93,9 +95,12 @@ public class CWorldEditor extends JPanel{
 
     }
 
+    /**
+     * draw the world editor objects
+     * @param g the Graphics object
+     */
     @Override
     public void paintComponent(Graphics g) {
-
         super.paintComponent(g);
         doDrawing(g);
     }
