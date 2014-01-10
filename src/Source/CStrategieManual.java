@@ -10,7 +10,7 @@ import java.awt.event.KeyListener;
  * Date: 05.11.13
  * Time: 19:08
  */
-public class CStrategieManual implements CStrategie, KeyListener {
+public class CStrategieManual implements IStrategie, KeyListener {
 
     private Double angle = 0.0;
     private Double stepSize = 0.0;

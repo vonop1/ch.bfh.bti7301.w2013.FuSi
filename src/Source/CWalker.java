@@ -46,7 +46,7 @@ public class CWalker {
     protected int stepCountOpt = 0;
     protected int stepCountReal = 0;
 
-    private CStrategie strategie = null;
+    private IStrategie strategie = null;
 
     public CWalker(CPosition start, CPosition target, CWorld worldReference) {
         this.startPosition = start;
@@ -94,7 +94,7 @@ public class CWalker {
         return this.lastDirectionAngle;
     }
 
-    public CStrategie getStrategie() {
+    public IStrategie getStrategie() {
         return this.strategie;
     }
 
@@ -106,7 +106,7 @@ public class CWalker {
         return this.collisionWith != null && this.collisionWith.hasCollisions();
     }
 
-    public void changeStrategie(CStrategie strategie) {
+    public void changeStrategie(IStrategie strategie) {
         if(strategie == null) {
             return;
         }

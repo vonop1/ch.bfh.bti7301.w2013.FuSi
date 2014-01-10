@@ -9,7 +9,7 @@ import Util.CPosition;
  * Time: 14:33
  */
 
-public class CStrategieRightLeft implements CStrategie {
+public class CStrategieRightLeft implements IStrategie {
     /**
      * calculates the next position and saves the result to the nextDesiredPosition member var
      * @param roundCount the calculation round count
