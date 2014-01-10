@@ -18,7 +18,7 @@ import javax.swing.*;
  */
 public class CWorldEditor extends JPanel{
 
-    //size of the helper ellipses
+    //size of the helper ellipses and walker points
     private int SIZE = 8;
 
     //ArrayList with all resizable and movable polygons, polygon helper variables
@@ -27,7 +27,7 @@ public class CWorldEditor extends JPanel{
     private int npoint = 0;
 
     //ArrayList with all walkers, walker helper variable
-    private ArrayList<CWalker> walkers = new ArrayList<CWalker>();
+    private ArrayList<CEditorWalker> walkers = new ArrayList<CEditorWalker>();
     private CWalker activeWalker = null;
 
     /**
@@ -83,13 +83,15 @@ public class CWorldEditor extends JPanel{
 
         //create new walkers
         if (walkers.size() > 0){
-            for (CWalker walker : walkers) {
+            for (CEditorWalker walker : walkers) {
                 g2d.setColor(Color.GREEN);
                 CDrawHelper.drawPointAsCircle(g2d, walker.getPosition(), (double) SIZE, true);
                 g2d.setColor(Color.RED);
                 CDrawHelper.drawPointAsCircle(g2d, walker.getTarget(), (double) SIZE, true);
                 g2d.setColor(CApplication.WALKER_COLOR);
                 CDrawHelper.drawLine(g2d, walker.getPosition(), walker.getTarget());
+                g2d.setColor(Color.BLACK);
+                g2d.drawString(Integer.toString(walker.getCount()), walker.getPosition().getX().intValue(), walker.getPosition().getY().intValue());
             }
         }
 
@@ -115,12 +117,12 @@ public class CWorldEditor extends JPanel{
     }
 
     /**
-     * add a new walker with a start point and an end point
+     * add new walker with a start point and an end point
      */
-    public void addWalker(){
+    public void addWalker(int count){
         CPosition startPoint = new CPosition(25,25);
         CPosition endPoint = new CPosition(100,100);
-        CWalker walker = new CWalker(startPoint, endPoint, null);
+        CEditorWalker walker = new CEditorWalker(startPoint, endPoint, count);
         walkers.add(walker);
         repaint();
     }
@@ -191,14 +193,36 @@ public class CWorldEditor extends JPanel{
 
             //determine if we have some walkers and if the mouse was on a walker
             if(walkers.size() > 0){
-                for(CWalker walker : walkers){
+                for(CEditorWalker walker : walkers){
 
                     //inside walker start point
                     ellipse = new Ellipse2D.Double(walker.getPosition().getX() - SIZE / 2, walker.getPosition().getY() - SIZE / 2, SIZE, SIZE);
                     if(ellipse.contains(pressPt)){
                         activeWalker = walker;
-                        moveWalkerStart = true;
-                        break;
+
+                        //handle double click on walker start
+                        if (e.getClickCount() == 2 && !e.isConsumed()) {
+                            e.consume();
+                            int newCount;
+                            String input = (String) (JOptionPane.showInputDialog(CApplication.INSTANCE, "Wieviele Walker?" , "Anzahl Walker", JOptionPane.QUESTION_MESSAGE,null,null, walker.getCount()));
+                            try {
+                                newCount = Integer.parseInt(input);
+                                if (newCount >= 1 && newCount <= 100){
+                                    walker.setCount(newCount);
+                                } else {
+                                    throw new NumberFormatException();
+                                }
+                            } catch (NumberFormatException ex) {
+                                JOptionPane.showMessageDialog(CApplication.INSTANCE, "Bitte eine Zahl zwischen 1-100 eingeben", "Falsches Format", JOptionPane.ERROR_MESSAGE);
+                            }
+
+                            //repaint world editor
+                            repaint();
+                            return;
+                        }else{
+                            moveWalkerStart = true;
+                            break;
+                        }
                     }
 
                     //inside walker end point
@@ -255,7 +279,6 @@ public class CWorldEditor extends JPanel{
                     break;
                 }
             }
-
             //repaint the world editor
             repaint();
         }

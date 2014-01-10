@@ -34,7 +34,7 @@ public class CXMLFunctions{
      * loads a xml file into the world editor
      * @return returns an arraylist with the polygons from the xml file
      */
-    public void loadXMLFile(ArrayList<CPolygon> cPolys, ArrayList<CWalker> cWalkers){
+    public void loadXMLFile(ArrayList<CPolygon> cPolys, ArrayList<CEditorWalker> cWalkers){
 
         File XMLFile = getJFileChooserDialogFile("Open");
         if(XMLFile != null){
@@ -56,10 +56,11 @@ public class CXMLFunctions{
                 int[] xpoints = null;
                 int[] ypoints = null;
 
-                //points of the walkers
+                //points and count of the walkers
                 int walkers = 0;
                 CPosition startPoint = null;
                 CPosition targetPoint = null;
+                int count = 1;
 
                 //get points of the object
                 for(int i=0; i<objList.getLength(); i++){
@@ -90,11 +91,25 @@ public class CXMLFunctions{
                 //get points of the walkers
                 for(int i=0; i<walkerList.getLength(); i++){
                     Node walker = walkerList.item(i);
+
                     if (walker.getNodeType() == Node.ELEMENT_NODE) {
                         Element eWalker = (Element) walker;
                         NodeList sourceList = eWalker.getElementsByTagName("source");
                         NodeList targetList = eWalker.getElementsByTagName("target");
+                        NodeList countList = eWalker.getElementsByTagName("count");
                         walkers = sourceList.getLength();
+                        if(countList.getLength() != 0){
+                            for(int j=0; j<countList.getLength(); j++){
+                                Node point = countList.item(j);
+                                if (point.getNodeType() == Node.ELEMENT_NODE) {
+                                    Element ePoint = (Element) point;
+                                    count = Integer.parseInt(ePoint.getAttribute("c"));
+                                }
+                            }
+                        }else{
+                            count = 1;
+                        }
+
                         for(int j=0; j<sourceList.getLength(); j++){
                             Node point = sourceList.item(j);
                             if (point.getNodeType() == Node.ELEMENT_NODE) {
@@ -110,8 +125,9 @@ public class CXMLFunctions{
                             }
                         }
                     }
+
                     if(walkers > 0){
-                        CWalker cWalker = new CWalker(startPoint, targetPoint, null);
+                        CEditorWalker cWalker = new CEditorWalker(startPoint, targetPoint, count);
                         cWalkers.add(cWalker);
 
                     }
@@ -127,7 +143,7 @@ public class CXMLFunctions{
      *  Saves the content of the world editor to a xml file
      * @param cPolys ArrayList with the polygons to save to the file
      */
-    public void saveXMLFile(ArrayList<CPolygon> cPolys, ArrayList<CWalker> cWalkers){
+    public void saveXMLFile(ArrayList<CPolygon> cPolys, ArrayList<CEditorWalker> cWalkers){
         File XMLFile = getJFileChooserDialogFile("Save");
         if(XMLFile != null){
             try {
@@ -148,17 +164,20 @@ public class CXMLFunctions{
                 config.appendChild(walkerList);
 
                 //walkers elements
-                for (CWalker cWalker : cWalkers){
+                for (CEditorWalker cWalker : cWalkers){
                     Element walker = doc.createElement("walker");
                     walkerList.appendChild(walker);
                     Element source = doc.createElement("source");
                     Element target = doc.createElement("target");
+                    Element count = doc.createElement("count");
                     walker.appendChild(source);
                     walker.appendChild(target);
+                    walker.appendChild(count);
                     source.setAttribute("x", Integer.toString(cWalker.getPosition().getX().intValue()));
                     source.setAttribute("y", Integer.toString(cWalker.getPosition().getY().intValue()));
                     target.setAttribute("x", Integer.toString(cWalker.getTarget().getX().intValue()));
                     target.setAttribute("y", Integer.toString(cWalker.getTarget().getY().intValue()));
+                    count.setAttribute("c", Integer.toString(cWalker.getCount()));
                 }
 
                 // world elements

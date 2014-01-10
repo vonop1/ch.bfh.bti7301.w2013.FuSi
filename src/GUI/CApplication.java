@@ -125,7 +125,18 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
         itemsAdd.add(itemWalker);
         itemWalker.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                CWorldEditor.addWalker();
+                int count;
+                String input = JOptionPane.showInputDialog(CApplication.INSTANCE, "Wieviele Walker?" , "Anzahl Walker", JOptionPane.QUESTION_MESSAGE);
+                try {
+                    count = Integer.parseInt(input);
+                    if (count >= 1 && count <= 100){
+                        CWorldEditor.addWalker(count);
+                    } else {
+                        throw new NumberFormatException();
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(CApplication.INSTANCE, "Bitte eine Zahl zwischen 1-100 eingeben", "Falsches Format", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
