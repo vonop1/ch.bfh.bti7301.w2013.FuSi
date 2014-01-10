@@ -324,6 +324,13 @@ public class CXMLConfigFile {
                     dX = Integer.parseInt(pointAttributes.getNamedItem("x").getNodeValue());
                     dY = Integer.parseInt(pointAttributes.getNamedItem("y").getNodeValue());
 
+                    point = point.getNextSibling();
+
+                    while (point.getNodeType() != Node.ELEMENT_NODE) {
+                        //remove empty elements
+                        point = point.getNextSibling();
+                    }
+
                     Integer count = 1;
                     pointAttributes = point.getAttributes();
                     if( pointAttributes != null && pointAttributes.getNamedItem("c") != null && pointAttributes.getNamedItem("c").getNodeValue() != null) {
