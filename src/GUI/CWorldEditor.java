@@ -207,13 +207,17 @@ public class CWorldEditor extends JPanel{
                             String input = (String) (JOptionPane.showInputDialog(CApplication.INSTANCE, "Wieviele Walker?" , "Anzahl Walker", JOptionPane.QUESTION_MESSAGE,null,null, walker.getCount()));
                             try {
                                 newCount = Integer.parseInt(input);
-                                if (newCount >= 1 && newCount <= 100){
-                                    walker.setCount(newCount);
+                                if (newCount >= 0 && newCount <= 100){
+                                    if(newCount == 0){
+                                        walkers.remove(walker);
+                                    }else {
+                                        walker.setCount(newCount);
+                                    }
                                 } else {
                                     throw new NumberFormatException();
                                 }
                             } catch (NumberFormatException ex) {
-                                JOptionPane.showMessageDialog(CApplication.INSTANCE, "Bitte eine Zahl zwischen 1-100 eingeben", "Falsches Format", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(CApplication.INSTANCE, "Bitte eine Zahl zwischen 0-100 eingeben", "Falsches Format", JOptionPane.ERROR_MESSAGE);
                             }
 
                             //repaint world editor
@@ -262,18 +266,23 @@ public class CWorldEditor extends JPanel{
                 //else check if mouse was inside a polygon (needed to paint active polygon grey)
                 //calculate the axis between press point and center point of the polygon
                 } else if (cPoly.contains(e.getPoint())) {
-                    activePolygon = cPoly;
-                    try
-                    {
-                        originalPoly = cPoly.clone();
-                    }
-                    catch (CloneNotSupportedException ex)
-                    {
-                        System.out.println(ex.toString());
-                    }
-                    centerPt = activePolygon.getCenter();
-                    pressTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
 
+                    //check if right click was used to delete polygon
+                    if(SwingUtilities.isRightMouseButton(e)){
+                        cPolys.remove(cPoly);
+                    }else{
+                        activePolygon = cPoly;
+                        try
+                        {
+                            originalPoly = cPoly.clone();
+                        }
+                        catch (CloneNotSupportedException ex)
+                        {
+                            System.out.println(ex.toString());
+                        }
+                        centerPt = activePolygon.getCenter();
+                        pressTheta = Math.atan2(pressPt.y - centerPt.y, pressPt.x - centerPt.x);
+                    }
                     //repaint the world editor
                     repaint();
                     break;
