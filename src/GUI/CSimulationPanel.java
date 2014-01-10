@@ -33,7 +33,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
     protected CWalker selectedWalker = null;
 
     protected CStrategieManual manualStrategie = new CStrategieManual();
-    protected CStrategie oldStrategieHolder = null;
+    protected IStrategie oldStrategieHolder = null;
     protected CWalker manualWalker = null;
 
     public CSimulationPanel() {
@@ -118,7 +118,11 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                 y += 20;
                 g2d.drawString("P - Pausiere Simulation", x, y);
                 y += 20;
-                g2d.drawString("Page Down - Mache 1 Simulationsschritt", x, y);
+                g2d.drawString("N - Mache 1 Simulationsschritt", x, y);
+                y += 20;
+                g2d.drawString("Page Up - vorherigen Walker anwählen", x, y);
+                y += 20;
+                g2d.drawString("Page Down - nächsten Walker anwählen", x, y);
                 y += 20;
                 g2d.drawString("0-9 - Lade andere Simulation", x, y);
                 y += 20;
@@ -138,7 +142,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
         });
 
         // draw the graph edges
-        drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_G, "G - Zeige Graph-Kanten an") {
+        drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_G, "G - Zeige Graph-Kanten an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
                 g2d.setColor(Color.BLUE);
@@ -163,7 +167,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
         drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_L, "L - Zeige die Walkers an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
-                for (CWalker walker : simulationWorld.getWalkers()) {
+                for (CWalker walker : simulationWorld.getActiveWalkers()) {
 
                     if(selectedWalker != null && walker.equals(selectedWalker)) {
                         g2d.setColor(Color.GREEN);
@@ -184,13 +188,13 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
         drawSimulationObjects.add(new CDrawObject(true, KeyEvent.VK_D, "D - Zeige die Walker Richtung an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
-                for (CWalker walker : simulationWorld.getWalkers()) {
+                for (CWalker walker : simulationWorld.getActiveWalkers()) {
 
                     g2d.setColor(Color.WHITE);
                     Vector<CPosition> triangle = new Vector<CPosition>(3);
                     triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle(), walker.getHalfWalkerSize()));
                     triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle() + Math.PI * 4/5, walker.getHalfWalkerSize() ));
-                    triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle() - Math.PI * 4/5, walker.getHalfWalkerSize() ));
+                    triangle.add(new CPosition(walker.getPosition(), walker.getLastDirectionAngle() - Math.PI * 4 / 5, walker.getHalfWalkerSize()));
 
                     CDrawHelper.drawPolygon(g2d, triangle, true);
                 }
@@ -201,7 +205,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
         drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_I, "I - Zeige Walker IDs an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
-                for (CWalker walker : simulationWorld.getWalkers()) {
+                for (CWalker walker : simulationWorld.getActiveWalkers()) {
                     CPosition position = walker.getPosition();
 
                     g2d.setColor(Color.BLACK);
@@ -215,7 +219,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
         drawSimulationObjects.add(new CDrawObject(false, KeyEvent.VK_J, "J - Zeige Walker Koordinaten an") {
             @Override
             public void doDrawing(Graphics2D g2d) {
-                for (CWalker walker : simulationWorld.getWalkers()) {
+                for (CWalker walker : simulationWorld.getActiveWalkers()) {
                     CPosition position = walker.getPosition();
 
                     DecimalFormat df = new DecimalFormat("#.00");
@@ -233,7 +237,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                     g2d.setColor(Color.BLACK);
 
                     int x = simulationWorld.getWorldWidth() - 250;
-                    int y = 20;
+                    int y = 400;
                     g2d.drawString("Details Walker Id " + selectedWalker.getId(), x, y);
                     y += 30;
                     g2d.drawString("CurrentPos: " + selectedWalker.getPosition(), x, y);
@@ -369,8 +373,38 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                 e.consume();
                 break;
 
-            case KeyEvent.VK_PAGE_DOWN:
+            case KeyEvent.VK_N:
                 this.runOneStep();
+                e.consume();
+                break;
+
+            //change selected Walker
+            case KeyEvent.VK_PAGE_UP:
+                int idPreviousWalker = this.selectedWalker != null ? this.selectedWalker.getId() - 1 : 0;
+                this.selectedWalker = null;
+                for (CWalker walker : this.simulationWorld.getActiveWalkers())
+                {
+                    if (walker.getId() == idPreviousWalker)
+                    {
+                        this.selectedWalker = walker;
+                        break;
+                    }
+                }
+                e.consume();
+                break;
+
+            //change selected Walker
+            case KeyEvent.VK_PAGE_DOWN:
+                int idNextWalker = this.selectedWalker != null ? this.selectedWalker.getId() + 1 : 0;
+                this.selectedWalker = null;
+                for (CWalker walker : this.simulationWorld.getActiveWalkers())
+                {
+                    if (walker.getId() == idNextWalker)
+                    {
+                        this.selectedWalker = walker;
+                        break;
+                    }
+                }
                 e.consume();
                 break;
 
@@ -480,7 +514,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
             CPosition clickedPos = new CPosition(e.getX(), e.getY());
 
             this.selectedWalker = null;
-            for(CWalker walker : simulationWorld.getWalkers()) {
+            for(CWalker walker : simulationWorld.getActiveWalkers()) {
                 if(walker.getPosition().getDistanceTo(clickedPos) < walker.getHalfWalkerSize()) {
                     this.selectedWalker = walker;
                     break;

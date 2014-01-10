@@ -14,12 +14,6 @@ import java.util.LinkedList;
  * Time: 14:09
  */
 public class CWalker {
-    static Integer idCounter = 0;
-
-    static Integer getNextId() {
-        return idCounter++;
-    }
-
 
     protected Integer id;
     protected CPosition currentPosition;
@@ -46,14 +40,19 @@ public class CWalker {
     protected int stepCountOpt = 0;
     protected int stepCountReal = 0;
 
-    private CStrategie strategie = null;
+    private IStrategie strategie = null;
 
     public CWalker(CPosition start, CPosition target, CWorld worldReference) {
         this.startPosition = start;
         this.currentPosition = start;
         this.targetPosition = target;
         this.worldReference = worldReference;
-        this.id = getNextId();
+        if(worldReference != null) {
+            this.id = worldReference.incrementWalkerId();
+        }
+        else {
+            this.id = CWorld.incrementGlobalId();
+        }
         this.strategie = new CStrategieRightLeft();
 
     }
@@ -94,7 +93,7 @@ public class CWalker {
         return this.lastDirectionAngle;
     }
 
-    public CStrategie getStrategie() {
+    public IStrategie getStrategie() {
         return this.strategie;
     }
 
@@ -106,7 +105,7 @@ public class CWalker {
         return this.collisionWith != null && this.collisionWith.hasCollisions();
     }
 
-    public void changeStrategie(CStrategie strategie) {
+    public void changeStrategie(IStrategie strategie) {
         if(strategie == null) {
             return;
         }
@@ -129,24 +128,6 @@ public class CWalker {
             // the first checkpoint is the current position, remove it from our list
             vertexes.removeFirst();
         }
-
-        /*
-        if (this.desiredPath != null) {
-            boolean isEqual = this.desiredPath.size() == vertexes.size();
-            if (isEqual) {
-                for (int i = 0; i < this.desiredPath.size(); i++) {
-                    if (this.desiredPath.get(i).compareTo(vertexes.get(i)) != 0) {
-                        isEqual = false;
-                        break;
-                    }
-                }
-            }
-
-            if (!isEqual) {
-                System.out.println("Walker" + this + " changed the desired Path!");
-            }
-        }
-        */
 
         this.desiredPath = vertexes;
 

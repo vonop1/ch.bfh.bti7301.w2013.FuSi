@@ -9,6 +9,6 @@ import Util.CPosition;
  * Time: 14:03
  * To change this template use File | Settings | File Templates.
  */
-public interface CStrategie {
+public interface IStrategie {
     public CPosition calcNextDesiredPosition(Integer roundCount, CWalker walker);
 }

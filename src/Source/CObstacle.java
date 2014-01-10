@@ -1,6 +1,5 @@
 package Source;
 
-import Util.CGraph;
 import Util.CMathFunctions;
 import Util.CPosition;
 
@@ -23,9 +22,15 @@ public class CObstacle implements Comparable<CObstacle> {
 
 
     public CObstacle(Vector<CPosition> aoPosition, CWorld worldReference) {
-        this.iId = CGraph.incrementId();
+
         this.aoPosition = aoPosition;
         this.worldReference = worldReference;
+        if(worldReference != null) {
+            this.iId = worldReference.incrementObstacleId();
+        }
+        else {
+            this.iId = CWorld.incrementGlobalId();
+        }
     }
 
     public Integer getId() {
