@@ -49,7 +49,7 @@ public class CXMLFunctions{
 
                 //get WorldObjects
                 NodeList objList = doc.getElementsByTagName("obj");
-                NodeList walkerList = doc.getElementsByTagName("walkerList");
+                NodeList walkerList = doc.getElementsByTagName("walker");
 
                 //points of the polygons
                 int npoints = 0;
@@ -100,7 +100,6 @@ public class CXMLFunctions{
                             if (point.getNodeType() == Node.ELEMENT_NODE) {
                                 Element ePoint = (Element) point;
                                 startPoint = new CPosition(Integer.parseInt(ePoint.getAttribute("x")),Integer.parseInt(ePoint.getAttribute("y")));
-                               // break;
                             }
                         }
                         for(int j=0; j<targetList.getLength(); j++){
@@ -108,7 +107,6 @@ public class CXMLFunctions{
                             if (point.getNodeType() == Node.ELEMENT_NODE) {
                                 Element ePoint = (Element) point;
                                 targetPoint = new CPosition(Integer.parseInt(ePoint.getAttribute("x")),Integer.parseInt(ePoint.getAttribute("y")));
-                               // break;
                             }
                         }
                     }
