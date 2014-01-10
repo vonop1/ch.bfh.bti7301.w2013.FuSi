@@ -15,17 +15,11 @@ import java.util.List;
  */
 
 public class CGraph {
-    protected static int lastId = 0;
 
     private final List<CPosition> vertexes;
     private final List<CEdge> edges;
     private final List<CEdge> trashEdges;
     private final CWorld worldReference;
-
-    public static int incrementId() {
-        CGraph.lastId += 1;
-        return CGraph.lastId;
-    }
 
     /**
      * Creates an empty graph

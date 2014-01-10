@@ -18,6 +18,11 @@ import org.w3c.dom.*;
  * Time: 14:30
  */
 public class CWorld {
+
+    private static Integer globalId = 0;
+    private Integer lastWalkerId = 0;
+    private Integer lastObstacleId = 0;
+
     private Vector<CWalker> activeWalkers = new Vector<CWalker>();
 
 
@@ -40,6 +45,21 @@ public class CWorld {
 
     public CWorld() {
 
+    }
+
+    public static Integer incrementGlobalId() {
+        globalId += 1;
+        return globalId;
+    }
+
+    public Integer incrementWalkerId() {
+        lastWalkerId += 1;
+        return lastWalkerId;
+    }
+
+    public Integer incrementObstacleId() {
+        lastObstacleId += 1;
+        return lastObstacleId;
     }
 
     public LinkedList<CWalker> getFinishedWalkers() {
@@ -227,8 +247,6 @@ public class CWorld {
     }
 
     public void buildGraph() {
-
-        //CGraph.resetId();
 
         this.globalGraph = new CGraph(this);
 
