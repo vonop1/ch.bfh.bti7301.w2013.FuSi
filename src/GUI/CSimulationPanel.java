@@ -238,6 +238,10 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                     y += 30;
                     g2d.drawString("CurrentPos: " + selectedWalker.getPosition(), x, y);
                     y += 20;
+                    g2d.drawString("Minimal Step Count to End: " + selectedWalker.getStepCountOpt(), x, y);
+                    y += 20;
+                    g2d.drawString("Actual Step Count: " + selectedWalker.getStepCountReal(), x, y);
+                    y += 20;
 
                     int i = 0;
                     g2d.setColor(Color.DARK_GRAY);

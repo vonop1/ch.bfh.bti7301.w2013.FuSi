@@ -1,6 +1,7 @@
 package Source;
 
 import Util.CDijkstra;
+import Util.CEdge;
 import Util.CGraph;
 import Util.CPosition;
 
@@ -39,6 +40,11 @@ public class CWalker {
     protected CCollisionList collisionWith = null;
     protected boolean hasCollisionHandled = false;
     protected Double lastDirectionAngle = 0.0;
+
+
+    //variables for stats
+    protected int stepCountOpt = 0;
+    protected int stepCountReal = 0;
 
     private CStrategie strategie = null;
 
@@ -91,6 +97,10 @@ public class CWalker {
     public CStrategie getStrategie() {
         return this.strategie;
     }
+
+    public int getStepCountReal() {return this.stepCountReal;}
+
+    public int getStepCountOpt() {return this.stepCountOpt; }
 
     public Boolean hasCollisions() {
         return this.collisionWith != null && this.collisionWith.hasCollisions();
@@ -146,6 +156,13 @@ public class CWalker {
 
             for (int i = 1; i < this.originalDesiredPath.size(); i++) {
                 this.walkerGraph.addWayPointEdge(this.originalDesiredPath.get(i - 1), this.originalDesiredPath.get(i));
+            }
+
+            //berechnen der Anzahl Schritten auf dem kürzesten Weg
+            stepCountOpt = 0;
+            for (CEdge edge : walkerGraph.getEdges())
+            {
+                 stepCountOpt += edge.getWeight() / stepSize;
             }
         }
     }
@@ -340,6 +357,8 @@ public class CWalker {
         this.currentPosition = this.desiredNextPosition;
 
         this.desiredNextPosition = null;
+
+        this.stepCountReal ++;
 
         return this.targetPosition.isNearBy(this.currentPosition, stepSize / 0.5);
     }
