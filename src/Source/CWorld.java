@@ -1,15 +1,10 @@
 package Source;
 
-import java.io.File;
 import java.util.*;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
 
 import Util.CDijkstra;
 import Util.CGraph;
 import Util.CPosition;
-import org.w3c.dom.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -88,12 +83,38 @@ public class CWorld {
 
     public void addObstacle(CObstacle obstacle) {
         this.obstacles.add(obstacle);
+
+        //subscribe obstacles in grid
+        grid.subscribeObstacle(obstacle);
     }
 
-    public void addWalker(CWalker walker) {
-        this.activeWalkers.add(walker);
-        if (walker.getHalfWalkerSize() > greatestHalfWalkerSize) {
-            greatestHalfWalkerSize = walker.getHalfWalkerSize();
+    private void addWalkerWithoutCollsionCheck(CWalker walkerToAdd) {
+        this.activeWalkers.add(walkerToAdd);
+        if (walkerToAdd.getHalfWalkerSize() > greatestHalfWalkerSize) {
+            greatestHalfWalkerSize = walkerToAdd.getHalfWalkerSize();
+        }
+    }
+
+    public void addWalker(CPosition source, CPosition destination, Integer count) {
+
+        CWalker walkerToAdd = new CWalker(source, destination, this);
+
+        Boolean positionOccupied = false;
+        for (CWalker existingWalker : this.activeWalkers) {
+            if (existingWalker.checkCollisionWith(walkerToAdd, false)) {
+                positionOccupied = true;
+                break;
+            }
+        }
+
+        if (positionOccupied) {
+            addWalkerToWaitingQueue(walkerToAdd);
+        } else {
+            addWalkerWithoutCollsionCheck(walkerToAdd);
+        }
+
+        for(int i = 1; i < count; i++) {
+            addWalkerToWaitingQueue(new CWalker(source, destination, this));
         }
     }
 
@@ -103,123 +124,6 @@ public class CWorld {
 
     public int getGridSize() {
         return this.grid.gridSizeC;
-    }
-
-    public Vector<CObstacle> loadConfig(File oConfigFile) {
-        if (oConfigFile == null) {
-            return null;
-        }
-
-        this.obstacles = new Vector<CObstacle>();
-        try {
-            // load Config from File Config.xml
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document oConfigDoc = dBuilder.parse(oConfigFile);
-
-            // Get a List off all Obstacles
-            NodeList aoObj = oConfigDoc.getElementsByTagName("obj");
-
-            for (int i = 0; i < aoObj.getLength(); i++) {
-                Node oObj = aoObj.item(i);
-                Vector<CPosition> aoPosition = new Vector<CPosition>();
-
-                if (oObj.hasChildNodes()) {
-                    // Get a List off all Points of a Obstacle
-                    NodeList aoPoint = oObj.getChildNodes();
-                    for (int j = 0; j < aoPoint.getLength(); j++) {
-                        Node oPoint = aoPoint.item(j);
-
-                        if (oPoint.getNodeType() == Node.ELEMENT_NODE) {
-                            // Get Edge-points of the Obstacle
-                            NamedNodeMap oPointAttributes = oPoint.getAttributes();
-
-                            double dX = Integer.parseInt(oPointAttributes.getNamedItem("x").getNodeValue());
-                            double dY = Integer.parseInt(oPointAttributes.getNamedItem("y").getNodeValue());
-                            aoPosition.add(new CPosition(dX, dY));
-                        }
-
-
-                    }
-
-                    addObstacle(new CObstacle(aoPosition, this));
-                }
-
-            }
-
-            //subscribe obstacles in grid
-            grid.subscribeObstacle(getObstacles());
-
-            // Get a List off all Walkers
-            NodeList walkers = oConfigDoc.getElementsByTagName("walker");
-
-            for (int i = 0; i < walkers.getLength(); i++) {
-                Node walker = walkers.item(i);
-
-                if (walker.hasChildNodes()) {
-                    // Get a List off all Points of a Obstacle
-                    NodeList points = walker.getChildNodes();
-
-                    Node point = points.item(0);
-                    while (point.getNodeType() != Node.ELEMENT_NODE) {
-                        //remove empty elements
-                        point = point.getNextSibling();
-                    }
-
-                    // Get Source Point with X-Coordinate and Y-Coordinate
-                    NamedNodeMap pointAttributes = point.getAttributes();
-
-                    double dX = Integer.parseInt(pointAttributes.getNamedItem("x").getNodeValue());
-                    double dY = Integer.parseInt(pointAttributes.getNamedItem("y").getNodeValue());
-
-                    CPosition source = new CPosition(dX, dY);
-
-                    point = point.getNextSibling();
-
-                    while (point.getNodeType() != Node.ELEMENT_NODE) {
-                        //remove empty elements
-                        point = point.getNextSibling();
-                    }
-
-                    // Get Destination Point with X-Coordinate and Y-Coordinate
-                    pointAttributes = point.getAttributes();
-
-                    dX = Integer.parseInt(pointAttributes.getNamedItem("x").getNodeValue());
-                    dY = Integer.parseInt(pointAttributes.getNamedItem("y").getNodeValue());
-
-                    Integer count = 1;
-                    pointAttributes = point.getAttributes();
-                    if( pointAttributes != null && pointAttributes.getNamedItem("c") != null && pointAttributes.getNamedItem("c").getNodeValue() != null) {
-                         count = Integer.parseInt(pointAttributes.getNamedItem("c").getNodeValue());
-                    }
-
-                    CPosition destination = new CPosition(dX, dY);
-                    CWalker walkerToAdd = new CWalker(source, destination, this);
-
-                    Boolean positionOccupied = false;
-                    for (CWalker existingWalker : this.activeWalkers) {
-                        if (existingWalker.checkCollisionWith(walkerToAdd, false)) {
-                            positionOccupied = true;
-                            break;
-                        }
-                    }
-
-                    if (positionOccupied) {
-                        addWalkerToWaitingQueue(walkerToAdd);
-                    } else {
-                        addWalker(walkerToAdd);
-                    }
-
-                    for(int j = 1; j < count; j++) {
-                        addWalkerToWaitingQueue(new CWalker(source, destination, this));
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            System.out.print(e);
-        }
-        return this.obstacles;
     }
 
     public void addWalkerToWaitingQueue(CWalker walker) {
@@ -375,7 +279,7 @@ public class CWorld {
 
                 if(!isPositionBlocked) {
                     list.removeFirst();
-                    addWalker(firstWalker);
+                    addWalkerWithoutCollsionCheck(firstWalker);
                     entry.setValue(list);
 
                     // add walker to the graph

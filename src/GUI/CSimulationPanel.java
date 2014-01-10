@@ -289,7 +289,8 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
             this.selectedWalker = null;
             this.simulationWorld = new CWorld();
 
-            this.simulationWorld.loadConfig(configFile);
+            CXMLConfigFile configLoader = new CXMLConfigFile();
+            configLoader.loadConfig(configFile, this.simulationWorld);
 
             this.setBounds(0,0, this.simulationWorld.getWorldWidth(), this.simulationWorld.getWorldHeight());
 

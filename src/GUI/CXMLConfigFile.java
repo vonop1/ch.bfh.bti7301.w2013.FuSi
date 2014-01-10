@@ -2,6 +2,7 @@ package GUI;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Vector;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.DocumentBuilder;
@@ -14,12 +15,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import Source.CObstacle;
 import Source.CWalker;
+import Source.CWorld;
 import Util.CPosition;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * Time: 13:00
  * To change this template use File | Settings | File Templates.
  */
-public class CXMLFunctions{
+public class CXMLConfigFile {
 
     /**
      * loads a xml file into the world editor
@@ -244,6 +244,105 @@ public class CXMLFunctions{
         } else {
             return null;
         }
+    }
+
+    public boolean loadConfig(File oConfigFile, CWorld simulationWorld) {
+        if (oConfigFile == null || simulationWorld == null) {
+            return false;
+        }
+
+        try {
+            // load Config from File Config.xml
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document oConfigDoc = dBuilder.parse(oConfigFile);
+
+            // Get a List off all Obstacles
+            NodeList aoObj = oConfigDoc.getElementsByTagName("obj");
+
+            for (int i = 0; i < aoObj.getLength(); i++) {
+                Node oObj = aoObj.item(i);
+                Vector<CPosition> aoPosition = new Vector<CPosition>();
+
+                if (oObj.hasChildNodes()) {
+                    // Get a List off all Points of a Obstacle
+                    NodeList aoPoint = oObj.getChildNodes();
+                    for (int j = 0; j < aoPoint.getLength(); j++) {
+                        Node oPoint = aoPoint.item(j);
+
+                        if (oPoint.getNodeType() == Node.ELEMENT_NODE) {
+                            // Get Edge-points of the Obstacle
+                            NamedNodeMap oPointAttributes = oPoint.getAttributes();
+
+                            double dX = Integer.parseInt(oPointAttributes.getNamedItem("x").getNodeValue());
+                            double dY = Integer.parseInt(oPointAttributes.getNamedItem("y").getNodeValue());
+                            aoPosition.add(new CPosition(dX, dY));
+                        }
+
+
+                    }
+
+                    simulationWorld.addObstacle(new CObstacle(aoPosition, simulationWorld));
+                }
+
+            }
+
+            // Get a List off all Walkers
+            NodeList walkers = oConfigDoc.getElementsByTagName("walker");
+
+            for (int i = 0; i < walkers.getLength(); i++) {
+                Node walker = walkers.item(i);
+
+                if (walker.hasChildNodes()) {
+                    // Get a List off all Points of a Obstacle
+                    NodeList points = walker.getChildNodes();
+
+                    Node point = points.item(0);
+                    while (point.getNodeType() != Node.ELEMENT_NODE) {
+                        //remove empty elements
+                        point = point.getNextSibling();
+                    }
+
+                    // Get Source Point with X-Coordinate and Y-Coordinate
+                    NamedNodeMap pointAttributes = point.getAttributes();
+
+                    double dX = Integer.parseInt(pointAttributes.getNamedItem("x").getNodeValue());
+                    double dY = Integer.parseInt(pointAttributes.getNamedItem("y").getNodeValue());
+
+                    CPosition source = new CPosition(dX, dY);
+
+                    point = point.getNextSibling();
+
+                    while (point.getNodeType() != Node.ELEMENT_NODE) {
+                        //remove empty elements
+                        point = point.getNextSibling();
+                    }
+
+                    // Get Destination Point with X-Coordinate and Y-Coordinate
+                    pointAttributes = point.getAttributes();
+
+                    dX = Integer.parseInt(pointAttributes.getNamedItem("x").getNodeValue());
+                    dY = Integer.parseInt(pointAttributes.getNamedItem("y").getNodeValue());
+
+                    Integer count = 1;
+                    pointAttributes = point.getAttributes();
+                    if( pointAttributes != null && pointAttributes.getNamedItem("c") != null && pointAttributes.getNamedItem("c").getNodeValue() != null) {
+                        count = Integer.parseInt(pointAttributes.getNamedItem("c").getNodeValue());
+                    }
+
+                    CPosition destination = new CPosition(dX, dY);
+
+
+                    simulationWorld.addWalker(source, destination, count);
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            System.out.print(e);
+        }
+
+        return false;
     }
 }
 

@@ -131,7 +131,7 @@ public class CWorldEditor extends JPanel{
      * save the world into a xml file
      */
     public void saveWorld(){
-        CXMLFunctions xml = new CXMLFunctions();
+        CXMLConfigFile xml = new CXMLConfigFile();
         xml.saveXMLFile(cPolys, walkers);
     }
 
@@ -139,7 +139,7 @@ public class CWorldEditor extends JPanel{
      * load the world from a xml file
      */
     public void loadWorld(){
-        CXMLFunctions xml = new CXMLFunctions();
+        CXMLConfigFile xml = new CXMLConfigFile();
         cPolys.clear();
         walkers.clear();
         xml.loadXMLFile(cPolys, walkers);

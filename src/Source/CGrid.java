@@ -145,77 +145,71 @@ public class CGrid {
 
     /**
      * Subscribe Obstacle Positions in Grid
-     * @param obstacles to subscribe
+     * @param obstacle to subscribe
      */
-    void subscribeObstacle (Vector<CObstacle> obstacles)
+    void subscribeObstacle (CObstacle obstacle)
     {
-        // for all objects
-        for (CObstacle obstacle : obstacles)
-        {
+       Vector <CPosition> positions= obstacle.getPositions();
 
-           Vector <CPosition> positions= obstacle.getPositions();
-
-           // for all edges of a object
-           for (int i = 0; i < positions.size(); i++)
+       // for all edges of a object
+       for (int i = 0; i < positions.size(); i++)
+       {
+           CPosition point1Start;
+           CPosition point1End;
+           if (i == 0)
            {
-               CPosition point1Start;
-               CPosition point1End;
-               if (i == 0)
-               {
-                   point1Start = positions.lastElement();
-                   point1End = positions.firstElement();
-               }
-               else
-               {
-                   point1Start = positions.elementAt(i - 1);
-                   point1End = positions.elementAt(i);
-               }
+               point1Start = positions.lastElement();
+               point1End = positions.firstElement();
+           }
+           else
+           {
+               point1Start = positions.elementAt(i - 1);
+               point1End = positions.elementAt(i);
+           }
 
-               for (int x = 0; x < worldWidth; x += gridSizeC)
+           for (int x = 0; x < worldWidth; x += gridSizeC)
+           {
+               //calc intersection points from edge with x-grid-lines
+               CPosition intersectPoint = CMathFunctions.calcIntersectionPoint(point1Start, point1End,
+                       new CPosition(x, 0),
+                       new CPosition(x, gridSizeC),
+                       false, true);
+               if (intersectPoint != null)
                {
-                   //calc intersection points from edge with x-grid-lines
-                   CPosition intersectPoint = CMathFunctions.calcIntersectionPoint(point1Start, point1End,
-                           new CPosition(x, 0),
-                           new CPosition(x, gridSizeC),
-                           false, true);
-                   if (intersectPoint != null)
+                   int gridColumn = intersectPoint.getY().intValue() / gridSizeC;
+                   int gridRow = x / gridSizeC;
+
+                   // for cell left and right of intersection Point add obstacle to grid
+                   for (int k = gridRow -1 ; k <= gridRow; k++)
                    {
-                       int gridColumn = intersectPoint.getY().intValue() / gridSizeC;
-                       int gridRow = x / gridSizeC;
-
-                       // for cell left and right of intersection Point add obstacle to grid
-                       for (int k = gridRow -1 ; k <= gridRow; k++)
-                       {
-                          addObstacleToGrid(obstacle, gridColumn, k);
-                       }
-
+                      addObstacleToGrid(obstacle, gridColumn, k);
                    }
-               }
 
-               for (int y = 0; y < worldHigh; y += gridSizeC)
-               {
-                   //calc intersection points from edge with x-grid-lines
-                   CPosition intersectPoint = CMathFunctions.calcIntersectionPoint(point1Start, point1End,
-                           new CPosition(0, y),
-                           new CPosition(gridSizeC, y),
-                           false, true);
-
-                   if (intersectPoint != null)
-                   {
-                       int gridColumn = y / gridSizeC;
-                       int gridRow = intersectPoint.getX().intValue() / gridSizeC;
-
-                       // for cell left and right of intersection Point add obstacle to grid
-                       for (int k = gridColumn -1 ; k <= gridColumn; k++)
-                       {
-                           addObstacleToGrid(obstacle, k, gridRow);
-                       }
-
-                   }
                }
            }
 
-        }
+           for (int y = 0; y < worldHigh; y += gridSizeC)
+           {
+               //calc intersection points from edge with x-grid-lines
+               CPosition intersectPoint = CMathFunctions.calcIntersectionPoint(point1Start, point1End,
+                       new CPosition(0, y),
+                       new CPosition(gridSizeC, y),
+                       false, true);
+
+               if (intersectPoint != null)
+               {
+                   int gridColumn = y / gridSizeC;
+                   int gridRow = intersectPoint.getX().intValue() / gridSizeC;
+
+                   // for cell left and right of intersection Point add obstacle to grid
+                   for (int k = gridColumn -1 ; k <= gridColumn; k++)
+                   {
+                       addObstacleToGrid(obstacle, k, gridRow);
+                   }
+
+               }
+           }
+       }
     }
 
     /**
