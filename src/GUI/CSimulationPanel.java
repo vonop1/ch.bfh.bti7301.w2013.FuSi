@@ -106,7 +106,7 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
                 g2d.setColor(Color.BLACK);
 
                 int x = simulationWorld.getWorldWidth() - 250;
-                int y = 20;
+                int y = 0;
 
                 for(CDrawObject drawObject : drawSimulationObjects) {
                     if(drawObject.getVisibleShortcutKey() != null && drawObject.getDescription() != null && !drawObject.getDescription().isEmpty()) {
@@ -381,31 +381,15 @@ public class CSimulationPanel extends JPanel implements ActionListener, KeyListe
 
             //change selected Walker
             case KeyEvent.VK_PAGE_UP:
-                int idPreviousWalker = this.selectedWalker != null ? this.selectedWalker.getId() - 1 : 0;
-                this.selectedWalker = null;
-                for (CWalker walker : this.simulationWorld.getActiveWalkers())
-                {
-                    if (walker.getId() == idPreviousWalker)
-                    {
-                        this.selectedWalker = walker;
-                        break;
-                    }
-                }
+                int idPreviousWalker = this.selectedWalker != null ? this.selectedWalker.getId() - 1 : this.simulationWorld.getWalkerCount();
+                this.selectedWalker = this.simulationWorld.getWalkerById(idPreviousWalker);
                 e.consume();
                 break;
 
             //change selected Walker
             case KeyEvent.VK_PAGE_DOWN:
-                int idNextWalker = this.selectedWalker != null ? this.selectedWalker.getId() + 1 : 0;
-                this.selectedWalker = null;
-                for (CWalker walker : this.simulationWorld.getActiveWalkers())
-                {
-                    if (walker.getId() == idNextWalker)
-                    {
-                        this.selectedWalker = walker;
-                        break;
-                    }
-                }
+                int idNextWalker = this.selectedWalker != null ? this.selectedWalker.getId() + 1 : 1;
+                this.selectedWalker = this.simulationWorld.getWalkerById(idNextWalker);
                 e.consume();
                 break;
 

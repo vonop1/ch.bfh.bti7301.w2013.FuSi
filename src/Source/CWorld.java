@@ -303,5 +303,52 @@ public class CWorld {
         }
     }
 
+    /**
+     * Get Walkers with given Id
+     * @param id of the walker to return
+     * @return walker with desired id or null if walker not exist
+     */
+    public CWalker getWalkerById(int id)
+    {
+        if ((id < 0) || (id > getWalkerCount()))
+        {
+            return null;
+        }
 
+        for (CWalker walker : this.activeWalkers)
+        {
+            if(walker.getId() == id)
+            {
+                return walker;
+            }
+        }
+        for (CWalker walker : this.finishedWalkers)
+        {
+            if(walker.getId() == id)
+            {
+                return walker;
+            }
+        }
+        for (LinkedList<CWalker> walkerList : this.walkerWaitingQueue.values())
+        {
+            for (CWalker walker : walkerList)
+            {
+                if(walker.getId() == id)
+                {
+                    return walker;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get Count of Walkers in this World
+     * @return walker count
+     */
+    public int getWalkerCount()
+    {
+        return this.activeWalkers.size() + this.finishedWalkers.size() + this.walkerWaitingQueue.size();
+    }
 }

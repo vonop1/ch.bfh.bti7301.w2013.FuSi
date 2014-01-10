@@ -188,7 +188,9 @@ public class CApplication extends JFrame implements WindowListener, KeyListener 
 
         menuSimulationControll.add(createMenuItem("Pausiere Simulation (P)", KeyEvent.VK_P));
         menuSimulationControll.add(createMenuItem("Markierten Fussgänger manuell steuern (M)", KeyEvent.VK_M));
-        menuSimulationControll.add(createMenuItem("Mache 1 Simulationsschritt (PageDown)", KeyEvent.VK_PAGE_DOWN));
+        menuSimulationControll.add(createMenuItem("Mache 1 Simulationsschritt (N)", KeyEvent.VK_N));
+        menuSimulationControll.add(createMenuItem("Vorherigen Walker anwählen (Page Up)", KeyEvent.VK_PAGE_UP));
+        menuSimulationControll.add(createMenuItem("Nächsten Walker anwählen (Page Down)", KeyEvent.VK_PAGE_DOWN));
         menuSimulationControll.add(createMenuItem("Beende Simulation (Esc)", KeyEvent.VK_ESCAPE));
 
 
