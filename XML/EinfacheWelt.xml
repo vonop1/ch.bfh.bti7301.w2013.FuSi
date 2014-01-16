@@ -1,326 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="ConfigSchema.xsd">
-  <objList>
-    <obj>
-      <point x="210" y="50"/>
-      <point x="410" y="50"/>
-      <point x="410" y="100"/>
-      <point x="220" y="100"/>
-    </obj>
-    <obj>
-      <point x="110" y="250"/>
-      <point x="210" y="200"/>
-      <point x="160" y="300"/>
-    </obj>
-    <obj>
-      <point x="310" y="170"/>
-      <point x="360" y="20"/>
-      <point x="450" y="150"/>
-      <point x="380" y="300"/>
-      <point x="330" y="280"/>
-    </obj>
-  </objList>
-  <walkerList>
-    <walker>
-      <source x="20" y="20"/>
-      <target x="520" y="300"/>
-    </walker>
-    <walker>
-      <source x="20" y="300"/>
-      <target x="520" y="20"/>
-    </walker>
-    <walker>
-      <source x="20" y="100"/>
-      <target x="520" y="300"/>
-    </walker>
-    <walker>
-      <source x="20" y="130"/>
-      <target x="520" y="300"/>
-    </walker>
-    <walker>
-      <source x="20" y="200"/>
-      <target x="520" y="300"/>
-    </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="20"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="300"/>
-          <target x="520" y="20"/>
-      </walker>
-      <walker>
-          <source x="20" y="100"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="130"/>
-          <target x="520" y="300"/>
-      </walker>
-      <walker>
-          <source x="20" y="200"/>
-          <target x="520" y="300"/>
-      </walker>
-  </walkerList>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Config>
+<objList>
+<obj>
+<point x="210" y="50"/>
+<point x="410" y="50"/>
+<point x="410" y="100"/>
+<point x="220" y="100"/>
+</obj>
+<obj>
+<point x="110" y="250"/>
+<point x="210" y="200"/>
+<point x="160" y="300"/>
+</obj>
+<obj>
+<point x="310" y="170"/>
+<point x="360" y="20"/>
+<point x="450" y="150"/>
+<point x="380" y="300"/>
+<point x="330" y="280"/>
+</obj>
+</objList>
+<walkerList>
+<walker>
+<source x="19" y="56"/>
+<target x="520" y="300"/>
+<count c="1"/>
+</walker>
+<walker>
+<source x="20" y="300"/>
+<target x="520" y="20"/>
+<count c="1"/>
+</walker>
+<walker>
+<source x="20" y="100"/>
+<target x="520" y="300"/>
+<count c="1"/>
+</walker>
+<walker>
+<source x="20" y="130"/>
+<target x="520" y="300"/>
+<count c="1"/>
+</walker>
+<walker>
+<source x="20" y="200"/>
+<target x="520" y="300"/>
+<count c="1"/>
+</walker>
+</walkerList>
 </Config>
