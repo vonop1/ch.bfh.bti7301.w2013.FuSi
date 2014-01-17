@@ -9,7 +9,7 @@ import java.util.Vector;
 
 /**
  * Created with IntelliJ IDEA.
- * User: bohnp1
+ * author: bohnp1
  * Date: 18.10.13
  * Time: 13:55
  */

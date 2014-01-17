@@ -4,7 +4,7 @@ import Util.CPosition;
 
 /**
  * Created with IntelliJ IDEA.
- * User: bohnp1
+ * author: bohnp1
  * Date: 15.11.13
  * Time: 14:33
  */

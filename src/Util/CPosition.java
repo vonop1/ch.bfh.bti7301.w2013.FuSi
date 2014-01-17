@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 
 /**
  * Created with IntelliJ IDEA.
- * User: bohnp1, jaggr2
+ * author: bohnp1, jaggr2
  * Date: 27.09.13
  * Time: 14:14
  */

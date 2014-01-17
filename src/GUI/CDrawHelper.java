@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.Vector;
 
 /**
- * Author: Roger Jaggi
+ * Author: jaggr2
  * Date: 13.12.13
  * Time: 16:43
  */

@@ -3,7 +3,7 @@ package Util;
 import junit.framework.TestCase;
 
 /**
- * Author: Roger Jaggi <roger.jaggi@blastbeatsyndicate.com>
+ * Author: jaggr2 <roger.jaggi@blastbeatsyndicate.com>
  * Date: 14.12.13
  * Time: 15:19
  */

@@ -3,7 +3,7 @@ package Source;
 import Util.CPosition;
 
 /**
- * User: bohnp1
+ * author: bohnp1
  * Date: 05.11.13
  * Time: 19:08
  */

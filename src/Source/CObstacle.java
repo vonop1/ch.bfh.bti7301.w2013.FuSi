@@ -7,7 +7,7 @@ import java.util.Vector;
 
 /**
  * Created with IntelliJ IDEA.
- * User: bohnp1
+ * author: bohnp1
  * Date: 27.09.13
  * Time: 14:37
  */

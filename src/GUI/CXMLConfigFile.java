@@ -23,7 +23,7 @@ import org.w3c.dom.*;
 
 /**
  * Created with IntelliJ IDEA.
- * User: vonop1
+ * author: vonop1
  * Date: 22.11.13
  * Time: 13:00
  * To change this template use File | Settings | File Templates.

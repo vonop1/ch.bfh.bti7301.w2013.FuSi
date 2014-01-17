@@ -14,7 +14,7 @@ import java.util.Vector;
 
 /**
  * Copyright 2013
- * Author: Roger Jaggi <roger.jaggi@blastbeatsyndicate.com>
+ * author: jaggr2 <roger.jaggi@blastbeatsyndicate.com>
  * Date: 04.10.13
  * Time: 10:30
  */
