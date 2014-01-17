@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
- * User: bohnp1, jaggr2
+ * author: bohnp1, jaggr2
  * Date: 04.10.13
  * Time: 13:39
  */

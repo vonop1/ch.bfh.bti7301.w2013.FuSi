@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * User: jaggr2
+ * author: jaggr2
  * Date: 05.11.13
  * Time: 19:08
  */

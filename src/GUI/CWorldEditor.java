@@ -12,7 +12,7 @@ import javax.swing.*;
 
 /**
  * Created with IntelliJ IDEA.
- * User: vonop1
+ * author: vonop1
  * Date: 11.10.13
  * Time: 14:28
  */

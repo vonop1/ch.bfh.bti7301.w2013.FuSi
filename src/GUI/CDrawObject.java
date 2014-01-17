@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * Author: Roger Jaggi <roger.jaggi@blastbeatsyndicate.com>
+ * Author: jaggr2 <roger.jaggi@blastbeatsyndicate.com>
  * Date: 08.11.13
  * Time: 13:39
  */

@@ -5,7 +5,7 @@ import java.awt.geom.AffineTransform;
 
 /**
  * Created with IntelliJ IDEA.
- * User: pvonow
+ * author: vonop1
  * Date: 01.11.13
  * Time: 14:32
  * To change this template use File | Settings | File Templates.
